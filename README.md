@@ -11,7 +11,7 @@ A simple text editor written in C.
 * if Rope was used with a single word - single leaf node, spell checking would be very simple
 * undo using a stack of recent operations
 
-### A license notice to put in the beginning of every source code file in the project
+### A license notice to put in the beginning of every source file in the project
 
 text-editor - a simple text editor  
 Copyright (C) 2017 Kajetan Puchalski
