@@ -2,11 +2,13 @@
 #include <ncurses.h>
 #include <util.h>
 
+// TODO: print should set the (ncurses) cursor to its appropriate place
 void gap_buffer_print_curses(gap_T g) {
     for (int i = 0 ; i <= g->end ; ++i) {
         if (i < g->gap_start || i > g->gap_end) {
-            if (g->buffer[i])
+            if (g->buffer[i]) {
                 printw("%c", g->buffer[i]);
+            }
         }
     }
 }
