@@ -31,8 +31,7 @@
 
 typedef struct gap_buffer *gap_T;
 
-struct gap_buffer
-{
+struct gap_buffer {
     char * buffer;
     int start;
     int end;

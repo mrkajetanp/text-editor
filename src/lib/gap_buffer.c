@@ -26,7 +26,6 @@ gap_T gap_buffer_new() {
     g->gap_end = INITIAL_SIZE -1;
     g->cursor = 0;
     g->mode = INSERT_MODE;
-
     return g;
 }
 
@@ -183,16 +182,14 @@ void gap_buffer_print(gap_T g) {
     printf("\n");
 }
 
-void gap_buffer_put(gap_T g, char ch) 
-{
+void gap_buffer_put(gap_T g, char ch)  {
     if (g->mode == REPLACE_MODE)
         gap_buffer_replace(g, ch);
     else
         gap_buffer_insert(g, ch);
 }
 
-void gap_buffer_insert(gap_T g, char ch)
-{
+void gap_buffer_insert(gap_T g, char ch) {
     // inserts must always happen at the gap start - move the gap if needed
     if (g->cursor != g->gap_start)
         gap_buffer_move_gap(g);
@@ -224,7 +221,6 @@ void gap_buffer_replace(gap_T g, char ch)
             gap_buffer_insert(g, ch);
             return;
         }
-        
         // Case 2: If bumping into gap, jump it to replace the char after it
         gap_buffer_move_cursor(g, 1);
     }
@@ -234,15 +230,13 @@ void gap_buffer_replace(gap_T g, char ch)
     gap_buffer_move_cursor(g, 1);
 }
 
-void gap_buffer_delete(gap_T g)
-{
+void gap_buffer_delete(gap_T g) {
     // move gap first, if necessary. 
     gap_buffer_move_gap(g);
 
     // deleting doesnt actually overwrite anything - it just moves the gap back
     // one space, but we have to be sure we arent on the zero index already
-    if (g->gap_start != 0) 
-    {
+    if (g->gap_start != 0) {
         g->gap_start--;
         gap_buffer_move_cursor(g, -1);
     }
