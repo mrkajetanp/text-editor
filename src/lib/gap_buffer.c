@@ -126,7 +126,7 @@ void gap_buffer_move_cursor(gap_T g, signed int distance)
     // CASE 2: the cursor crossed gap threshold, while moving right
     else if (old_position <= g->gap_start && g->cursor > g->gap_start)
         g->cursor += gap_size;
- 
+
     // make sure cursor didnt move beyond buffer size (not counting gap-size)
     if (g->cursor < 0 || g->cursor > g->end)
     {

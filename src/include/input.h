@@ -4,6 +4,6 @@
 #include "lib/gap_buffer.h"
 
 void input_loop(gap_T);
-void handle_insertion(gap_T);
+void handle_insertion(gap_T, int*, int*);
 
 #endif
