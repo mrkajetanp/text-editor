@@ -32,6 +32,7 @@ void handle_insertion(gap_T buff) {
         gap_buffer_move_cursor(buff, 1);
         break;
     case 'q':
+        endwin();
         exit(1);
         break;
     default:

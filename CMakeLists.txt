@@ -3,7 +3,7 @@ set (CMAKE_LEGACY_CYGWIN_WIN32 0)
 
 project ("text-editor")
 
-# enable_testing()
+enable_testing()
 
 # Setting compiler flags according to platform
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
@@ -20,6 +20,7 @@ if (NOT CONFIGURED_ONCE)
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-add_subdirectory (src)
+add_subdirectory(src)
+add_subdirectory(tests)
 
 set (CONFIGURED_ONCE TRUE CACHE INTERNAL "A flag showing that CMake has configured at least once.")
