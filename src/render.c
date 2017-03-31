@@ -72,6 +72,7 @@ void render_screen_debug(Screen s) {
     mvprintw(0, getmaxx(stdscr)-13, "C: %d E: %d", s->buff->cursor, s->buff->end);
     mvprintw(1, getmaxx(stdscr)-13, "G: %d - %d", s->buff->gap_start, s->buff->gap_end);
     mvprintw(2, getmaxx(stdscr)-13, "B: %d - %d", s->buff->start, s->buff->end);
+    mvprintw(3, getmaxx(stdscr)-13, "End: %d", s->end);
 
     /* current line & column info */
     mvprintw(getmaxy(stdscr)-1, 0, "%d: %d", s->row+1, s->col);

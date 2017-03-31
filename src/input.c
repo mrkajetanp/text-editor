@@ -16,6 +16,8 @@ void input_loop(Screen s) {
 }
 
 void handle_insertion(Screen s) {
+    int gap_size = s->buff->gap_end - s->buff->gap_start;
+    int max_end;
     int c = getch();
 
     /* TODO: fix moving past screen edges */
@@ -24,6 +26,7 @@ void handle_insertion(Screen s) {
     switch (c) {
     case '\n':
         s->row++;
+        s->end++;
         s->col = 0;
         gap_buffer_put(s->buff, c);
         break;
@@ -42,6 +45,7 @@ void handle_insertion(Screen s) {
             s->col--;
         }
 
+        s->end--;
         gap_buffer_delete(s->buff);
         break;
     case KEY_LEFT:
@@ -65,6 +69,14 @@ void handle_insertion(Screen s) {
         gap_buffer_move_cursor(s->buff, -1);
         break;
     case KEY_RIGHT:
+        if (s->buff->gap_start < s->end)
+            max_end = s->end+gap_size+1;
+        else
+            max_end = s->end;
+
+        if (s->buff->cursor >= max_end) {
+            break;
+        }
 
         if (s->buff->buffer[s->buff->cursor] == '\n') {
             s->row++;
@@ -82,6 +94,7 @@ void handle_insertion(Screen s) {
     default:
         gap_buffer_put(s->buff, c);
         s->col++;
+        s->end++;
         break;
     }
 }
