@@ -1,6 +1,6 @@
 #include <ncurses.h>
 
-#include "lib/gap_buffer.h"
+#include "screen.h"
 #include "input.h"
 
 int main () {
@@ -10,11 +10,11 @@ int main () {
     noecho();
     keypad(stdscr, TRUE);
 
-    gap_T buff = gap_buffer_new();
+    Screen s = screen_init();
 
-    input_loop(buff);
+    input_loop(s);
 
-    gap_buffer_destroy(buff);
+    screen_destroy(s);
     endwin();
     return 0;
 }

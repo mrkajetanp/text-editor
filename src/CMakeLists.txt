@@ -1,6 +1,6 @@
 include_directories("include")
 
-add_executable(text-editor main.c input.c render.c)
+add_executable(text-editor main.c screen.c input.c render.c)
 add_subdirectory(lib)
 add_subdirectory(include)
 

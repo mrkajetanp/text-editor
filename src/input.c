@@ -2,61 +2,86 @@
 #include <stdbool.h>
 #include <ncurses.h>
 
+#include "screen.h"
 #include "input.h"
 #include "render.h"
 
-void input_loop(gap_T buff) {
-    int row = 0;
-    int col = 0;
+void input_loop(Screen s) {
     while (true) {
-        render_screen(buff);
-        /* render_screen_debug(buff, &row, &col); */
-        handle_insertion(buff, &row, &col);
+        /* render_screen(s); */
+        render_screen_debug(s);
+        handle_insertion(s);
         erase();
     }
 }
 
-void handle_insertion(gap_T buff, int* row, int* col) {
+void handle_insertion(Screen s) {
     int c = getch();
 
     /* TODO: fix moving past screen edges */
+    /* TODO: use end field of Screen struct */
 
     switch (c) {
     case '\n':
-        (*row)++;
-        (*col) = 0;
-        gap_buffer_put(buff, c);
+        s->row++;
+        s->col = 0;
+        gap_buffer_put(s->buff, c);
         break;
     case 127:
     case KEY_BACKSPACE:
-        if (buff->buffer[buff->cursor] == '\n') {
-            (*row)--;
-            *col = 0;
-            for (int i = buff->cursor ; i > 0 ; --i) {
-                if (buff->buffer[i-1] == '\n')
+
+        if (s->buff->buffer[s->buff->cursor] == '\n') {
+            s->row--;
+            s->col = 0;
+            for (int i = s->buff->cursor ; i > 0 ; --i) {
+                if (s->buff->buffer[i-1] == '\n')
                     break;
-                (*col)++;
+                s->col++;
             }
         } else {
-            (*col)--;
+            s->col--;
         }
-        gap_buffer_delete(buff);
+
+        gap_buffer_delete(s->buff);
         break;
     case KEY_LEFT:
-        (*col)--;
-        gap_buffer_move_cursor(buff, -1);
+
+        if (s->buff->cursor == 0) {
+            // ...
+        }
+        else if (getcurx(stdscr) == getbegx(stdscr)) {
+            s->row--;
+
+            s->col = 0;
+            for (int i = s->buff->cursor-1 ; i > 0 ; --i) {
+                if (s->buff->buffer[i-1] == '\n')
+                    break;
+                s->col++;
+            }
+        } else {
+            s->col--;
+        }
+
+        gap_buffer_move_cursor(s->buff, -1);
         break;
     case KEY_RIGHT:
-        (*col)++;
-        gap_buffer_move_cursor(buff, 1);
+
+        if (s->buff->buffer[s->buff->cursor] == '\n') {
+            s->row++;
+            s->col = 0;
+        } else {
+            s->col++;
+        }
+
+        gap_buffer_move_cursor(s->buff, 1);
         break;
     case 'q':
         endwin();
         exit(1);
         break;
     default:
-        gap_buffer_put(buff, c);
-        (*col)++;
+        gap_buffer_put(s->buff, c);
+        s->col++;
         break;
     }
 }
