@@ -58,10 +58,10 @@ void handle_insert_char(Screen s, char c) {
 }
 
 void handle_key_left(Screen s) {
-    if (s->buff->cursor == 0) {
-        // ...
-    }
-    else if (getcurx(stdscr) == getbegx(stdscr)) {
+    if (s->buff->cursor == 0)
+        return;
+
+    if (getcurx(stdscr) == getbegx(stdscr)) {
         s->row--;
 
         s->col = 0;
@@ -78,7 +78,7 @@ void handle_key_left(Screen s) {
 }
 
 void handle_key_right(Screen s) {
-    int gap_size = s->buff->gap_end - s->buff->gap_start;
+    int gap_size = s->buff->gap_end - s->buff->gap_start+1;
     int max_end;
 
     if (s->buff->gap_start < s->end)
@@ -90,7 +90,19 @@ void handle_key_right(Screen s) {
         return;
     }
 
-    if (s->buff->buffer[s->buff->cursor] == '\n') {
+    if (s->buff->gap_start < s->buff->cursor)
+        s->real_cursor = s->buff->cursor-gap_size;
+    else
+        s->real_cursor = s->buff->cursor+1;
+
+    s->line_end_dist = 0;
+    for (int i = s->buff->cursor ; i < s->end && s->buff->buffer[i] != '\n' ; ++i) {
+        if (i < s->buff->gap_start || i > s->buff->gap_end)
+            s->line_end_dist++;
+    }
+
+    /* if (s->buff->buffer[s->buff->cursor] == '\n') { */
+    if (s->line_end_dist == 0 && s->buff->cursor+1 != s->end) {
         s->row++;
         s->col = 0;
     } else {
@@ -108,14 +120,14 @@ void handle_enter(Screen s) {
 }
 
 void handle_backspace(Screen s) {
-    // do nothing if cursor is at the beginning of the buffer
+    /* do nothing if cursor is at the beginning of the buffer */
     if (s->buff->cursor == 0)
         return;
 
-    // if at the beginning of the line, calculate where the cursor should go
+    /* if at the beginning of the line, calculate where the cursor should go */
     if (s->buff->buffer[s->buff->cursor-1] == '\n') {
         s->row--;
-        // calculate the length of the previous line
+        /* calculate the length of the previous line */
         s->col = 0;
         for (int i = s->buff->cursor-1 ; i > 0 ; --i) {
             if (s->buff->buffer[i-1] == '\n')
@@ -123,11 +135,11 @@ void handle_backspace(Screen s) {
             s->col++;
         }
     } else {
-        // just move the cursor left
+        /* just move the cursor left */
         s->col--;
     }
 
-    // in any case, remove the char from the buffer and decrement the end counter
+    /* in any case, remove the char from the buffer and decrement the end counter */
     s->end--;
     gap_buffer_delete(s->buff);
 }
@@ -137,4 +149,3 @@ void handle_quit(Screen s) {
     screen_destroy(s);
     exit(1);
 }
-

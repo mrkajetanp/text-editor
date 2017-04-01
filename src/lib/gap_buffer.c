@@ -234,9 +234,9 @@ void gap_buffer_delete(gap_T g) {
     // move gap first, if necessary. 
     gap_buffer_move_gap(g);
 
-    // deleting doesnt actually overwrite anything - it just moves the gap back
-    // one space, but we have to be sure we arent on the zero index already
+    // we have to be sure we arent on the zero index already
     if (g->gap_start != 0) {
+        g->buffer[g->cursor] = '\0';
         g->gap_start--;
         gap_buffer_move_cursor(g, -1);
     }
@@ -286,7 +286,7 @@ int gap_buffer_distance_to_start(gap_T g)
     else if (g->cursor <= g->gap_start)
         distance = g->start - g->cursor;
 
-    return distance;     
+    return distance;
 }
 
 void gap_buffer_destroy(gap_T g)

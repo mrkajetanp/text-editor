@@ -10,6 +10,8 @@ struct _screen {
     int row;
     int col;
     int end;
+    int real_cursor;
+    int line_end_dist;
 };
 
 // initialize a new screen & its buffer
