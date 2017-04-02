@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <glib-2.0/glib.h>
 
 #include "screen.h"
 #include "input.h"

@@ -51,99 +51,68 @@ void insert_mode(Screen s) {
     }
 }
 
+
 void handle_insert_char(Screen s, char c) {
-    gap_buffer_put(s->buff, c);
+    gap_buffer_put(s->cur_line->data, c);
     s->col++;
-    s->end++;
-    s->cur_line_length++;
 }
 
 void handle_key_left(Screen s) {
-    if (s->buff->cursor == 0)
+    if (s->row == 0 && s->col == 0)
         return;
 
-    if (getcurx(stdscr) == getbegx(stdscr)) {
+    if (s->col == 0) {
         s->row--;
-
-        s->col = 0;
-        for (int i = s->buff->cursor-1 ; i > 0 ; --i) {
-            if (s->buff->buffer[i-1] == '\n')
-                break;
-            s->col++;
-        }
+        s->cur_line = s->cur_line->prev;
+        int gap_size = ((gap_T)s->cur_line->data)->gap_end - ((gap_T)s->cur_line->data)->gap_start+1;
+        s->col = ((gap_T)s->cur_line->data)->end - gap_size;
     } else {
         s->col--;
     }
 
-    gap_buffer_move_cursor(s->buff, -1);
+    gap_buffer_move_cursor(s->cur_line->data, -1);
 }
 
+
 void handle_key_right(Screen s) {
-    int gap_size = s->buff->gap_end - s->buff->gap_start+1;
-    int max_end;
+    int gap_size = ((gap_T)s->cur_line->data)->gap_end - ((gap_T)s->cur_line->data)->gap_start+1;
+    int line_end = ((gap_T)s->cur_line->data)->end - gap_size;
 
-    if (s->buff->gap_start < s->end)
-        max_end = s->end+gap_size+1;
-    else
-        max_end = s->end;
-
-    if (s->buff->cursor >= max_end) {
+    if (s->row+1 == s->n_lines && s->col == line_end)
         return;
-    }
 
-    /* if (s->buff->gap_start < s->buff->cursor) */
-    /*     s->real_cursor = s->buff->cursor-gap_size; */
-    /* else */
-    /*     s->real_cursor = s->buff->cursor+1; */
-
-    /* s->line_end_dist = 0; */
-    /* for (int i = s->buff->cursor ; i < s->end && s->buff->buffer[i] != '\n' ; ++i) { */
-    /*     if (i < s->buff->gap_start || i > s->buff->gap_end) */
-    /*         s->line_end_dist++; */
-    /* } */
-
-    if (s->buff->buffer[s->buff->cursor] == '\n') {
+    if (s->col == line_end) {
         s->row++;
         s->col = 0;
+        s->cur_line = s->cur_line->next;
     } else {
         s->col++;
     }
 
-    gap_buffer_move_cursor(s->buff, 1);
+    gap_buffer_move_cursor(s->cur_line->data, 1);
 }
 
 void handle_enter(Screen s) {
+    gap_buffer_put(s->cur_line->data, '\n');
+    screen_append_new_line(s);
     s->row++;
-    s->end++;
     s->col = 0;
-    s->cur_line_length = 0;
-    gap_buffer_put(s->buff, '\n');
 }
 
 void handle_backspace(Screen s) {
-    /* do nothing if cursor is at the beginning of the buffer */
-    if (s->buff->cursor == 0)
+    if (s->row == 0 && s->col == 0)
         return;
 
-    /* if at the beginning of the line, calculate where the cursor should go */
-    if (s->buff->buffer[s->buff->cursor-1] == '\n') {
+    if (s->col == 0) {
+        screen_destroy_line(s);
         s->row--;
-        /* calculate the length of the previous line */
-        s->col = 0;
-        for (int i = s->buff->cursor-1 ; i > 0 ; --i) {
-            if (s->buff->buffer[i-1] == '\n')
-                break;
-            s->col++;
-        }
+        int gap_size = ((gap_T)s->cur_line->data)->gap_end - ((gap_T)s->cur_line->data)->gap_start+1;
+        s->col = ((gap_T)s->cur_line->data)->end - gap_size;
+        gap_buffer_move_cursor(s->cur_line->data, -1);
     } else {
-        /* just move the cursor left */
+        gap_buffer_delete(s->cur_line->data);
         s->col--;
     }
-
-    /* in any case, remove the char from the buffer and decrement the end counter */
-    s->end--;
-    s->cur_line_length--;
-    gap_buffer_delete(s->buff);
 }
 
 void handle_quit(Screen s) {
