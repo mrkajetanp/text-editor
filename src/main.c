@@ -4,7 +4,7 @@
 #include "input.h"
 
 int main () {
-
+    // TODO: change structure to the doubly linked list of gap buffers
     initscr();
     raw();
     noecho();

@@ -9,8 +9,7 @@ Screen screen_init() {
     s->row = 0;
     s->col = 0;
     s->end = 0;
-    s->real_cursor = 0;
-    s->line_end_dist = 0;
+    s->cur_line_length = 0;
 
     return s;
 }

@@ -69,7 +69,7 @@ void gap_buffer_resize_buffer(gap_T);
 
 /*
  * Inserts or replaces a character in the gap at the cursor position.
- * 
+ *
  * Param: ch - a character to be inserted into the buffer at cursor position
  *
  * It will call either gap_buffer_insert() or gap_buffer_replace() depending
@@ -128,7 +128,7 @@ void gap_buffer_replace(gap_T, char);
 
 /*
  * Deletes a character at the position in the buffer.
- */ 
+ */
 void gap_buffer_delete(gap_T);
 
 /*

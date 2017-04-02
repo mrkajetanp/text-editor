@@ -73,7 +73,7 @@ void render_screen_debug(Screen s) {
     mvprintw(1, getmaxx(stdscr)-13, "G: %d - %d", s->buff->gap_start, s->buff->gap_end);
     mvprintw(2, getmaxx(stdscr)-13, "B: %d - %d", s->buff->start, s->buff->end);
     mvprintw(3, getmaxx(stdscr)-13, "End: %d", s->end);
-    mvprintw(4, getmaxx(stdscr)-13, "L_end: %d", s->line_end_dist);
+    mvprintw(4, getmaxx(stdscr)-13, "L_len: %d", s->cur_line_length);
 
     if (s->buff->buffer[s->buff->cursor] == '\n')
         mvprintw(5, getmaxx(stdscr)-13, "C on: (\\n)");
@@ -82,7 +82,8 @@ void render_screen_debug(Screen s) {
     else
         mvprintw(5, getmaxx(stdscr)-13, "C on: (%c)", s->buff->buffer[s->buff->cursor]);
 
-    mvprintw(6, getmaxx(stdscr)-13, "RCur: %d", s->real_cursor);
+    mvprintw(6, getmaxx(stdscr)-13, "CurRow: %d", s->row);
+    mvprintw(7, getmaxx(stdscr)-13, "CurCol: %d", s->col);
 
     /* current line & column info */
     mvprintw(getmaxy(stdscr)-1, 0, "%d: %d", s->row+1, s->col);

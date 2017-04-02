@@ -55,6 +55,7 @@ void handle_insert_char(Screen s, char c) {
     gap_buffer_put(s->buff, c);
     s->col++;
     s->end++;
+    s->cur_line_length++;
 }
 
 void handle_key_left(Screen s) {
@@ -90,19 +91,18 @@ void handle_key_right(Screen s) {
         return;
     }
 
-    if (s->buff->gap_start < s->buff->cursor)
-        s->real_cursor = s->buff->cursor-gap_size;
-    else
-        s->real_cursor = s->buff->cursor+1;
+    /* if (s->buff->gap_start < s->buff->cursor) */
+    /*     s->real_cursor = s->buff->cursor-gap_size; */
+    /* else */
+    /*     s->real_cursor = s->buff->cursor+1; */
 
-    s->line_end_dist = 0;
-    for (int i = s->buff->cursor ; i < s->end && s->buff->buffer[i] != '\n' ; ++i) {
-        if (i < s->buff->gap_start || i > s->buff->gap_end)
-            s->line_end_dist++;
-    }
+    /* s->line_end_dist = 0; */
+    /* for (int i = s->buff->cursor ; i < s->end && s->buff->buffer[i] != '\n' ; ++i) { */
+    /*     if (i < s->buff->gap_start || i > s->buff->gap_end) */
+    /*         s->line_end_dist++; */
+    /* } */
 
-    /* if (s->buff->buffer[s->buff->cursor] == '\n') { */
-    if (s->line_end_dist == 0 && s->buff->cursor+1 != s->end) {
+    if (s->buff->buffer[s->buff->cursor] == '\n') {
         s->row++;
         s->col = 0;
     } else {
@@ -116,6 +116,7 @@ void handle_enter(Screen s) {
     s->row++;
     s->end++;
     s->col = 0;
+    s->cur_line_length = 0;
     gap_buffer_put(s->buff, '\n');
 }
 
@@ -141,6 +142,7 @@ void handle_backspace(Screen s) {
 
     /* in any case, remove the char from the buffer and decrement the end counter */
     s->end--;
+    s->cur_line_length--;
     gap_buffer_delete(s->buff);
 }
 
