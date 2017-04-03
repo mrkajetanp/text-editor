@@ -1,6 +1,8 @@
 include_directories("include")
 include_directories("/usr/include/glib-2.0")
 include_directories("/usr/lib/glib-2.0/include")
+include_directories("/usr/local/include/glib-2.0")
+include_directories("/usr/local/lib/glib-2.0/include")
 
 add_executable(text-editor main.c screen.c input.c render.c)
 add_subdirectory(lib)

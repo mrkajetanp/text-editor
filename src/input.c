@@ -18,9 +18,6 @@ void input_loop(Screen s) {
 void insert_mode(Screen s) {
     int c = getch();
 
-    /* TODO: fix moving past screen edges */
-    /* TODO: use end field of Screen struct */
-
     switch (c) {
 
     case '\n':
@@ -64,7 +61,8 @@ void handle_key_left(Screen s) {
     if (s->col == 0) {
         s->row--;
         s->cur_line = s->cur_line->prev;
-        int gap_size = ((gap_T)s->cur_line->data)->gap_end - ((gap_T)s->cur_line->data)->gap_start+1;
+        int gap_size = ((gap_T)s->cur_line->data)->gap_end -
+            ((gap_T)s->cur_line->data)->gap_start+1;
         s->col = ((gap_T)s->cur_line->data)->end - gap_size;
     } else {
         s->col--;
@@ -75,7 +73,8 @@ void handle_key_left(Screen s) {
 
 
 void handle_key_right(Screen s) {
-    int gap_size = ((gap_T)s->cur_line->data)->gap_end - ((gap_T)s->cur_line->data)->gap_start+1;
+    int gap_size = ((gap_T)s->cur_line->data)->gap_end -
+        ((gap_T)s->cur_line->data)->gap_start+1;
     int line_end = ((gap_T)s->cur_line->data)->end - gap_size;
 
     if (s->row+1 == s->n_lines && s->col == line_end)
@@ -93,7 +92,7 @@ void handle_key_right(Screen s) {
 }
 
 void handle_enter(Screen s) {
-    gap_buffer_put(s->cur_line->data, '\n');
+    /* gap_buffer_put(s->cur_line->data, '\n'); */
     screen_append_new_line(s);
     s->row++;
     s->col = 0;
@@ -106,9 +105,9 @@ void handle_backspace(Screen s) {
     if (s->col == 0) {
         screen_destroy_line(s);
         s->row--;
-        int gap_size = ((gap_T)s->cur_line->data)->gap_end - ((gap_T)s->cur_line->data)->gap_start+1;
+        int gap_size = ((gap_T)s->cur_line->data)->gap_end -
+            ((gap_T)s->cur_line->data)->gap_start+1;
         s->col = ((gap_T)s->cur_line->data)->end - gap_size;
-        gap_buffer_move_cursor(s->cur_line->data, -1);
     } else {
         gap_buffer_delete(s->cur_line->data);
         s->col--;

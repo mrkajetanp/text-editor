@@ -7,6 +7,10 @@ Screen screen_init() {
 
     /* s->buff = gap_buffer_new(); */
     gap_T new_line = gap_buffer_new();
+
+    gap_buffer_put(new_line, '\n');
+    gap_buffer_move_cursor(new_line, -1);
+
     s->lines = g_list_append(s->lines, new_line);
     s->cur_line = s->lines;
     s->n_lines = 1;
@@ -18,6 +22,8 @@ Screen screen_init() {
 
 void screen_append_new_line(Screen s) {
     gap_T new_line = gap_buffer_new();
+    gap_buffer_put(new_line, '\n');
+    gap_buffer_move_cursor(new_line, -1);
     s->lines = g_list_append(s->lines, new_line);
 
     s->cur_line = s->cur_line->next;
