@@ -49,11 +49,11 @@ struct gap_buffer {
 gap_T gap_buffer_new();
 
 /*
- * Moves the gap in the buffer to the position of the cursor.  
+ * Moves the gap in the buffer to the position of the cursor.
  *
- * Characters surrounding the new gap position will be displaced around the 
- * gap.  If the start of the gap is already at the cursor position, the 
- * function does * nothing, and returns.  This function is usually called 
+ * Characters surrounding the new gap position will be displaced around the
+ * gap.  If the start of the gap is already at the cursor position, the
+ * function does * nothing, and returns.  This function is usually called
  * automatically when doing insert, delete, or replace operations.
  */
 void gap_buffer_move_gap(gap_T);

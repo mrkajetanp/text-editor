@@ -64,11 +64,13 @@ void handle_key_left(Screen s) {
         int gap_size = ((gap_T)s->cur_line->data)->gap_end -
             ((gap_T)s->cur_line->data)->gap_start+1;
         s->col = ((gap_T)s->cur_line->data)->end - gap_size;
+
+        gap_T curr_buff = (gap_T)s->cur_line->data;
+        gap_buffer_move_cursor(curr_buff, gap_buffer_distance_to_end(curr_buff)-1);
     } else {
         s->col--;
+        gap_buffer_move_cursor(s->cur_line->data, -1);
     }
-
-    gap_buffer_move_cursor(s->cur_line->data, -1);
 }
 
 
@@ -84,16 +86,16 @@ void handle_key_right(Screen s) {
         s->row++;
         s->col = 0;
         s->cur_line = s->cur_line->next;
+        gap_T curr_buff = (gap_T)s->cur_line->data;
+        gap_buffer_move_cursor(curr_buff, gap_buffer_distance_to_start(curr_buff));
     } else {
         s->col++;
+        gap_buffer_move_cursor(s->cur_line->data, 1);
     }
-
-    gap_buffer_move_cursor(s->cur_line->data, 1);
 }
 
 void handle_enter(Screen s) {
-    /* gap_buffer_put(s->cur_line->data, '\n'); */
-    screen_append_new_line(s);
+    screen_new_line_under(s);
     s->row++;
     s->col = 0;
 }

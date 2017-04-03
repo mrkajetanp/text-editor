@@ -30,6 +30,16 @@ void screen_append_new_line(Screen s) {
     s->n_lines++;
 }
 
+void screen_new_line_under(Screen s) {
+    gap_T new_line = gap_buffer_new();
+    gap_buffer_put(new_line, '\n');
+    gap_buffer_move_cursor(new_line, -1);
+
+    s->lines = g_list_insert(s->lines, new_line, s->row+1);
+    s->cur_line = s->cur_line->next;
+    s->n_lines++;
+}
+
 void screen_destroy_line(Screen s) {
     gap_buffer_destroy(s->cur_line->data);
 
