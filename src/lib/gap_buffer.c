@@ -58,7 +58,7 @@ void gap_buffer_move_gap(gap_T g)
         // reset the gap end and start
         g->gap_end -= length;
         g->gap_start -= length;
-    } 
+    }
     // CASE 2: the gap is moving to the right
     else if (g->cursor >= g->gap_end)
     {
@@ -74,9 +74,9 @@ void gap_buffer_move_gap(gap_T g)
         g->gap_end += length;
         g->gap_start += length;
         g->cursor = g->gap_start;
-    } 
+    }
     // Cursor position should never be inside or outside the gap
-    else 
+    else
         printf("Cursor is inside or outside the gap! Gap move cancelled.\n");
 }
 
@@ -121,7 +121,7 @@ void gap_buffer_move_cursor(gap_T g, signed int distance)
     g->cursor += distance;
 
     // CASE 1: the cursor crossed gap threshold, while moving left
-    if (old_position > g->gap_end && g->cursor < g->gap_end)
+    if (old_position > g->gap_end && g->cursor <= g->gap_end)
         g->cursor -= gap_size;
     // CASE 2: the cursor crossed gap threshold, while moving right
     else if (old_position <= g->gap_start && g->cursor > g->gap_start)
@@ -131,7 +131,7 @@ void gap_buffer_move_cursor(gap_T g, signed int distance)
     if (g->cursor < 0 || g->cursor > g->end)
     {
         // TODO: Error handling here - for now, return cursor to old position
-        g->cursor = old_position;   
+        g->cursor = old_position;
     }
 }
 

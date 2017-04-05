@@ -10,6 +10,9 @@ int main () {
     noecho();
     keypad(stdscr, TRUE);
 
+    start_color();
+    init_pair(1, COLOR_YELLOW, COLOR_BLACK);
+
     Screen s = screen_init();
 
     input_loop(s);

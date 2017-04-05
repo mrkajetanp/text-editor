@@ -10,7 +10,7 @@ void print_line_debug(gpointer data, gpointer user_data) {
             /* omit the null characters */
             if (buff->buffer[i]) {
                 if (buff->buffer[i] == '\n') {
-                    addch('$' | A_REVERSE);
+                    addch('$' | COLOR_PAIR(1));
                     addch('\n');
                 } else if (buff->buffer[i] == '\0') {
                     printw("%");

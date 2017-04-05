@@ -101,6 +101,7 @@ void handle_enter(Screen s) {
 }
 
 void handle_backspace(Screen s) {
+    // TODO: fix cursor when moving up by deleting a line
     if (s->row == 0 && s->col == 0)
         return;
 
