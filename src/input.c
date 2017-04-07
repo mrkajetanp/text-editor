@@ -101,7 +101,6 @@ void handle_enter(Screen s) {
 }
 
 void handle_backspace(Screen s) {
-    // TODO: fix cursor when moving up by deleting a line
     if (s->row == 0 && s->col == 0)
         return;
 
@@ -111,6 +110,8 @@ void handle_backspace(Screen s) {
         int gap_size = ((gap_T)s->cur_line->data)->gap_end -
             ((gap_T)s->cur_line->data)->gap_start+1;
         s->col = ((gap_T)s->cur_line->data)->end - gap_size;
+        gap_buffer_move_cursor(s->cur_line->data,
+                               gap_buffer_distance_to_end(s->cur_line->data)-1);
     } else {
         gap_buffer_delete(s->cur_line->data);
         s->col--;
