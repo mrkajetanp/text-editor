@@ -9,6 +9,14 @@ case "$1" in
         cd build/
         cmake -DCMAKE_INSTALL_PREFIX=$(pwd)/.. ..
         ;;
+	"cmake_debug")
+        if [ ! -d "build" ]; then
+            mkdir build
+		fi
+        echo "Generating Debug Makefile with CMake.."
+        cd build/
+        cmake -DCMAKE_BUILD_TYPE=Debug ..
+		;;
     "make")
         echo "Building with GNU Make..."
         make -C build/

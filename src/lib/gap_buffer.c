@@ -103,34 +103,33 @@ void gap_buffer_resize_buffer(gap_T g)
 }
 
 /*
- * One might be tempted to simply decrement or increment the cursor field 
- * (or add or subtract from it) elsewhere, to move the cursor.   
+ * One might be tempted to simply decrement or increment the cursor field
+ * (or add or subtract from it) elsewhere, to move the cursor.
  *
- * While it may be more efficient to do so, caution is needed.  
+ * While it may be more efficient to do so, caution is needed.
  * This function will compensate any cursor movement which may encounter the
  * gap and/or the buffer end or start.  It is recommended that this function
  * be used for any and all cursor movement operations.
  */
 void gap_buffer_move_cursor(gap_T g, signed int distance)
 {
-    // store the original cursor position, before the move
+    /* store the original cursor position, before the move */
     int old_position = g->cursor;
 
     int gap_size = g->gap_end - g->gap_start;
 
     g->cursor += distance;
 
-    // CASE 1: the cursor crossed gap threshold, while moving left
+    /* CASE 1: the cursor crossed gap threshold, while moving left */
     if (old_position > g->gap_end && g->cursor <= g->gap_end)
         g->cursor -= gap_size;
-    // CASE 2: the cursor crossed gap threshold, while moving right
+    /* CASE 2: the cursor crossed gap threshold, while moving right */
     else if (old_position <= g->gap_start && g->cursor > g->gap_start)
         g->cursor += gap_size;
 
-    // make sure cursor didnt move beyond buffer size (not counting gap-size)
-    if (g->cursor < 0 || g->cursor > g->end)
-    {
-        // TODO: Error handling here - for now, return cursor to old position
+    /* make sure cursor didnt move beyond buffer size (not counting gap-size) */
+    if (g->cursor < 0 || g->cursor > g->end) {
+        /* TODO: Error handling here - for now, return cursor to old position */
         g->cursor = old_position;
     }
 }
