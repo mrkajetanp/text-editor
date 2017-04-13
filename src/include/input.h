@@ -3,6 +3,20 @@
 
 #include "screen.h"
 
+/*****************************************************************************/
+/*                                   Macros                                  */
+/*****************************************************************************/
+
+/* accessing the current line buffer */
+#define CURR_LBUF ((gap_T)s->cur_line->data)
+
+/* calculating the current gap size */
+#define GAP_SIZE (CURR_LBUF->gap_end - CURR_LBUF->gap_start+1)
+
+/*****************************************************************************/
+/*                                 Functions                                 */
+/*****************************************************************************/
+
 /* executes the input loop */
 void input_loop(Screen);
 
