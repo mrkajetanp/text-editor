@@ -12,11 +12,14 @@ void insert_mode(Screen);
 /* inserts a char into the current screen */
 void handle_insert_char(Screen, char);
 
-/* hande the left arrow key */
+/* handle the left arrow key */
 void handle_key_left(Screen);
 
-/* hande the right arrow key */
+/* handle the right arrow key */
 void handle_key_right(Screen);
+
+/* handle the up arrow key */
+void handle_key_up(Screen);
 
 /* handle the enter key */
 void handle_enter(Screen);

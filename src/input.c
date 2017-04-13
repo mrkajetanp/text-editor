@@ -49,6 +49,10 @@ void insert_mode(Screen s) {
         handle_key_right(s);
         break;
 
+    case KEY_UP:
+        handle_key_up(s);
+        break;
+
     case 'q':
         handle_quit(s);
         break;
@@ -70,7 +74,7 @@ void handle_insert_char(Screen s, char c) {
     s->col++;
 }
 
-/* hande the left arrow key */
+/* handle the left arrow key */
 void handle_key_left(Screen s) {
     /* if at the beginning of the first line, do nothing */
     if (s->row == 0 && s->col == 0)
@@ -100,7 +104,7 @@ void handle_key_left(Screen s) {
     }
 }
 
-/* hande the right arrow key */
+/* handle the right arrow key */
 void handle_key_right(Screen s) {
     /* temporary pointer to the current line buffer */
     gap_T curr_lbuf = (gap_T)s->cur_line->data;
@@ -120,6 +124,9 @@ void handle_key_right(Screen s) {
         /* move one line down */
         s->cur_line = s->cur_line->next;
 
+        /* adjust the temporary pointer to the current line buffer */
+        curr_lbuf = (gap_T)s->cur_line->data;
+
         /* move visual cursor to the beginning of the next line */
         s->row++;
         s->col = 0;
@@ -131,6 +138,35 @@ void handle_key_right(Screen s) {
         s->col++;
         gap_buffer_move_cursor(s->cur_line->data, 1);
     }
+}
+
+#define curr_lbuf ((gap_T)s->cur_line->data)
+void handle_key_up(Screen s) {
+    /* TODO: remember last column position in the way emacs does */
+
+    /* if at top, do nothing */
+    if (s->row == 0)
+        return;
+
+    /* move one line up */
+    s->cur_line = s->cur_line->prev;
+
+    /* calculate the gap size */
+    int gap_size = curr_lbuf->gap_end - curr_lbuf->gap_start+1;
+
+    /* if cursor position is bigger than the upper line length */
+    if (s->col > curr_lbuf->end - gap_size) {
+        /* move visual & actual cursor to the end of the line */
+        s->col = curr_lbuf->end - gap_size;
+        gap_buffer_move_cursor(curr_lbuf, gap_buffer_distance_to_end(curr_lbuf)-1);
+    } else {
+        /* move the actual cursor to the same position as visual */
+        gap_buffer_move_cursor(curr_lbuf, gap_buffer_distance_to_start(curr_lbuf));
+        gap_buffer_move_cursor(curr_lbuf, s->col);
+    }
+
+    /* move visual cursor one line up */
+    s->row--;
 }
 
 /* handle the enter key */
