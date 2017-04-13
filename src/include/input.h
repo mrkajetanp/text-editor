@@ -35,6 +35,9 @@ void handle_key_right(Screen);
 /* handle the up arrow key */
 void handle_key_up(Screen);
 
+/* handle the down arrow key */
+void handle_key_down(Screen);
+
 /* handle the enter key */
 void handle_enter(Screen);
 

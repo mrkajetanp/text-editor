@@ -51,6 +51,10 @@ void insert_mode(Screen s) {
         handle_key_up(s);
         break;
 
+    case KEY_DOWN:
+        handle_key_down(s);
+        break;
+
     case 'q':
         handle_quit(s);
         break;
@@ -128,14 +132,14 @@ void handle_key_right(Screen s) {
 void handle_key_up(Screen s) {
     /* TODO: remember last column position in the way emacs does */
 
-    /* if at top, do nothing */
+    /* if at the top, do nothing */
     if (s->row == 0)
         return;
 
     /* move one line up */
     s->cur_line = s->cur_line->prev;
 
-    /* if cursor position is bigger than the upper line length */
+    /* if cursor position is bigger than the current line length */
     if (s->col > CURR_LBUF->end - GAP_SIZE) {
         /* move visual & actual cursor to the end of the line */
         s->col = CURR_LBUF->end - GAP_SIZE;
@@ -148,6 +152,30 @@ void handle_key_up(Screen s) {
 
     /* move visual cursor one line up */
     s->row--;
+}
+
+/* handle the down arrow key */
+void handle_key_down(Screen s) {
+    /* if at the last line, do nothing */
+    if (s->row+1 == s->n_lines)
+        return;
+
+    /* move one line down */
+    s->cur_line = s->cur_line->next;
+
+    /* if cursor position is bigger than the current line length */
+    if (s->col > CURR_LBUF->end - GAP_SIZE) {
+        /* move visual & actual cursor to the end of the line */
+        s->col = CURR_LBUF->end - GAP_SIZE;
+        gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
+    } else {
+        /* move the actual cursor to the same position as visual */
+        gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
+        gap_buffer_move_cursor(CURR_LBUF, s->col);
+    }
+
+    /* move visual cursor one line down */
+    s->row++;
 }
 
 /* handle the enter key */
