@@ -23,6 +23,9 @@
 
 #include "screen.h"
 
+/* renders the screen in release mode */
+void render_screen(Screen);
+
 /* renders the screen in debug mode */
 void render_screen_debug(Screen);
 

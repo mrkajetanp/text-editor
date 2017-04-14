@@ -23,7 +23,8 @@
 #include "render.h"
 #include "lib/gap_buffer.h"
 
-/* TODO: make debug mode optional using a second parameter */
+/* TODO: merge functions, make debug mode optional using a second parameter */
+
 /* renders one line in debug mode */
 void render_line_debug(gpointer data, gpointer user_data) {
     /* cast the void pointer to line buffer */
@@ -53,6 +54,48 @@ void render_line_debug(gpointer data, gpointer user_data) {
 
     /* for now just skip the parameter */
     if (user_data) {}
+}
+
+/* renders one line in release mode */
+void render_line(gpointer data, gpointer user_data) {
+    /* cast the void pointer to line buffer */
+    gap_T buff = (gap_T)data;
+
+    for (int i = 0 ; i <= buff->end ; ++i) {
+
+        /* skip the gap */
+        if (i < buff->gap_start || i > buff->gap_end) {
+
+            /* omit the null characters */
+            if (buff->buffer[i]) {
+                printw("%c", buff->buffer[i]);
+            }
+
+        }
+
+    }
+
+    /* for now just skip the parameter */
+    if (user_data) {}
+}
+
+/* TODO: merge them into one depending on a debug flag ? */
+
+/* renders the screen in debug mode */
+void render_screen(Screen s) {
+    /*************************************************************************/
+    /*                       Render the current screen                       */
+    /*************************************************************************/
+
+    /* render every line */
+    g_list_foreach(s->lines, render_line, NULL);
+
+    /*************************************************************************/
+    /*                        Adjust window attributes                       */
+    /*************************************************************************/
+
+    /* move visual cursor to its proper position */
+    move(s->row, s->col);
 }
 
 /* renders the screen in debug mode */

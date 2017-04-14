@@ -21,6 +21,7 @@
 #ifndef TEXT_EDITOR_SCREEN_H
 #define TEXT_EDITOR_SCREEN_H
 
+#include <stdbool.h>
 #include <glib-2.0/glib.h>
 
 #include "lib/gap_buffer.h"
@@ -50,6 +51,12 @@ struct _screen {
 
     /* visual cursor column */
     int col;
+
+    ///////////////////////////////////////////////////////////////////////////
+    //                     Fields related to the program                     //
+    ///////////////////////////////////////////////////////////////////////////
+
+    bool debug_mode;
 };
 
 /* initializes the screen & its buffer */

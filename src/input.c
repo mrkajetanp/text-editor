@@ -29,11 +29,12 @@
 /* executes the input loop */
 void input_loop(Screen s) {
     while (true) {
-        /* render the screen in release mode */
-        /* render_screen(s); */
-
-        /* render the screen in debug mode */
-        render_screen_debug(s);
+        if (s->debug_mode)
+            /* render the screen in debug mode */
+            render_screen_debug(s);
+        else
+            /* render the screen in release mode */
+            render_screen(s);
 
         /* start insert mode */
         insert_mode(s);
