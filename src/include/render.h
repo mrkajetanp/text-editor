@@ -37,6 +37,6 @@
 /*****************************************************************************/
 
 /* renders the screen */
-void render_screen(Screen, bool*);
+void render_screen(Screen);
 
 #endif

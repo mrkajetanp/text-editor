@@ -23,8 +23,15 @@
 
 #include <stdbool.h>
 #include <glib-2.0/glib.h>
+#include <argp.h>
 
 #include "lib/gap_buffer.h"
+
+struct Arguments {
+    bool debug_mode;
+    char* file_name;
+};
+
 
 /* struct representing the screen */
 typedef struct _screen* Screen;
@@ -56,7 +63,7 @@ struct _screen {
     //                     Fields related to the program                     //
     ///////////////////////////////////////////////////////////////////////////
 
-    bool debug_mode;
+    struct Arguments* args;
 };
 
 /* initializes the screen & its buffer */

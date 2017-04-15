@@ -30,7 +30,7 @@
 void input_loop(Screen s) {
     while (true) {
         /* render the screen */
-        render_screen(s, &s->debug_mode);
+        render_screen(s);
 
         /* start insert mode */
         insert_mode(s);

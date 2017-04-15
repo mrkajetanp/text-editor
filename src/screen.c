@@ -50,8 +50,8 @@ Screen screen_init() {
     s->col = 0;
     s->row = 0;
 
-    /* set the debug mode to false (default state) */
-    s->debug_mode = false;
+    /* set no argument structure by default */
+    s->args = NULL;
 
     return s;
 }

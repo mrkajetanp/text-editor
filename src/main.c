@@ -27,20 +27,18 @@
 #include "screen.h"
 #include "input.h"
 
+/* TODO: separate .c and .h for handling arguments */
+
 const char* editor_version = "text-editor 0.1";
 const char* program_bug_address = "<github.com/CajetanP>";
 
 static char doc[] = "text-editor -- a simple text editor";
 
+static char args_doc[] = "[FILE]";
+
 static struct argp_option options[] = {
     { "debug", 'd', 0, 0, "Enable debug mode", 0 },
     { 0, 0, 0, 0, 0, 0},
-};
-
-struct Arguments {
-    bool debug_mode;
-    /* TODO: make it do anything? */
-    char* output_file;
 };
 
 static error_t parse_opt(int key, char* arg, struct argp_state* state) {
@@ -51,15 +49,13 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state) {
     case 'd':
         arguments->debug_mode = true;
         break;
-        /* TODO: make it do anything? */
-    case 'o':
-        arguments->output_file = arg;
-        break;
 
     case ARGP_KEY_ARG:
-        if (state->arg_num > 0)
+        if (state->arg_num >= 1)
             /* too many arguments */
             argp_usage(state);
+
+        arguments->file_name = arg;
         break;
 
     default:
@@ -69,7 +65,7 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state) {
     return 0;
 }
 
-static struct argp argp = { options, parse_opt, 0, doc, 0, 0, 0 };
+static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0 };
 
 /* TODO: clean all of this argument handling code */
 
@@ -78,6 +74,7 @@ int main(int argc, char** argv) {
     /* parsing arguments */
     struct Arguments arguments;
     arguments.debug_mode = false;
+    arguments.file_name = "-";
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
     /* ncurses initialization */
@@ -94,7 +91,7 @@ int main(int argc, char** argv) {
     Screen s = screen_init();
 
     /* set debug mode accordingly */
-    s->debug_mode = arguments.debug_mode;
+    s->args = &arguments;
 
     /* start input loop */
     input_loop(s);
