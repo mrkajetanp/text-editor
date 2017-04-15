@@ -77,31 +77,31 @@ void render_screen(Screen s) {
     if (s->args->debug_mode) {
 
         /* number of lines */
-        mvprintw(0, getmaxx(stdscr)-30, "n_lines :%d", s->n_lines);
+        mvprintw(0, getmaxx(stdscr)-25, "Number of lines: %d", s->n_lines);
 
         /* visual cursor coordinates */
-        mvprintw(1, getmaxx(stdscr)-30, "C: %d R: %d", s->col, s->row);
+        mvprintw(1, getmaxx(stdscr)-25, "Visual col: %d row: %d", s->col, s->row);
 
         /* actual cursor position */
-        mvprintw(2, getmaxx(stdscr)-30, "LCur: %d", CURR_LBUF->cursor);
+        mvprintw(2, getmaxx(stdscr)-25, "Line cursor: %d", CURR_LBUF->cursor);
 
         /* gap start & end */
-        mvprintw(3, getmaxx(stdscr)-30, "LG: %d - %d", CURR_LBUF->gap_start,
+        mvprintw(3, getmaxx(stdscr)-25, "Line gap: %d - %d", CURR_LBUF->gap_start,
                  CURR_LBUF->gap_end);
 
         /* end of the current line */
-        mvprintw(4, getmaxx(stdscr)-30, "LE: %d", CURR_LBUF->end);
+        mvprintw(4, getmaxx(stdscr)-25, "Current line end: %d", CURR_LBUF->end);
 
         /* character currently under the cursor */
         if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\n')
-            mvprintw(5, getmaxx(stdscr)-30, "C on: (\\n)");
+            mvprintw(5, getmaxx(stdscr)-25, "Line cursor on: (\\n)");
         else if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\0')
-            mvprintw(5, getmaxx(stdscr)-30, "C on: (\\0)");
+            mvprintw(5, getmaxx(stdscr)-25, "Line cursor on: (\\0)");
         else
-            mvprintw(5, getmaxx(stdscr)-30, "C on: (%c)",
+            mvprintw(5, getmaxx(stdscr)-25, "Line cursor on: (%c)",
                      CURR_LBUF->buffer[CURR_LBUF->cursor]);
 
-        mvprintw(6, getmaxx(stdscr)-30, "File name: %s", s->args->file_name);
+        mvprintw(6, getmaxx(stdscr)-25, "File name: %s", s->args->file_name);
     }
 
     /*************************************************************************/
