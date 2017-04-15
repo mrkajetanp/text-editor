@@ -29,12 +29,8 @@
 /* executes the input loop */
 void input_loop(Screen s) {
     while (true) {
-        if (s->debug_mode)
-            /* render the screen in debug mode */
-            render_screen_debug(s);
-        else
-            /* render the screen in release mode */
-            render_screen(s);
+        /* render the screen */
+        render_screen(s, &s->debug_mode);
 
         /* start insert mode */
         insert_mode(s);

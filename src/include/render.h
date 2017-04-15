@@ -21,12 +21,22 @@
 #ifndef TEXT_EDITOR_UTIL_H
 #define TEXT_EDITOR_UTIL_H
 
+#include <stdbool.h>
+
 #include "screen.h"
 
-/* renders the screen in release mode */
-void render_screen(Screen);
+/*****************************************************************************/
+/*                                   Macros                                  */
+/*****************************************************************************/
 
-/* renders the screen in debug mode */
-void render_screen_debug(Screen);
+/* accessing the current line buffer */
+#define CURR_LBUF ((gap_T)s->cur_line->data)
+
+/*****************************************************************************/
+/*                                   Functions                               */
+/*****************************************************************************/
+
+/* renders the screen */
+void render_screen(Screen, bool*);
 
 #endif

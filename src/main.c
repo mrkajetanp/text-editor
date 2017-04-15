@@ -74,6 +74,7 @@ static struct argp argp = { options, parse_opt, 0, doc, 0, 0, 0 };
 /* TODO: clean all of this argument handling code */
 
 int main(int argc, char** argv) {
+
     /* parsing arguments */
     struct Arguments arguments;
     arguments.debug_mode = false;
