@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <ncurses.h>
+#include <string.h>
 
 #include "screen.h"
 #include "input.h"
@@ -200,7 +201,13 @@ void handle_key_down(Screen s) {
 /* handle the enter key */
 void handle_enter(Screen s) {
     /* create a new line under the current one */
-    screen_new_line_under(s);
+
+    /* TODO: possible performance improvements when at the beginning of the line */
+    if (s->col != CURR_LBUF->end - GAP_SIZE) {
+        split_line(s);
+    } else {
+        screen_new_line_under(s);
+    }
 
     /* move the visual cursor to the beginning of the new line */
     s->row++;
@@ -241,4 +248,41 @@ void handle_quit(Screen s) {
 
     /* exit program */
     exit(0);
+}
+
+/* split the current line */
+void split_line(Screen s) {
+    /* TODO: refactor this */
+    screen_new_line_under(s);
+    s->cur_line = s->cur_line->prev;
+
+    char* temp_buff = malloc((CURR_LBUF->end - GAP_SIZE - s->col) * sizeof(char));
+
+    int i = (CURR_LBUF->gap_end < CURR_LBUF->cursor) ?
+        CURR_LBUF->cursor+1 : CURR_LBUF->cursor;
+
+    int j = 0;
+    for ( ; i <= CURR_LBUF->end ; ++i) {
+        if (i < CURR_LBUF->gap_start || i > CURR_LBUF->gap_end) {
+            if (CURR_LBUF->buffer[i] == '\n' || CURR_LBUF->buffer[i] == '\0')
+                continue;
+
+            temp_buff[j] = CURR_LBUF->buffer[i];
+            j++;
+        }
+    }
+    temp_buff[j] = '\0';
+
+    gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
+    for (i = 0 ; i < (long)strlen(temp_buff) ; ++i)
+        gap_buffer_delete(CURR_LBUF);
+
+    s->cur_line = s->cur_line->next;
+
+    for (i = 0 ; i < (long)strlen(temp_buff) ; ++i)
+        gap_buffer_put(CURR_LBUF, temp_buff[i]);
+
+    free(temp_buff);
+
+    gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
 }

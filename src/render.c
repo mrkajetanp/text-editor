@@ -85,12 +85,13 @@ void render_screen(Screen s) {
         /* actual cursor position */
         mvprintw(2, getmaxx(stdscr)-25, "Line cursor: %d", CURR_LBUF->cursor);
 
-        /* gap start & end */
-        mvprintw(3, getmaxx(stdscr)-25, "Line gap: %d - %d", CURR_LBUF->gap_start,
-                 CURR_LBUF->gap_end);
-
         /* end of the current line */
-        mvprintw(4, getmaxx(stdscr)-25, "Current line end: %d", CURR_LBUF->end);
+        mvprintw(3, getmaxx(stdscr)-25, "Line end: %d",
+                 CURR_LBUF->end - GAP_SIZE);
+
+        /* gap start & end */
+        mvprintw(4, getmaxx(stdscr)-25, "Line gap: %d - %d", CURR_LBUF->gap_start,
+                 CURR_LBUF->gap_end);
 
         /* character currently under the cursor */
         if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\n')

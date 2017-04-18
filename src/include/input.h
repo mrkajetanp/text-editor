@@ -67,4 +67,7 @@ void handle_backspace(Screen);
 /* handle the quit command */
 void handle_quit(Screen);
 
+/* split the current line */
+void split_line(Screen);
+
 #endif
