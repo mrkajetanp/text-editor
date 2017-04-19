@@ -71,7 +71,7 @@ static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0 };
 
 int main(int argc, char** argv) {
 
-    /* parsing arguments */
+    /* parsing command line arguments */
     struct Arguments arguments;
     arguments.debug_mode = false;
     arguments.file_name = "-";

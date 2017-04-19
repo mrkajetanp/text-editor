@@ -200,9 +200,9 @@ void handle_key_down(Screen s) {
 
 /* handle the enter key */
 void handle_enter(Screen s) {
-    /* create a new line under the current one */
-
     /* TODO: possible performance improvements when at the beginning of the line */
+
+    /* if cursor is not at the beginning of the line */
     if (s->col != CURR_LBUF->end - GAP_SIZE) {
         split_line(s);
     } else {
@@ -250,39 +250,45 @@ void handle_quit(Screen s) {
     exit(0);
 }
 
-/* split the current line */
+/* split the current line on cursor's position */
 void split_line(Screen s) {
-    /* TODO: refactor this */
     screen_new_line_under(s);
+
+    /* return to the line we're splitting */
     s->cur_line = s->cur_line->prev;
 
-    char* temp_buff = malloc((CURR_LBUF->end - GAP_SIZE - s->col) * sizeof(char));
+    /* number of chars to move to the new line (right of split point) */
+    int chars_to_move = 0;
 
+    /* choose starting cursor position on the split point */
     int i = (CURR_LBUF->gap_end < CURR_LBUF->cursor) ?
         CURR_LBUF->cursor+1 : CURR_LBUF->cursor;
 
-    int j = 0;
-    for ( ; i <= CURR_LBUF->end ; ++i) {
+    /* loop through the line to the end */
+    while (i < CURR_LBUF->end) {
+        /* skip the gap */
         if (i < CURR_LBUF->gap_start || i > CURR_LBUF->gap_end) {
+            /* skip \n and \0s */
             if (CURR_LBUF->buffer[i] == '\n' || CURR_LBUF->buffer[i] == '\0')
                 continue;
 
-            temp_buff[j] = CURR_LBUF->buffer[i];
-            j++;
-        }
-    }
-    temp_buff[j] = '\0';
+            /* put the char we're on in the new line */
+            gap_buffer_put(s->cur_line->next->data, CURR_LBUF->buffer[i]);
 
+            chars_to_move++;
+        }
+        ++i;
+    }
+
+    /* move cursor to the end of the current line (excluding \n) */
     gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
-    for (i = 0 ; i < (long)strlen(temp_buff) ; ++i)
+    /* delete as many characters as we moved to the new line */
+    for (i = 0 ; i < chars_to_move ; ++i)
         gap_buffer_delete(CURR_LBUF);
 
+    /* move to the newly created line */
     s->cur_line = s->cur_line->next;
 
-    for (i = 0 ; i < (long)strlen(temp_buff) ; ++i)
-        gap_buffer_put(CURR_LBUF, temp_buff[i]);
-
-    free(temp_buff);
-
+    /* move buffer cursor to the beginning of the line */
     gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
 }

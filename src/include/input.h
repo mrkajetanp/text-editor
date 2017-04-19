@@ -67,7 +67,7 @@ void handle_backspace(Screen);
 /* handle the quit command */
 void handle_quit(Screen);
 
-/* split the current line */
+/* split the current line on cursor's position */
 void split_line(Screen);
 
 #endif
