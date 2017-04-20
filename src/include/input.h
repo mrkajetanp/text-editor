@@ -30,6 +30,12 @@
 /* accessing the current line buffer */
 #define CURR_LBUF ((gap_T)s->cur_line->data)
 
+/* accessing the previous line buffer */
+#define PREV_LBUF ((gap_T)s->cur_line->prev->data)
+
+/* accessing the next line buffer */
+#define NEXT_LBUF ((gap_T)s->cur_line->next->data)
+
 /* calculating the current gap size */
 #define GAP_SIZE (CURR_LBUF->gap_end - CURR_LBUF->gap_start+1)
 
@@ -69,5 +75,8 @@ void handle_quit(Screen);
 
 /* split the current line on cursor's position */
 void split_line(Screen);
+
+/* merge the current line with the upper one */
+void merge_line_up(Screen);
 
 #endif

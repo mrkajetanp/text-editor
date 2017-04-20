@@ -222,13 +222,8 @@ void handle_backspace(Screen s) {
 
     /* if at the beginning of the line */
     if (s->col == 0) {
-        /* remove the current line, free its memory */
-        screen_destroy_line(s);
-
-        /* move the visual & actual cursor to the end of the previous line */
-        s->row--;
-        s->col = CURR_LBUF->end - GAP_SIZE;
-        gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
+        /* merge the line with the upper one */
+        merge_line_up(s);
     } else {
         /* remove the current character */
         gap_buffer_delete(CURR_LBUF);
@@ -291,4 +286,31 @@ void split_line(Screen s) {
 
     /* move buffer cursor to the beginning of the line */
     gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
+}
+
+/* merge the current line with the upper one */
+void merge_line_up(Screen s) {
+    /* save merge point position on the upper line */
+    int upper_cur = PREV_LBUF->end - (PREV_LBUF->gap_end-PREV_LBUF->gap_start+1);
+
+    gap_buffer_move_cursor(PREV_LBUF, gap_buffer_distance_to_end(PREV_LBUF)-1);
+    for (int i = CURR_LBUF->start ; i < CURR_LBUF->end ; ++i) {
+        /* skip the gap */
+        if (i < CURR_LBUF->gap_start || i > CURR_LBUF->gap_end) {
+            /* skip \n and \0s */
+            if (CURR_LBUF->buffer[i] == '\n' || CURR_LBUF->buffer[i] == '\0')
+                continue;
+
+            gap_buffer_put(PREV_LBUF, CURR_LBUF->buffer[i]);
+        }
+    }
+
+    /* remove the current line, free its memory */
+    screen_destroy_line(s);
+
+    /* move the visual & actual cursor to the merge point on the previous line */
+    s->row--;
+    s->col = upper_cur;
+    gap_buffer_move_cursor(CURR_LBUF,
+                           gap_buffer_distance_to_start(CURR_LBUF)+upper_cur);
 }
