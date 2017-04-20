@@ -27,20 +27,26 @@
 #include "screen.h"
 #include "input.h"
 
-/* TODO: separate .c and .h for handling arguments */
+/*****************************************************************************/
+/*                      Handling command line arguments                      */
+/*****************************************************************************/
 
 const char* editor_version = "text-editor 0.1";
 const char* program_bug_address = "<github.com/CajetanP>";
 
+/* general information about the editor */
 static char doc[] = "text-editor -- a simple text editor";
 
+/* usage */
 static char args_doc[] = "[FILE]";
 
+/* possible arguments */
 static struct argp_option options[] = {
     { "debug", 'd', 0, 0, "Enable debug mode", 0 },
     { 0, 0, 0, 0, 0, 0},
 };
 
+/* parse given command line argument */
 static error_t parse_opt(int key, char* arg, struct argp_state* state) {
     /* get the input argument */
     struct Arguments* arguments = state->input;
@@ -65,16 +71,18 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state) {
     return 0;
 }
 
+/* argp control structure */
 static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0 };
 
-/* TODO: clean all of this argument handling code */
+/*****************************************************************************/
+/*                       General editor initialization                       */
+/*****************************************************************************/
 
 int main(int argc, char** argv) {
-
     /* parsing command line arguments */
     struct Arguments arguments;
     arguments.debug_mode = false;
-    arguments.file_name = "-";
+    arguments.file_name = "";
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
     /* ncurses initialization */

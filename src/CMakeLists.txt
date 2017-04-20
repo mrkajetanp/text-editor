@@ -15,4 +15,7 @@ target_link_libraries(text-editor glib-2.0)
 target_link_libraries(text-editor gap_buffer)
 target_link_libraries(text-editor check)
 target_link_libraries(text-editor ncurses)
-target_link_libraries(text-editor argp)
+
+if(APPLE)
+  target_link_libraries(text-editor argp)
+endif()
