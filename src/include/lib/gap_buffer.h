@@ -22,17 +22,17 @@
 #define DIST_START(p) gap_buffer_distance_to_start(p)
 
 #ifdef DEBUG
-    #define INITIAL_SIZE 10 
+    #define INITIAL_SIZE 10
     #define GROW_SIZE 10
 #else
     #define INITIAL_SIZE 1024
     #define GROW_SIZE 1024
 #endif
 
-typedef struct gap_buffer *gap_T;
+typedef struct gap_buffer* gap_T;
 
 struct gap_buffer {
-    char * buffer;
+    char* buffer;
     int start;
     int end;
     int gap_start;

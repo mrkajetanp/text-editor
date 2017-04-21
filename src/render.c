@@ -45,6 +45,8 @@ void render_line(gpointer data, gpointer debug_flag) {
                         addch('\n');
                     } else if (buff->buffer[i] == '\0') {
                         printw("%");
+                    } else if (buff->buffer[i] == '\t') {
+                        printw("    ");
                     } else {
                         printw("%c", buff->buffer[i]);
                     }
@@ -98,6 +100,8 @@ void render_screen(Screen s) {
             mvprintw(5, getmaxx(stdscr)-25, "Line cursor on: (\\n)");
         else if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\0')
             mvprintw(5, getmaxx(stdscr)-25, "Line cursor on: (\\0)");
+        else if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t')
+            mvprintw(5, getmaxx(stdscr)-25, "Line cursor on: (\\t)");
         else
             mvprintw(5, getmaxx(stdscr)-25, "Line cursor on: (%c)",
                      CURR_LBUF->buffer[CURR_LBUF->cursor]);

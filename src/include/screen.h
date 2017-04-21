@@ -32,13 +32,34 @@ struct Arguments {
     char* file_name;
 };
 
+/*****************************************************************************/
+/*                                Line Struct                                */
+/*****************************************************************************/
+
+/* struct representing one line */
+typedef struct _line* Line;
+struct _line {
+    /* line gap buffer */
+    gap_T buff;
+
+    /* visual end of the line */
+    int visual_end;
+};
+
+/* creates a new line */
+Line line_create();
+
+/* destroys a line, freeing its memory */
+void destroy_line(Line);
+
+/*****************************************************************************/
+/*                               Screen Struct                               */
+/*****************************************************************************/
 
 /* struct representing the screen */
 typedef struct _screen* Screen;
 struct _screen {
-    /*************************************************************************/
-    /*                     Fields related to logic                           */
-    /*************************************************************************/
+    /* Fields related to logic ***********************************************/
 
     /* pointer to the first line (list pointer) */
     GList* lines;
@@ -49,9 +70,7 @@ struct _screen {
     /* pointer to the current line */
     GList* cur_line;
 
-    /*************************************************************************/
-    /*                      Fields related to rendering                      */
-    /*************************************************************************/
+    /* Fields related to rendering *******************************************/
 
     /* visual cursor row */
     int row;
@@ -59,9 +78,7 @@ struct _screen {
     /* visual cursor column */
     int col;
 
-    ///////////////////////////////////////////////////////////////////////////
-    //                     Fields related to the program                     //
-    ///////////////////////////////////////////////////////////////////////////
+    /* Fields related to the program *****************************************/
 
     struct Arguments* args;
 };

@@ -91,8 +91,17 @@ void handle_insert_char(Screen s, char c) {
     /* put a char in a line buffer */
     gap_buffer_put(CURR_LBUF, c);
 
-    /* move visual cursor one column to the right */
-    s->col++;
+    /* TODO: maybe variable tab width? */
+    switch(c) {
+    case '\t':
+        /* move visual cursor four columns to the right */
+        s->col+=4;
+        break;
+    default:
+        /* move visual cursor one column to the right */
+        s->col++;
+        break;
+    }
 }
 
 /* handle the left arrow key */
@@ -117,21 +126,20 @@ void handle_key_left(Screen s) {
         s->col--;
         gap_buffer_move_cursor(CURR_LBUF, -1);
     }
+
+    /* if we end up on a tab, move additional 3 columns left */
+    if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t')
+        s->col-=3;
 }
 
 /* handle the right arrow key */
 void handle_key_right(Screen s) {
-    /* temporary pointer to the current line buffer */
-
-    /* calculate the end of the line */
-    int line_end = CURR_LBUF->end - GAP_SIZE;
-
     /* if at the end of the last line, do nothing */
-    if (s->row+1 == s->n_lines && s->col == line_end)
+    if (s->row+1 == s->n_lines && s->col == (CURR_LBUF->end - GAP_SIZE))
         return;
 
     /* if at the end of the line */
-    if (s->col == line_end) {
+    if (s->col == (CURR_LBUF->end - GAP_SIZE)) {
         /* move one line down */
         s->cur_line = s->cur_line->next;
 
@@ -143,7 +151,11 @@ void handle_key_right(Screen s) {
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     } else {
         /* move visual & actual cursor one column to the right */
-        s->col++;
+        if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t')
+            s->col+=4;
+        else
+            s->col++;
+
         gap_buffer_move_cursor(CURR_LBUF, 1);
     }
 }
