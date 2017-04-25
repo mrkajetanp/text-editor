@@ -96,10 +96,12 @@ void handle_insert_char(Screen s, char c) {
     case '\t':
         /* move visual cursor four columns to the right */
         s->col+=4;
+        CURR_LINE->visual_end+=4;
         break;
     default:
         /* move visual cursor one column to the right */
         s->col++;
+        CURR_LINE->visual_end++;
         break;
     }
 }
@@ -119,7 +121,7 @@ void handle_key_left(Screen s) {
         s->cur_line = s->cur_line->prev;
 
         /* move visual & actual cursor to the end of the line */
-        s->col = CURR_LBUF->end - GAP_SIZE;
+        s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
     } else {
         /* move visual & actual cursor one column to the left */
@@ -135,11 +137,11 @@ void handle_key_left(Screen s) {
 /* handle the right arrow key */
 void handle_key_right(Screen s) {
     /* if at the end of the last line, do nothing */
-    if (s->row+1 == s->n_lines && s->col == (CURR_LBUF->end - GAP_SIZE))
+    if (s->row+1 == s->n_lines && s->col == CURR_LINE->visual_end)
         return;
 
     /* if at the end of the line */
-    if (s->col == (CURR_LBUF->end - GAP_SIZE)) {
+    if (s->col == CURR_LINE->visual_end) {
         /* move one line down */
         s->cur_line = s->cur_line->next;
 
@@ -172,9 +174,9 @@ void handle_key_up(Screen s) {
     s->cur_line = s->cur_line->prev;
 
     /* if cursor position is bigger than the current line length */
-    if (s->col > CURR_LBUF->end - GAP_SIZE) {
+    if (s->col > CURR_LINE->visual_end) {
         /* move visual & actual cursor to the end of the line */
-        s->col = CURR_LBUF->end - GAP_SIZE;
+        s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
     } else {
         /* move the actual cursor to the same position as visual */
@@ -196,9 +198,9 @@ void handle_key_down(Screen s) {
     s->cur_line = s->cur_line->next;
 
     /* if cursor position is bigger than the current line length */
-    if (s->col > CURR_LBUF->end - GAP_SIZE) {
+    if (s->col > CURR_LINE->visual_end) {
         /* move visual & actual cursor to the end of the line */
-        s->col = CURR_LBUF->end - GAP_SIZE;
+        s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
     } else {
         /* move the actual cursor to the same position as visual */
@@ -214,7 +216,7 @@ void handle_key_down(Screen s) {
 void handle_enter(Screen s) {
     /* TODO: possible performance improvements when at the beginning of the line */
 
-    /* if cursor is not at the beginning of the line */
+    /* if cursor is not at the end of the line */
     if (s->col != CURR_LBUF->end - GAP_SIZE) {
         split_line(s);
     } else {
@@ -242,6 +244,7 @@ void handle_backspace(Screen s) {
 
         /* move the visual cursor to the left */
         s->col--;
+        CURR_LINE->visual_end--;
     }
 }
 
@@ -259,6 +262,7 @@ void handle_quit(Screen s) {
 
 /* split the current line on cursor's position */
 void split_line(Screen s) {
+    /* create a new line under the current one */
     screen_new_line_under(s);
 
     /* return to the line we're splitting */
@@ -280,7 +284,7 @@ void split_line(Screen s) {
                 continue;
 
             /* put the char we're on in the new line */
-            gap_buffer_put(s->cur_line->next->data, CURR_LBUF->buffer[i]);
+            gap_buffer_put(NEXT_LBUF, CURR_LBUF->buffer[i]);
 
             chars_to_move++;
         }

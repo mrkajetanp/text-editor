@@ -27,14 +27,17 @@
 /*                                   Macros                                  */
 /*****************************************************************************/
 
+/* accessing the current line */
+#define CURR_LINE ((Line)s->cur_line->data)
+
 /* accessing the current line buffer */
-#define CURR_LBUF ((gap_T)s->cur_line->data)
+#define CURR_LBUF (((Line)s->cur_line->data)->buff)
 
 /* accessing the previous line buffer */
-#define PREV_LBUF ((gap_T)s->cur_line->prev->data)
+#define PREV_LBUF (((Line)s->cur_line->prev->data)->buff)
 
 /* accessing the next line buffer */
-#define NEXT_LBUF ((gap_T)s->cur_line->next->data)
+#define NEXT_LBUF (((Line)s->cur_line->next->data)->buff)
 
 /* calculating the current gap size */
 #define GAP_SIZE (CURR_LBUF->gap_end - CURR_LBUF->gap_start+1)

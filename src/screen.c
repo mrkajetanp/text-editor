@@ -23,16 +23,34 @@
 
 #include "screen.h"
 
-/* initializes the screen & its buffer */
-Screen screen_init() {
-    Screen s = malloc(sizeof *s);
-
-    /* create a buffer for the first line */
+Line line_create() {
+    /* create a buffer for the new line */
     gap_T new_line = gap_buffer_new();
 
     /* add \n to the line and move the cursor one character to the left */
     gap_buffer_put(new_line, '\n');
     gap_buffer_move_cursor(new_line, -1);
+
+    /* allocate memory for the new line */
+    Line l = malloc(sizeof *l);
+
+    l->buff = new_line;
+    l->visual_end = 0;
+
+    return l;
+}
+
+void line_destroy(Line l) {
+    gap_buffer_destroy(l->buff);
+    free(l);
+}
+
+/* initializes the screen & its buffer */
+Screen screen_init() {
+    Screen s = malloc(sizeof *s);
+
+    /* create a new (first) line */
+    Line new_line = line_create();
 
     /* initialize the list to a NULL (empty list) */
     s->lines = NULL;
@@ -58,12 +76,8 @@ Screen screen_init() {
 
 /* creates a new line under the current one */
 void screen_new_line_under(Screen s) {
-    /* create a buffer for the new line */
-    gap_T new_line = gap_buffer_new();
-
-    /* add \n to the line and move the cursor one character to the left */
-    gap_buffer_put(new_line, '\n');
-    gap_buffer_move_cursor(new_line, -1);
+    /* initialize a new line */
+    Line new_line = line_create();
 
     /* insert the new line buffer into the list in its correct position */
     s->lines = g_list_insert(s->lines, new_line, s->row+1);
@@ -78,7 +92,7 @@ void screen_new_line_under(Screen s) {
 /* removes a line and frees its memory */
 void screen_destroy_line(Screen s) {
     /* free the line buffer's memory */
-    gap_buffer_destroy(s->cur_line->data);
+    line_destroy(s->cur_line->data);
 
     /* pointer to the new current line */
     GList* new_current = s->cur_line->prev;
@@ -95,7 +109,7 @@ void screen_destroy_line(Screen s) {
 
 /* helper function, frees allocated line buffer */
 void free_buffer_node(gpointer data) {
-    gap_buffer_destroy(data);
+    line_destroy(data);
 }
 
 /* destroyes all the lines and then the screen itself */

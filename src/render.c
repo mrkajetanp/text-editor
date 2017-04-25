@@ -28,7 +28,7 @@
 /* renders one line */
 void render_line(gpointer data, gpointer debug_flag) {
     /* cast the void pointer to line buffer */
-    gap_T buff = (gap_T)data;
+    gap_T buff = ((Line)data)->buff;
 
     for (int i = 0 ; i <= buff->end ; ++i) {
 
@@ -87,26 +87,29 @@ void render_screen(Screen s) {
         /* actual cursor position */
         mvprintw(2, getmaxx(stdscr)-25, "Line cursor: %d", CURR_LBUF->cursor);
 
+        mvprintw(3, getmaxx(stdscr)-25, "Visual line end: %d",
+                 ((Line)s->cur_line->data)->visual_end);
+
         /* end of the current line */
-        mvprintw(3, getmaxx(stdscr)-25, "Line end: %d",
+        mvprintw(4, getmaxx(stdscr)-25, "Line end: %d",
                  CURR_LBUF->end - GAP_SIZE);
 
         /* gap start & end */
-        mvprintw(4, getmaxx(stdscr)-25, "Line gap: %d - %d", CURR_LBUF->gap_start,
+        mvprintw(5, getmaxx(stdscr)-25, "Line gap: %d - %d", CURR_LBUF->gap_start,
                  CURR_LBUF->gap_end);
 
         /* character currently under the cursor */
         if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\n')
-            mvprintw(5, getmaxx(stdscr)-25, "Line cursor on: (\\n)");
+            mvprintw(6, getmaxx(stdscr)-25, "Line cursor on: (\\n)");
         else if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\0')
-            mvprintw(5, getmaxx(stdscr)-25, "Line cursor on: (\\0)");
+            mvprintw(6, getmaxx(stdscr)-25, "Line cursor on: (\\0)");
         else if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t')
-            mvprintw(5, getmaxx(stdscr)-25, "Line cursor on: (\\t)");
+            mvprintw(6, getmaxx(stdscr)-25, "Line cursor on: (\\t)");
         else
-            mvprintw(5, getmaxx(stdscr)-25, "Line cursor on: (%c)",
+            mvprintw(6, getmaxx(stdscr)-25, "Line cursor on: (%c)",
                      CURR_LBUF->buffer[CURR_LBUF->cursor]);
 
-        mvprintw(6, getmaxx(stdscr)-25, "File name: %s", s->args->file_name);
+        mvprintw(7, getmaxx(stdscr)-25, "File name: %s", s->args->file_name);
     }
 
     /*************************************************************************/

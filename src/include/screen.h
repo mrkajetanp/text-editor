@@ -50,7 +50,7 @@ struct _line {
 Line line_create();
 
 /* destroys a line, freeing its memory */
-void destroy_line(Line);
+void line_destroy(Line);
 
 /*****************************************************************************/
 /*                               Screen Struct                               */
