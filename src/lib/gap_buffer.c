@@ -230,7 +230,7 @@ void gap_buffer_replace(gap_T g, char ch)
 }
 
 void gap_buffer_delete(gap_T g) {
-    // move gap first, if necessary. 
+    // move gap first, if necessary.
     gap_buffer_move_gap(g);
 
     // we have to be sure we arent on the zero index already

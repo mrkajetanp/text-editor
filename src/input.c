@@ -41,6 +41,8 @@ void input_loop(Screen s) {
     }
 }
 
+/* TODO: get next char method relating to gap issues? */
+
 /* handles characters in insert mode */
 void insert_mode(Screen s) {
     /* get a character */
@@ -82,7 +84,6 @@ void insert_mode(Screen s) {
     default:
         handle_insert_char(s, c);
         break;
-
     }
 }
 
@@ -124,14 +125,22 @@ void handle_key_left(Screen s) {
         s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
     } else {
+        /* TODO: refactor this */
+        if (CURR_LBUF->gap_start < CURR_LBUF->cursor) {
+            if (CURR_LBUF->buffer[CURR_LBUF->cursor]== '\t')
+                s->col-=4;
+            else
+                s->col--;
+        } else {
+            if (CURR_LBUF->buffer[CURR_LBUF->cursor-1] == '\t')
+                s->col-=4;
+            else
+                s->col--;
+        }
+
         /* move visual & actual cursor one column to the left */
-        s->col--;
         gap_buffer_move_cursor(CURR_LBUF, -1);
     }
-
-    /* if we end up on a tab, move additional 3 columns left */
-    if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t')
-        s->col-=3;
 }
 
 /* handle the right arrow key */
@@ -153,11 +162,19 @@ void handle_key_right(Screen s) {
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     } else {
         /* move visual & actual cursor one column to the right */
-        if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t')
-            s->col+=4;
-        else
-            s->col++;
-
+        if (CURR_LBUF->gap_start < CURR_LBUF->cursor) {
+            if (CURR_LBUF->buffer[CURR_LBUF->cursor+1] == '\t')
+                s->col+=4;
+            else
+                s->col++;
+        } else {
+            /* TODO: make sure the next one is not \t */
+            if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t' &&
+                CURR_LBUF->cursor != CURR_LBUF->gap_start)
+                s->col+=4;
+            else
+                s->col++;
+        }
         gap_buffer_move_cursor(CURR_LBUF, 1);
     }
 }
@@ -242,9 +259,26 @@ void handle_backspace(Screen s) {
         /* remove the current character */
         gap_buffer_delete(CURR_LBUF);
 
+        /* TODO: refactor this (macro) */
+
         /* move the visual cursor to the left */
-        s->col--;
-        CURR_LINE->visual_end--;
+        if (CURR_LBUF->gap_start < CURR_LBUF->cursor) {
+            if (CURR_LBUF->buffer[CURR_LBUF->cursor-1]== '\t') {
+                s->col-=4;
+                CURR_LINE->visual_end-=4;
+            } else {
+                s->col--;
+                CURR_LINE->visual_end--;
+            }
+        } else {
+            if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t') {
+                s->col-=4;
+                CURR_LINE->visual_end-=4;
+            } else {
+                s->col--;
+                CURR_LINE->visual_end--;
+            }
+        }
     }
 }
 
