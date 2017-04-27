@@ -70,6 +70,9 @@ void handle_key_down(Screen);
 /* handle the enter key */
 void handle_enter(Screen);
 
+/* handle the tab key */
+void handle_tab(Screen);
+
 /* handle the backspace key */
 void handle_backspace(Screen);
 

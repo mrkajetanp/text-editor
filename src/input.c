@@ -54,6 +54,10 @@ void insert_mode(Screen s) {
         handle_enter(s);
         break;
 
+    case '\t':
+        handle_tab(s);
+        break;
+
     case 127:
     case KEY_BACKSPACE:
         handle_backspace(s);
@@ -92,19 +96,9 @@ void handle_insert_char(Screen s, char c) {
     /* put a char in a line buffer */
     gap_buffer_put(CURR_LBUF, c);
 
-    /* TODO: maybe variable tab width? */
-    switch(c) {
-    case '\t':
-        /* move visual cursor four columns to the right */
-        s->col+=4;
-        CURR_LINE->visual_end+=4;
-        break;
-    default:
-        /* move visual cursor one column to the right */
-        s->col++;
-        CURR_LINE->visual_end++;
-        break;
-    }
+    /* move visual cursor one column to the right */
+    s->col++;
+    CURR_LINE->visual_end++;
 }
 
 /* handle the left arrow key */
@@ -196,9 +190,18 @@ void handle_key_up(Screen s) {
         s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
     } else {
-        /* move the actual cursor to the same position as visual */
+        /* move the actual cursor to the beginning of the line */
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
-        gap_buffer_move_cursor(CURR_LBUF, s->col);
+
+        /* store the last column */
+        int old_col = s->col;
+
+        /* set visual column to the beginning of the line */
+        s->col = 0;
+
+        /* keep moving right until current column reaches the old one */
+        while (s->col < old_col)
+            handle_key_right(s);
     }
 
     /* move visual cursor one line up */
@@ -220,9 +223,18 @@ void handle_key_down(Screen s) {
         s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
     } else {
-        /* move the actual cursor to the same position as visual */
+        /* move the actual cursor to the beginning of the line */
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
-        gap_buffer_move_cursor(CURR_LBUF, s->col);
+
+        /* store the last column */
+        int old_col = s->col;
+
+        /* set visual column to the beginning of the line */
+        s->col = 0;
+
+        /* keep moving right until current column reaches the old one */
+        while (s->col < old_col)
+            handle_key_right(s);
     }
 
     /* move visual cursor one line down */
@@ -245,6 +257,16 @@ void handle_enter(Screen s) {
     s->col = 0;
 }
 
+void handle_tab(Screen s) {
+    /* put a tab into the current line buffer */
+    gap_buffer_put(CURR_LBUF, '\t');
+
+    /* TODO: variable tab length? */
+    /* move visual cursor four columns to the right */
+    s->col+=4;
+    CURR_LINE->visual_end+=4;
+}
+
 /* handle the backspace key */
 void handle_backspace(Screen s) {
     /* if at the beginning of the first line, do nothing */
@@ -260,7 +282,6 @@ void handle_backspace(Screen s) {
         gap_buffer_delete(CURR_LBUF);
 
         /* TODO: refactor this (macro) */
-
         /* move the visual cursor to the left */
         if (CURR_LBUF->gap_start < CURR_LBUF->cursor) {
             if (CURR_LBUF->buffer[CURR_LBUF->cursor-1]== '\t') {
@@ -341,7 +362,7 @@ void split_line(Screen s) {
 /* merge the current line with the upper one */
 void merge_line_up(Screen s) {
     /* save merge point position on the upper line */
-    int upper_cur = PREV_LBUF->end - (PREV_LBUF->gap_end-PREV_LBUF->gap_start+1);
+    int upper_cur = PREV_LBUF->end - (PREV_LBUF->gap_end-PREV_LBUF->gap_start);
 
     gap_buffer_move_cursor(PREV_LBUF, gap_buffer_distance_to_end(PREV_LBUF)-1);
     for (int i = CURR_LBUF->start ; i < CURR_LBUF->end ; ++i) {
