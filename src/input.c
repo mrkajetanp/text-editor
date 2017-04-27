@@ -101,6 +101,9 @@ void handle_insert_char(Screen s, char c) {
     CURR_LINE->visual_end++;
 }
 
+#define CURSOR_CHAR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ?  \
+    CURR_LBUF->cursor : CURR_LBUF->cursor-1
+
 /* handle the left arrow key */
 void handle_key_left(Screen s) {
     /* if at the beginning of the first line, do nothing */
@@ -119,23 +122,22 @@ void handle_key_left(Screen s) {
         s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
     } else {
-        /* TODO: refactor this */
-        if (CURR_LBUF->gap_start < CURR_LBUF->cursor) {
-            if (CURR_LBUF->buffer[CURR_LBUF->cursor]== '\t')
-                s->col-=4;
-            else
-                s->col--;
-        } else {
-            if (CURR_LBUF->buffer[CURR_LBUF->cursor-1] == '\t')
-                s->col-=4;
-            else
-                s->col--;
-        }
+
+        /* move further on tab */
+        if (CURR_LBUF->buffer[CURSOR_CHAR] == '\t')
+            s->col-=4;
+        else
+            s->col--;
 
         /* move visual & actual cursor one column to the left */
         gap_buffer_move_cursor(CURR_LBUF, -1);
     }
 }
+
+#undef CURSOR_CHAR
+
+#define CURSOR_CHAR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ?  \
+    CURR_LBUF->cursor+1 : CURR_LBUF->cursor
 
 /* handle the right arrow key */
 void handle_key_right(Screen s) {
@@ -155,23 +157,19 @@ void handle_key_right(Screen s) {
         /* move actual cursor to the beginning of the line */
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     } else {
+        /* move further on tab */
+        if (CURR_LBUF->buffer[CURSOR_CHAR] == '\t' &&
+            CURR_LBUF->cursor != CURR_LBUF->gap_start)
+            s->col+=4;
+        else
+            s->col++;
+
         /* move visual & actual cursor one column to the right */
-        if (CURR_LBUF->gap_start < CURR_LBUF->cursor) {
-            if (CURR_LBUF->buffer[CURR_LBUF->cursor+1] == '\t')
-                s->col+=4;
-            else
-                s->col++;
-        } else {
-            /* TODO: make sure the next one is not \t */
-            if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t' &&
-                CURR_LBUF->cursor != CURR_LBUF->gap_start)
-                s->col+=4;
-            else
-                s->col++;
-        }
         gap_buffer_move_cursor(CURR_LBUF, 1);
     }
 }
+
+#undef CURSOR_CHAR
 
 /* handle the up arrow key */
 void handle_key_up(Screen s) {
@@ -340,7 +338,6 @@ void split_line(Screen s) {
 
             /* put the char we're on in the new line */
             gap_buffer_put(NEXT_LBUF, CURR_LBUF->buffer[i]);
-
             chars_to_move++;
         }
         ++i;
@@ -352,8 +349,14 @@ void split_line(Screen s) {
     for (i = 0 ; i < chars_to_move ; ++i)
         gap_buffer_delete(CURR_LBUF);
 
+    /* adjust old line's visual end */
+    CURR_LINE->visual_end -= chars_to_move;
+
     /* move to the newly created line */
     s->cur_line = s->cur_line->next;
+
+    /* adjust new line's visual end */
+    CURR_LINE->visual_end += chars_to_move;
 
     /* move buffer cursor to the beginning of the line */
     gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
@@ -362,7 +365,10 @@ void split_line(Screen s) {
 /* merge the current line with the upper one */
 void merge_line_up(Screen s) {
     /* save merge point position on the upper line */
-    int upper_cur = PREV_LBUF->end - (PREV_LBUF->gap_end-PREV_LBUF->gap_start);
+    int upper_cur = PREV_LBUF->end - (PREV_LBUF->gap_end-PREV_LBUF->gap_start)-1;
+
+    /* store number of moved chars */
+    int moved_chars = 0;
 
     gap_buffer_move_cursor(PREV_LBUF, gap_buffer_distance_to_end(PREV_LBUF)-1);
     for (int i = CURR_LBUF->start ; i < CURR_LBUF->end ; ++i) {
@@ -372,12 +378,17 @@ void merge_line_up(Screen s) {
             if (CURR_LBUF->buffer[i] == '\n' || CURR_LBUF->buffer[i] == '\0')
                 continue;
 
+            /* put the char we're on in the new line */
             gap_buffer_put(PREV_LBUF, CURR_LBUF->buffer[i]);
+            moved_chars++;
         }
     }
 
     /* remove the current line, free its memory */
     screen_destroy_line(s);
+
+    /* adjust merged line's visual end */
+    CURR_LINE->visual_end += moved_chars;
 
     /* move the visual & actual cursor to the merge point on the previous line */
     s->row--;

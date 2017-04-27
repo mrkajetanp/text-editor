@@ -55,7 +55,10 @@ void render_line(gpointer data, gpointer debug_flag) {
                 /*        Print normally if debug mode is not enabled    */
                 /*********************************************************/
                 else {
-                    printw("%c", buff->buffer[i]);
+                    if (buff->buffer[i] == '\t')
+                        printw("    ");
+                    else
+                        printw("%c", buff->buffer[i]);
                 }
             }
         }
