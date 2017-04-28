@@ -136,8 +136,13 @@ void handle_key_left(Screen s) {
 
 #undef CURSOR_CHAR
 
-#define CURSOR_CHAR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ?  \
-    CURR_LBUF->cursor+1 : CURR_LBUF->cursor
+/* char at the cursor, adjusted depending on the position of the gap */
+#define CURSOR_CHAR (CURR_LBUF->gap_start <= CURR_LBUF->cursor) ?  \
+    TEMP_CURSOR : CURR_LBUF->cursor
+
+/* temporary macro for char at the cursor position */
+#define TEMP_CURSOR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ? \
+    CURR_LBUF->cursor+1 : CURR_LBUF->cursor+GAP_SIZE
 
 /* handle the right arrow key */
 void handle_key_right(Screen s) {
@@ -158,8 +163,7 @@ void handle_key_right(Screen s) {
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     } else {
         /* move further on tab */
-        if (CURR_LBUF->buffer[CURSOR_CHAR] == '\t' &&
-            CURR_LBUF->cursor != CURR_LBUF->gap_start)
+        if (CURR_LBUF->buffer[CURSOR_CHAR] == '\t')
             s->col+=4;
         else
             s->col++;
@@ -169,6 +173,7 @@ void handle_key_right(Screen s) {
     }
 }
 
+#undef TEMP_CURSOR
 #undef CURSOR_CHAR
 
 /* handle the up arrow key */
@@ -265,6 +270,11 @@ void handle_tab(Screen s) {
     CURR_LINE->visual_end+=4;
 }
 
+#define CURSOR_CHAR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ?  \
+    CURR_LBUF->cursor : CURR_LBUF->cursor-1
+
+/* TODO: fix cursor movement when merging lines by backspace (tab-related) */
+
 /* handle the backspace key */
 void handle_backspace(Screen s) {
     /* if at the beginning of the first line, do nothing */
@@ -276,30 +286,21 @@ void handle_backspace(Screen s) {
         /* merge the line with the upper one */
         merge_line_up(s);
     } else {
+        /* move the visual cursor to the left */
+        if (CURR_LBUF->buffer[CURSOR_CHAR] == '\t') {
+            s->col-=4;
+            CURR_LINE->visual_end-=4;
+        } else {
+            s->col--;
+            CURR_LINE->visual_end--;
+        }
+
         /* remove the current character */
         gap_buffer_delete(CURR_LBUF);
-
-        /* TODO: refactor this (macro) */
-        /* move the visual cursor to the left */
-        if (CURR_LBUF->gap_start < CURR_LBUF->cursor) {
-            if (CURR_LBUF->buffer[CURR_LBUF->cursor-1]== '\t') {
-                s->col-=4;
-                CURR_LINE->visual_end-=4;
-            } else {
-                s->col--;
-                CURR_LINE->visual_end--;
-            }
-        } else {
-            if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t') {
-                s->col-=4;
-                CURR_LINE->visual_end-=4;
-            } else {
-                s->col--;
-                CURR_LINE->visual_end--;
-            }
-        }
     }
 }
+
+#undef CURSOR_CHAR
 
 /* handle the quit command */
 void handle_quit(Screen s) {

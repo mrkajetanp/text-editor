@@ -235,8 +235,9 @@ void gap_buffer_delete(gap_T g) {
 
     // we have to be sure we arent on the zero index already
     if (g->gap_start != 0) {
-        g->buffer[g->cursor] = '\0';
+        g->buffer[g->gap_start] = '\0';
         g->gap_start--;
+        g->buffer[g->gap_start] = '\0';
         gap_buffer_move_cursor(g, -1);
     }
 }
