@@ -4,6 +4,8 @@
 
 ### Top priority
 
+* Wrap lines longer than the width of the window
+* In debug mode, wrap lines before debug information
 * Release rendering - useful information
 * File handling
 
@@ -18,7 +20,7 @@
 
 ## Bux Fixes
 
-* (currently nothing here)
+* Handle number of lines longer than window height
 
 ## Improvements
 
