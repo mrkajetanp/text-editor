@@ -46,7 +46,9 @@ void render_line(gpointer data, gpointer debug_flag) {
                     } else if (buff->buffer[i] == '\0') {
                         printw("%");
                     } else if (buff->buffer[i] == '\t') {
-                        printw("|--|");
+                        attron(COLOR_PAIR(2));
+                        printw(" -> ");
+                        attroff(COLOR_PAIR(2));
                     } else {
                         printw("%c", buff->buffer[i]);
                     }

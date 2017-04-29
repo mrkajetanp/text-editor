@@ -41,8 +41,6 @@ void input_loop(Screen s) {
     }
 }
 
-/* TODO: get next char method relating to gap issues? */
-
 /* handles characters in insert mode */
 void insert_mode(Screen s) {
     /* get a character */
@@ -178,8 +176,6 @@ void handle_key_right(Screen s) {
 
 /* handle the up arrow key */
 void handle_key_up(Screen s) {
-    /* TODO: remember last column position in the way emacs does */
-
     /* if at the top, do nothing */
     if (s->row == 0)
         return;
@@ -246,8 +242,6 @@ void handle_key_down(Screen s) {
 
 /* handle the enter key */
 void handle_enter(Screen s) {
-    /* TODO: possible performance improvements when at the beginning of the line */
-
     /* if cursor is not at the end of the line */
     if (s->col != CURR_LBUF->end - GAP_SIZE) {
         split_line(s);
@@ -264,7 +258,6 @@ void handle_tab(Screen s) {
     /* put a tab into the current line buffer */
     gap_buffer_put(CURR_LBUF, '\t');
 
-    /* TODO: variable tab length? */
     /* move visual cursor four columns to the right */
     s->col+=4;
     CURR_LINE->visual_end+=4;
@@ -272,8 +265,6 @@ void handle_tab(Screen s) {
 
 #define CURSOR_CHAR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ?  \
     CURR_LBUF->cursor : CURR_LBUF->cursor-1
-
-/* TODO: fix cursor movement when merging lines by backspace (tab-related) */
 
 /* handle the backspace key */
 void handle_backspace(Screen s) {
