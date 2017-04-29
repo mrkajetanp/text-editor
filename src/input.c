@@ -356,8 +356,8 @@ void split_line(Screen s) {
 
 /* merge the current line with the upper one */
 void merge_line_up(Screen s) {
-    /* save merge point position on the upper line */
-    int upper_cur = PREV_LBUF->end - (PREV_LBUF->gap_end-PREV_LBUF->gap_start)-1;
+    /* store the merge point position on the upper line */
+    int old_col = PREV_LINE->visual_end;
 
     /* store number of moved chars */
     int moved_chars = 0;
@@ -383,8 +383,13 @@ void merge_line_up(Screen s) {
     CURR_LINE->visual_end += moved_chars;
 
     /* move the visual & actual cursor to the merge point on the previous line */
+    gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     s->row--;
-    s->col = upper_cur;
-    gap_buffer_move_cursor(CURR_LBUF,
-                           gap_buffer_distance_to_start(CURR_LBUF)+upper_cur);
+
+    /* set visual column to the beginning of the line */
+    s->col = 0;
+
+    /* keep moving right until current column reaches the old one */
+    while (s->col < old_col)
+        handle_key_right(s);
 }

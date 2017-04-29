@@ -1,10 +1,6 @@
 # Currently awaiting development tasks
 
----
-
 ## Features
-
----
 
 ### Top priority
 
@@ -19,17 +15,10 @@
 * Allow multiple buffers
 * Allow splitting the screen (use ncurses window functionality)
 
----
-
 ## Bux Fixes
 
-* Cursor movement when merging lines by backspace (tab-related)
-
----
+* (currently nothing here)
 
 ## Improvements
 
 * Separate function when handling enter at the beginning of the line
-
----
-

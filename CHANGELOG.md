@@ -6,7 +6,6 @@
 
 #### 29.04.2017
 
-* Added TASKS.md
+* Fixed cursor movement when merging lines by backspace (tab-related)
 * Added color to tabs in debug mode
-
----
+* Added TASKS.md

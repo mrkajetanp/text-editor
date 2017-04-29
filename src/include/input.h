@@ -30,6 +30,9 @@
 /* accessing the current line */
 #define CURR_LINE ((Line)s->cur_line->data)
 
+/* accessing the previous line */
+#define PREV_LINE ((Line)s->cur_line->prev->data)
+
 /* accessing the current line buffer */
 #define CURR_LBUF (((Line)s->cur_line->data)->buff)
 
