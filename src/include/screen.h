@@ -24,6 +24,7 @@
 #include <stdbool.h>
 #include <glib-2.0/glib.h>
 #include <argp.h>
+#include <ncurses.h>
 
 #include "lib/gap_buffer.h"
 
@@ -77,6 +78,12 @@ struct _screen {
 
     /* visual cursor column */
     int col;
+
+    /* window with buffer contents */
+    WINDOW* contents;
+
+    /* window with buffer's line numbers */
+    WINDOW* line_numbers;
 
     /* Fields related to the program *****************************************/
 

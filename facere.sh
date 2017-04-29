@@ -40,6 +40,7 @@ case "$1" in
         ;;
     "help")
         echo "cmake - generate Makefile using CMake"
+        echo "cmake_debug - generate debug Makefile using CMake"
         echo "make - build with GNU Make"
         echo "install - install to bin"
         echo "clean - remove build and bin folders"

@@ -26,8 +26,11 @@
 #include "lib/gap_buffer.h"
 
 /* renders one line */
-void render_line(gpointer data, gpointer debug_flag) {
-    /* cast the void pointer to line buffer */
+void render_line(gpointer data, gpointer screen) {
+    /* cast the pointer to a screen */
+    Screen s = (Screen)screen;
+
+    /* cast the pointer to a line buffer */
     gap_T buff = ((Line)data)->buff;
 
     for (int i = 0 ; i <= buff->end ; ++i) {
@@ -39,18 +42,18 @@ void render_line(gpointer data, gpointer debug_flag) {
                 /*************************************************************/
                 /*     Print special characters if debug mode is enabled     */
                 /*************************************************************/
-                if (*((bool*)debug_flag)) {
+                if (s->args->debug_mode) {
                     if (buff->buffer[i] == '\n') {
-                        addch('$' | COLOR_PAIR(1));
-                        addch('\n');
+                        waddch(s->contents, '$' | COLOR_PAIR(1));
+                        waddch(s->contents, '\n');
                     } else if (buff->buffer[i] == '\0') {
-                        printw("%");
+                        wprintw(s->contents, "%");
                     } else if (buff->buffer[i] == '\t') {
-                        attron(COLOR_PAIR(2));
-                        printw(" -> ");
-                        attroff(COLOR_PAIR(2));
+                        wattron(s->contents, COLOR_PAIR(2));
+                        wprintw(s->contents, " -> ");
+                        wattroff(s->contents, COLOR_PAIR(2));
                     } else {
-                        printw("%c", buff->buffer[i]);
+                        wprintw(s->contents, "%c", buff->buffer[i]);
                     }
                 }
                 /*********************************************************/
@@ -58,9 +61,9 @@ void render_line(gpointer data, gpointer debug_flag) {
                 /*********************************************************/
                 else {
                     if (buff->buffer[i] == '\t')
-                        printw("    ");
+                        wprintw(s->contents, "    ");
                     else
-                        printw("%c", buff->buffer[i]);
+                        wprintw(s->contents, "%c", buff->buffer[i]);
                 }
             }
         }
@@ -69,13 +72,16 @@ void render_line(gpointer data, gpointer debug_flag) {
 }
 
 /* renders the screen */
-void render_screen(Screen s) {
+void render_contents(Screen s) {
+    /* erase previous contents */
+    werase(s->contents);
+
     /*************************************************************************/
-    /*                       Render the current screen                       */
+    /*                       Render current buffer contents                  */
     /*************************************************************************/
 
     /* render every line */
-    g_list_foreach(s->lines, render_line, &s->args->debug_mode);
+    g_list_foreach(s->lines, render_line, s);
 
     /*************************************************************************/
     /*                         Render debug mode info                        */
@@ -84,37 +90,47 @@ void render_screen(Screen s) {
     if (s->args->debug_mode) {
 
         /* number of lines */
-        mvprintw(0, getmaxx(stdscr)-25, "Number of lines: %d", s->n_lines);
+        mvwprintw(s->contents, 0, getmaxx(s->contents)-25,
+                  "Number of lines: %d", s->n_lines);
 
         /* visual cursor coordinates */
-        mvprintw(1, getmaxx(stdscr)-25, "Visual col: %d row: %d", s->col, s->row);
+        mvwprintw(s->contents, 1, getmaxx(s->contents)-25,
+                  "Visual col: %d row: %d", s->col, s->row);
 
         /* actual cursor position */
-        mvprintw(2, getmaxx(stdscr)-25, "Line cursor: %d", CURR_LBUF->cursor);
+        mvwprintw(s->contents, 2, getmaxx(s->contents)-25,
+                  "Line cursor: %d", CURR_LBUF->cursor);
 
-        mvprintw(3, getmaxx(stdscr)-25, "Visual line end: %d",
-                 ((Line)s->cur_line->data)->visual_end);
+        mvwprintw(s->contents, 3, getmaxx(s->contents)-25,
+                  "Visual line end: %d", ((Line)s->cur_line->data)->visual_end);
 
         /* end of the current line */
-        mvprintw(4, getmaxx(stdscr)-25, "Line end: %d",
-                 CURR_LBUF->end - GAP_SIZE);
+        mvwprintw(s->contents, 4, getmaxx(s->contents)-25,
+                 "Line end: %d", CURR_LBUF->end - GAP_SIZE);
 
         /* gap start & end */
-        mvprintw(5, getmaxx(stdscr)-25, "Line gap: %d - %d", CURR_LBUF->gap_start,
-                 CURR_LBUF->gap_end);
+        mvwprintw(s->contents, 5, getmaxx(s->contents)-25,
+                 "Line gap: %d - %d", CURR_LBUF->gap_start, CURR_LBUF->gap_end);
+
+        /* TODO: refactor this into a switch */
 
         /* character currently under the cursor */
         if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\n')
-            mvprintw(6, getmaxx(stdscr)-25, "Line cursor on: (\\n)");
+            mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
+                      "Line cursor on: (\\n)");
         else if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\0')
-            mvprintw(6, getmaxx(stdscr)-25, "Line cursor on: (\\0)");
+            mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
+                      "Line cursor on: (\\0)");
         else if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t')
-            mvprintw(6, getmaxx(stdscr)-25, "Line cursor on: (\\t)");
+            mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
+                      "Line cursor on: (\\t)");
         else
-            mvprintw(6, getmaxx(stdscr)-25, "Line cursor on: (%c)",
-                     CURR_LBUF->buffer[CURR_LBUF->cursor]);
+            mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
+                      "Line cursor on: (%c)",
+                      CURR_LBUF->buffer[CURR_LBUF->cursor]);
 
-        mvprintw(7, getmaxx(stdscr)-25, "File name: %s", s->args->file_name);
+        mvwprintw(s->contents, 7, getmaxx(s->contents)-25,
+                  "File name: %s", s->args->file_name);
     }
 
     /*************************************************************************/
@@ -122,5 +138,28 @@ void render_screen(Screen s) {
     /*************************************************************************/
 
     /* move visual cursor to its proper position */
-    move(s->row, s->col);
+    wmove(s->contents, s->row, s->col);
+
+    wrefresh(s->contents);
+}
+
+void render_line_numbers(Screen s) {
+    /* erase previous contents */
+    werase(s->line_numbers);
+
+    /* enable color for rendering lines */
+    wattron(s->line_numbers, COLOR_PAIR(3));
+
+    /* render actual numbers */
+    for (int i = 0 ; i < s->n_lines ; ++i)
+        mvwprintw(s->line_numbers, i, 0, "%3d", i+1);
+
+    /* disable the color */
+    wattroff(s->line_numbers, COLOR_PAIR(3));
+
+    /* render tildes on non-existing lines */
+    for (int i = s->n_lines ; i <= LINES ; ++i)
+        mvwprintw(s->line_numbers, i, 3, "~");
+
+    wrefresh(s->line_numbers);
 }

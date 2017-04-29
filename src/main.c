@@ -93,8 +93,9 @@ int main(int argc, char** argv) {
 
     /* colors */
     start_color();
-    init_pair(1, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(1, COLOR_BLUE, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(3, COLOR_YELLOW, COLOR_BLACK);
 
     /* create new "screen" */
     Screen s = screen_init();

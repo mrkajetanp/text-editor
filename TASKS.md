@@ -4,7 +4,6 @@
 
 ### Top priority
 
-* Rendering - line numbers
 * Release rendering - useful information
 * File handling
 
@@ -14,6 +13,8 @@
 * Allow variable tab length
 * Allow multiple buffers
 * Allow splitting the screen (use ncurses window functionality)
+* Allow a buffer to have no lines?
+* Completely separate rendering from backend
 
 ## Bux Fixes
 
@@ -21,4 +22,5 @@
 
 ## Improvements
 
+* Refactor debug special characters rendering into a switch statement
 * Separate function when handling enter at the beginning of the line

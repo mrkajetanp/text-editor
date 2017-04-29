@@ -39,7 +39,10 @@
 /*                                   Functions                               */
 /*****************************************************************************/
 
-/* renders the screen */
-void render_screen(Screen);
+/* renders buffer contents */
+void render_contents(Screen);
+
+/* renders line numbers */
+void render_line_numbers(Screen);
 
 #endif

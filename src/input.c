@@ -29,15 +29,18 @@
 
 /* executes the input loop */
 void input_loop(Screen s) {
+    /* initially refresh stdscr */
+    refresh();
+
+    /* initially render line numbers */
+    render_line_numbers(s);
+
     while (true) {
-        /* render the screen */
-        render_screen(s);
+        /* render the buffer contents */
+        render_contents(s);
 
         /* start insert mode */
         insert_mode(s);
-
-        /* erase the visual window */
-        erase();
     }
 }
 
@@ -50,6 +53,9 @@ void insert_mode(Screen s) {
 
     case '\n':
         handle_enter(s);
+
+        /* number of lines changed, so re-render them */
+        render_line_numbers(s);
         break;
 
     case '\t':
@@ -392,4 +398,7 @@ void merge_line_up(Screen s) {
     /* keep moving right until current column reaches the old one */
     while (s->col < old_col)
         handle_key_right(s);
+
+    /* re-render line numbers */
+    render_line_numbers(s);
 }

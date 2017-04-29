@@ -18,7 +18,6 @@
  *                                                                      *
  ************************************************************************/
 
-#include <ncurses.h>
 #include <stdlib.h>
 
 #include "screen.h"
@@ -68,6 +67,12 @@ Screen screen_init() {
     s->col = 0;
     s->row = 0;
 
+    /* create a window for line numbers */
+    s->line_numbers = newwin(LINES, 4, 0, 0);
+
+    /* create a window for contents */
+    s->contents = newwin(LINES, COLS-4, 0, 4);
+
     /* set no argument structure by default */
     s->args = NULL;
 
@@ -114,6 +119,13 @@ void free_buffer_node(gpointer data) {
 
 /* destroyes all the lines and then the screen itself */
 void screen_destroy(Screen s) {
+    /* destroy each line */
     g_list_free_full(s->lines, free_buffer_node);
+
+    /* destroy windows */
+    delwin(s->line_numbers);
+    delwin(s->contents);
+
+    /* free allocated screen */
     free(s);
 }
