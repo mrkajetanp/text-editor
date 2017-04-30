@@ -83,6 +83,10 @@ void insert_mode(Screen s) {
         handle_key_down(s);
         break;
 
+    case KEY_RESIZE:
+        render_line_numbers(s);
+        break;
+
         /* ascii CAN (cancel) control character */
         /* In terminals similar to xterm it's Ctrl-X */
     case 24:
@@ -90,7 +94,8 @@ void insert_mode(Screen s) {
         break;
 
     default:
-        handle_insert_char(s, c);
+        if (c >= 32 && c <= 127)
+            handle_insert_char(s, c);
         break;
     }
 }

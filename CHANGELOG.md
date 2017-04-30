@@ -4,6 +4,11 @@
 
 ---
 
+#### 30.04.2017
+
+* Added proper resize handling
+* Igoring unhandled special characters
+
 #### 29.04.2017
 
 * Rendering - added line numbers
