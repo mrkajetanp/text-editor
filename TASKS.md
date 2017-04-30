@@ -11,6 +11,7 @@
 
 ### Future ideas
 
+* Properly handle keys with modifiers
 * Remember the last column position when moving up/down in the way emacs does
 * Allow variable tab length
 * Allow multiple buffers
@@ -21,8 +22,10 @@
 ## Bux Fixes
 
 * Handle number of lines longer than window height
+* Fix debug render cursor char according to the gap
 
 ## Improvements
 
 * Refactor debug special characters rendering into a switch statement
+* When moving up/down onto a tab, cursor should end up before it
 * Separate function when handling enter at the beginning of the line
