@@ -4,6 +4,10 @@
 
 ---
 
+#### 1.04.2017
+
+* Refactored debug special characters rendering into a switch statement
+
 #### 30.04.2017
 
 * Added proper resize handling

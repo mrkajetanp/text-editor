@@ -43,17 +43,25 @@ void render_line(gpointer data, gpointer screen) {
                 /*     Print special characters if debug mode is enabled     */
                 /*************************************************************/
                 if (s->args->debug_mode) {
-                    if (buff->buffer[i] == '\n') {
+                    switch (buff->buffer[i]) {
+                    case '\n':
                         waddch(s->contents, '$' | COLOR_PAIR(1));
                         waddch(s->contents, '\n');
-                    } else if (buff->buffer[i] == '\0') {
+                        break;
+
+                    case '\0':
                         wprintw(s->contents, "%");
-                    } else if (buff->buffer[i] == '\t') {
+                        break;
+
+                    case '\t':
                         wattron(s->contents, COLOR_PAIR(2));
                         wprintw(s->contents, " -> ");
                         wattroff(s->contents, COLOR_PAIR(2));
-                    } else {
+                        break;
+
+                    default:
                         wprintw(s->contents, "%c", buff->buffer[i]);
+                        break;
                     }
                 }
                 /*********************************************************/
@@ -112,22 +120,32 @@ void render_contents(Screen s) {
         mvwprintw(s->contents, 5, getmaxx(s->contents)-25,
                  "Line gap: %d - %d", CURR_LBUF->gap_start, CURR_LBUF->gap_end);
 
-        /* TODO: refactor this into a switch */
 
         /* character currently under the cursor */
-        if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\n')
+        switch (CURR_LBUF->buffer[CURR_LBUF->cursor]) {
+
+        case '\n':
             mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
                       "Line cursor on: (\\n)");
-        else if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\0')
+            break;
+
+        case '\0':
             mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
                       "Line cursor on: (\\0)");
-        else if (CURR_LBUF->buffer[CURR_LBUF->cursor] == '\t')
+            break;
+
+        case '\t':
             mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
                       "Line cursor on: (\\t)");
-        else
+            break;
+
+        default:
             mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
                       "Line cursor on: (%c)",
                       CURR_LBUF->buffer[CURR_LBUF->cursor]);
+            break;
+
+        }
 
         mvwprintw(s->contents, 7, getmaxx(s->contents)-25,
                   "File name: %s", s->args->file_name);
