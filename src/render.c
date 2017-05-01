@@ -96,28 +96,37 @@ void render_contents(Screen s) {
     /*************************************************************************/
 
     if (s->args->debug_mode) {
+        /* erase previous contents */
+        werase(s->debug_info);
+
+        /* render a bar separating debug info from contents ******************/
+        wattron(s->debug_info, A_REVERSE);
+
+        for (int i = 0 ; i < LINES ; ++i)
+            mvwprintw(s->debug_info, i, 0, " ");
+
+        wattroff(s->debug_info, A_REVERSE);
+
+        /* render actual debug information ***********************************/
 
         /* number of lines */
-        mvwprintw(s->contents, 0, getmaxx(s->contents)-25,
-                  "Number of lines: %d", s->n_lines);
+        mvwprintw(s->debug_info, 0, 2, "Number of lines: %d", s->n_lines);
 
         /* visual cursor coordinates */
-        mvwprintw(s->contents, 1, getmaxx(s->contents)-25,
-                  "Visual col: %d row: %d", s->col, s->row);
+        mvwprintw(s->debug_info, 1, 2, "Visual col: %d row: %d", s->col, s->row);
 
         /* actual cursor position */
-        mvwprintw(s->contents, 2, getmaxx(s->contents)-25,
-                  "Line cursor: %d", CURR_LBUF->cursor);
+        mvwprintw(s->debug_info, 2, 2, "Line cursor: %d", CURR_LBUF->cursor);
 
-        mvwprintw(s->contents, 3, getmaxx(s->contents)-25,
-                  "Visual line end: %d", ((Line)s->cur_line->data)->visual_end);
+        mvwprintw(s->debug_info, 3, 2, "Visual line end: %d",
+                  CURR_LINE->visual_end);
 
         /* end of the current line */
-        mvwprintw(s->contents, 4, getmaxx(s->contents)-25,
-                 "Line end: %d", CURR_LBUF->end - GAP_SIZE);
+        mvwprintw(s->debug_info, 4, 2,
+                  "Line end: %d", CURR_LBUF->end - GAP_SIZE);
 
         /* gap start & end */
-        mvwprintw(s->contents, 5, getmaxx(s->contents)-25,
+        mvwprintw(s->debug_info, 5, 2,
                  "Line gap: %d - %d", CURR_LBUF->gap_start, CURR_LBUF->gap_end);
 
 
@@ -125,30 +134,25 @@ void render_contents(Screen s) {
         switch (CURR_LBUF->buffer[CURR_LBUF->cursor]) {
 
         case '\n':
-            mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
-                      "Line cursor on: (\\n)");
+            mvwprintw(s->debug_info, 6, 2, "Line cursor on: (\\n)");
             break;
 
         case '\0':
-            mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
-                      "Line cursor on: (\\0)");
+            mvwprintw(s->debug_info, 6, 2, "Line cursor on: (\\0)");
             break;
 
         case '\t':
-            mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
-                      "Line cursor on: (\\t)");
+            mvwprintw(s->debug_info, 6, 2, "Line cursor on: (\\t)");
             break;
 
         default:
-            mvwprintw(s->contents, 6, getmaxx(s->contents)-25,
-                      "Line cursor on: (%c)",
+            mvwprintw(s->debug_info, 6, 2, "Line cursor on: (%c)",
                       CURR_LBUF->buffer[CURR_LBUF->cursor]);
             break;
 
         }
 
-        mvwprintw(s->contents, 7, getmaxx(s->contents)-25,
-                  "File name: %s", s->args->file_name);
+        mvwprintw(s->debug_info, 7, 2, "File name: %s", s->args->file_name);
     }
 
     /*************************************************************************/
@@ -157,6 +161,11 @@ void render_contents(Screen s) {
 
     /* move visual cursor to its proper position */
     wmove(s->contents, s->row, s->col);
+
+    /* refresh windows *******************************************************/
+
+    if (s->args->debug_mode)
+        wrefresh(s->debug_info);
 
     wrefresh(s->contents);
 }

@@ -45,7 +45,7 @@ void line_destroy(Line l) {
 }
 
 /* initializes the screen & its buffer */
-Screen screen_init() {
+Screen screen_init(struct Arguments* args) {
     Screen s = malloc(sizeof *s);
 
     /* create a new (first) line */
@@ -71,10 +71,19 @@ Screen screen_init() {
     s->line_numbers = newwin(LINES, 4, 0, 0);
 
     /* create a window for contents */
-    s->contents = newwin(LINES, COLS-4, 0, 4);
+    s->contents = newwin(LINES,
+                         (args->debug_mode) ? COLS-26-4 : COLS-4,
+                         0, 4);
 
-    /* set no argument structure by default */
-    s->args = NULL;
+    /* if in debug mode, create additional window for debug information */
+    if (args->debug_mode) {
+        s->debug_info = newwin(LINES, 26, 0, COLS-25);
+    } else {
+        s->debug_info = NULL;
+    }
+
+    /* set argument structure */
+    s->args = args;
 
     return s;
 }
@@ -125,6 +134,10 @@ void screen_destroy(Screen s) {
     /* destroy windows */
     delwin(s->line_numbers);
     delwin(s->contents);
+
+    /* if in debug mode, destroy debug information window */
+    if (s->args->debug_mode)
+        delwin(s->debug_info);
 
     /* free allocated screen */
     free(s);

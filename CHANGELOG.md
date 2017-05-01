@@ -4,9 +4,14 @@
 
 ---
 
+#### 2.04.2017
+
+* Added a bar separating debug info from content
+* Moved debug mode information into a separate window
+
 #### 1.04.2017
 
-* Refactored debug special characters rendering into a switch statement
+* Refactored debug mode special characters rendering into a switch statement
 
 #### 30.04.2017
 

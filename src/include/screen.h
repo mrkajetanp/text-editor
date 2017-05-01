@@ -85,13 +85,16 @@ struct _screen {
     /* window with buffer's line numbers */
     WINDOW* line_numbers;
 
+    /* window with debug information */
+    WINDOW* debug_info;
+
     /* Fields related to the program *****************************************/
 
     struct Arguments* args;
 };
 
 /* initializes the screen & its buffer */
-Screen screen_init();
+Screen screen_init(struct Arguments* args);
 
 /* creates a new line under the current one */
 void screen_new_line_under(Screen);

@@ -5,7 +5,6 @@
 ### Top priority
 
 * Wrap lines longer than the width of the window
-* In debug mode, wrap lines before debug information
 * Release rendering - useful information
 * File handling
 
@@ -26,6 +25,5 @@
 
 ## Improvements
 
-* Move debug mode information into a separate window
 * When moving up/down onto a tab, cursor should end up before it
 * Separate function when handling enter at the beginning of the line

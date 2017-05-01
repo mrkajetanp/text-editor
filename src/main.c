@@ -97,10 +97,7 @@ int main(int argc, char** argv) {
     init_pair(3, COLOR_YELLOW, COLOR_BLACK);
 
     /* create new "screen" */
-    Screen s = screen_init();
-
-    /* set debug mode accordingly */
-    s->args = &arguments;
+    Screen s = screen_init(&arguments);
 
     /* start input loop */
     input_loop(s);
