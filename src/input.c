@@ -68,19 +68,19 @@ void insert_mode(Screen s) {
         break;
 
     case KEY_LEFT:
-        handle_key_left(s);
+        handle_move_left(s);
         break;
 
     case KEY_RIGHT:
-        handle_key_right(s);
+        handle_move_right(s);
         break;
 
     case KEY_UP:
-        handle_key_up(s);
+        handle_move_up(s);
         break;
 
     case KEY_DOWN:
-        handle_key_down(s);
+        handle_move_down(s);
         break;
 
     case KEY_RESIZE:
@@ -114,7 +114,7 @@ void handle_insert_char(Screen s, char c) {
     CURR_LBUF->cursor : CURR_LBUF->cursor-1
 
 /* handle the left arrow key */
-void handle_key_left(Screen s) {
+void handle_move_left(Screen s) {
     /* if at the beginning of the first line, do nothing */
     if (s->row == 0 && s->col == 0)
         return;
@@ -154,7 +154,7 @@ void handle_key_left(Screen s) {
     CURR_LBUF->cursor+1 : CURR_LBUF->cursor+GAP_SIZE
 
 /* handle the right arrow key */
-void handle_key_right(Screen s) {
+void handle_move_right(Screen s) {
     /* if at the end of the last line, do nothing */
     if (s->row+1 == s->n_lines && s->col == CURR_LINE->visual_end)
         return;
@@ -186,7 +186,7 @@ void handle_key_right(Screen s) {
 #undef CURSOR_CHAR
 
 /* handle the up arrow key */
-void handle_key_up(Screen s) {
+void handle_move_up(Screen s) {
     /* if at the top, do nothing */
     if (s->row == 0)
         return;
@@ -211,7 +211,7 @@ void handle_key_up(Screen s) {
 
         /* keep moving right until current column reaches the old one */
         while (s->col < old_col)
-            handle_key_right(s);
+            handle_move_right(s);
     }
 
     /* move visual cursor one line up */
@@ -219,7 +219,7 @@ void handle_key_up(Screen s) {
 }
 
 /* handle the down arrow key */
-void handle_key_down(Screen s) {
+void handle_move_down(Screen s) {
     /* if at the last line, do nothing */
     if (s->row+1 == s->n_lines)
         return;
@@ -244,7 +244,7 @@ void handle_key_down(Screen s) {
 
         /* keep moving right until current column reaches the old one */
         while (s->col < old_col)
-            handle_key_right(s);
+            handle_move_right(s);
     }
 
     /* move visual cursor one line down */
@@ -402,7 +402,7 @@ void merge_line_up(Screen s) {
 
     /* keep moving right until current column reaches the old one */
     while (s->col < old_col)
-        handle_key_right(s);
+        handle_move_right(s);
 
     /* re-render line numbers */
     render_line_numbers(s);

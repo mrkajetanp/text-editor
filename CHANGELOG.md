@@ -4,12 +4,14 @@
 
 ---
 
-#### 2.04.2017
+#### 2.05.2017
 
+* Refactored some input handling functions to have more useful names:
+	* handle key right => handle move right 
 * Added a bar separating debug info from content
 * Moved debug mode information into a separate window
 
-#### 1.04.2017
+#### 1.05.2017
 
 * Refactored debug mode special characters rendering into a switch statement
 

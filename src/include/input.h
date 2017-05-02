@@ -59,16 +59,16 @@ void insert_mode(Screen);
 void handle_insert_char(Screen, char);
 
 /* handle the left arrow key */
-void handle_key_left(Screen);
+void handle_move_left(Screen);
 
 /* handle the right arrow key */
-void handle_key_right(Screen);
+void handle_move_right(Screen);
 
 /* handle the up arrow key */
-void handle_key_up(Screen);
+void handle_move_up(Screen);
 
 /* handle the down arrow key */
-void handle_key_down(Screen);
+void handle_move_down(Screen);
 
 /* handle the enter key */
 void handle_enter(Screen);
