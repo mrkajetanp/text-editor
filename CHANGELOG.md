@@ -6,7 +6,7 @@
 
 #### 3.05.2017
 
-* Fixed visual_end when splitting line containing two tabs in the middle 
+* Fixed visual_end when splitting line containing multiple tabs
 * Added separate function inserting a line above to improve performance
 * Fixed debug render cursor char according to the gap
 * Refactored some input handling functions to have more useful names:

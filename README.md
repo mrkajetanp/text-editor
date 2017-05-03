@@ -1,13 +1,15 @@
 # text-editor
-A simple text editor written in C.
+A text editor aiming to combine the best parts of editors such as emacs, vim & nano.
 
-### Goals & Ideas
+### About the project & its goals
 
-* Mutliplatform
-* Ncurses
-* Nano-like mode
-* Vim-like mode
-* undo using a stack of recent operations
+This text editor should be mulitplatform and as open as possible.  
+Every contribution, whether it's an improvement, an issue or just an idea is more than welcome.  
+The main goal is to make it as useful as possible, taking the best parts from the best editors - emacs, vim & nano.  
+It's still in a very early stage so it's not particularly useful (yet!).  
+However, I do my best to keep moving the project forward, every contribution counts!
+
+**Let's make text editing great again!**
 
 ### A license notice to put in the beginning of every source file in the project
 
