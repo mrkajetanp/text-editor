@@ -99,6 +99,9 @@ Screen screen_init(struct Arguments* args);
 /* creates a new line under the current one */
 void screen_new_line_under(Screen);
 
+/* creates a new line above the current one */
+void screen_new_line_above(Screen);
+
 /* removes a line and frees its memory */
 void screen_destroy_line(Screen);
 

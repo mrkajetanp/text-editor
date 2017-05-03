@@ -253,8 +253,11 @@ void handle_move_down(Screen s) {
 
 /* handle the enter key */
 void handle_enter(Screen s) {
-    /* if cursor is not at the end of the line */
-    if (s->col != CURR_LBUF->end - GAP_SIZE) {
+    /* if cursor is at the beginning of the line, just insert a line above */
+    if (s->col == 0) {
+        screen_new_line_above(s);
+    /* if in the middle of the line, split it */
+    } else if (s->col != CURR_LBUF->end - GAP_SIZE) {
         split_line(s);
     } else {
         screen_new_line_under(s);

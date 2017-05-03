@@ -4,10 +4,15 @@
 
 ---
 
+#### 3.05.2017
+
+* Added separate function inserting a line above to improve performance
+* Fixed debug render cursor char according to the gap
+* Refactored some input handling functions to have more useful names:
+	* handle\_key\_right => handle\_move\_right 
+
 #### 2.05.2017
 
-* Refactored some input handling functions to have more useful names:
-	* handle key right => handle move right 
 * Added a bar separating debug info from content
 * Moved debug mode information into a separate window
 

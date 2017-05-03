@@ -103,6 +103,18 @@ void screen_new_line_under(Screen s) {
     s->n_lines++;
 }
 
+/* creates a new line above the current one */
+void screen_new_line_above(Screen s) {
+    /* initialize a new line */
+    Line new_line = line_create();
+
+    /* insert the new line buffer into the list in its correct position */
+    s->lines = g_list_insert(s->lines, new_line, s->row);
+
+    /* increase the number of lines */
+    s->n_lines++;
+}
+
 /* removes a line and frees its memory */
 void screen_destroy_line(Screen s) {
     /* free the line buffer's memory */

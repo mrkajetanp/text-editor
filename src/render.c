@@ -79,6 +79,10 @@ void render_line(gpointer data, gpointer screen) {
     }
 }
 
+/* macro for adjusting cursor position according to the gap */
+#define CURSOR_CHAR (CURR_LBUF->gap_start > CURR_LBUF->cursor) ?  \
+    CURR_LBUF->cursor-1 : CURR_LBUF->cursor
+
 /* renders the screen */
 void render_contents(Screen s) {
     /* erase previous contents */
@@ -131,7 +135,7 @@ void render_contents(Screen s) {
 
 
         /* character currently under the cursor */
-        switch (CURR_LBUF->buffer[CURR_LBUF->cursor]) {
+        switch (CURR_LBUF->buffer[CURSOR_CHAR]) {
 
         case '\n':
             mvwprintw(s->debug_info, 6, 2, "Line cursor on: (\\n)");
@@ -147,7 +151,7 @@ void render_contents(Screen s) {
 
         default:
             mvwprintw(s->debug_info, 6, 2, "Line cursor on: (%c)",
-                      CURR_LBUF->buffer[CURR_LBUF->cursor]);
+                      CURR_LBUF->buffer[CURSOR_CHAR]);
             break;
 
         }
@@ -169,6 +173,8 @@ void render_contents(Screen s) {
 
     wrefresh(s->contents);
 }
+
+#undef CURSOR_CHAR
 
 void render_line_numbers(Screen s) {
     /* erase previous contents */
