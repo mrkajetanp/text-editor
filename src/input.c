@@ -330,6 +330,9 @@ void split_line(Screen s) {
     /* number of chars to move to the new line (right of split point) */
     int chars_to_move = 0;
 
+    /* number of tabs moved */
+    int tabs = 0;
+
     /* choose starting cursor position on the split point */
     int i = (CURR_LBUF->gap_end < CURR_LBUF->cursor) ?
         CURR_LBUF->cursor+1 : CURR_LBUF->cursor;
@@ -345,6 +348,9 @@ void split_line(Screen s) {
             /* put the char we're on in the new line */
             gap_buffer_put(NEXT_LBUF, CURR_LBUF->buffer[i]);
             chars_to_move++;
+
+            if (CURR_LBUF->buffer[i] == '\t')
+                tabs++;
         }
         ++i;
     }
@@ -356,13 +362,13 @@ void split_line(Screen s) {
         gap_buffer_delete(CURR_LBUF);
 
     /* adjust old line's visual end */
-    CURR_LINE->visual_end -= chars_to_move;
+    CURR_LINE->visual_end -= chars_to_move + tabs*3;
 
     /* move to the newly created line */
     s->cur_line = s->cur_line->next;
 
     /* adjust new line's visual end */
-    CURR_LINE->visual_end += chars_to_move;
+    CURR_LINE->visual_end += chars_to_move + tabs*3;
 
     /* move buffer cursor to the beginning of the line */
     gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
