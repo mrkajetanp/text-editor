@@ -4,6 +4,12 @@
 
 ---
 
+#### 4.05.2017
+
+* Added unit testing - logic\_test - general - initialization - screen_init
+* Separated screen\_ init and screen\_init\_ncurses
+* Moved screen into a separate library
+
 #### 3.05.2017
 
 * Fixed visual_end when splitting line containing multiple tabs

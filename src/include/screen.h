@@ -96,6 +96,9 @@ struct _screen {
 /* initializes the screen & its buffer */
 Screen screen_init(struct Arguments* args);
 
+/* initializes the screen's ncurses windows */
+void screen_init_ncurses(Screen s);
+
 /* creates a new line under the current one */
 void screen_new_line_under(Screen);
 

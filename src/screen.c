@@ -67,25 +67,31 @@ Screen screen_init(struct Arguments* args) {
     s->col = 0;
     s->row = 0;
 
-    /* create a window for line numbers */
-    s->line_numbers = newwin(LINES, 4, 0, 0);
-
-    /* create a window for contents */
-    s->contents = newwin(LINES,
-                         (args->debug_mode) ? COLS-26-4 : COLS-4,
-                         0, 4);
-
-    /* if in debug mode, create additional window for debug information */
-    if (args->debug_mode) {
-        s->debug_info = newwin(LINES, 26, 0, COLS-25);
-    } else {
-        s->debug_info = NULL;
-    }
+    s->line_numbers = NULL;
+    s->contents = NULL;
+    s->debug_info = NULL;
 
     /* set argument structure */
     s->args = args;
 
     return s;
+}
+
+void screen_init_ncurses(Screen s) {
+    /* create a window for line numbers */
+    s->line_numbers = newwin(LINES, 4, 0, 0);
+
+    /* create a window for contents */
+    s->contents = newwin(LINES,
+                         (s->args->debug_mode) ? COLS-26-4 : COLS-4,
+                         0, 4);
+
+    /* if in debug mode, create additional window for debug information */
+    if (s->args->debug_mode) {
+        s->debug_info = newwin(LINES, 26, 0, COLS-25);
+    } else {
+        s->debug_info = NULL;
+    }
 }
 
 /* creates a new line under the current one */

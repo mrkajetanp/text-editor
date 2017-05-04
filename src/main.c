@@ -98,6 +98,7 @@ int main(int argc, char** argv) {
 
     /* create new "screen" */
     Screen s = screen_init(&arguments);
+    screen_init_ncurses(s);
 
     /* start input loop */
     input_loop(s);
