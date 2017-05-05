@@ -21,6 +21,7 @@
 #include <stdlib.h>
 
 #include "screen.h"
+#include "lib/gap_buffer.h"
 
 Line line_create() {
     /* create a buffer for the new line */

@@ -4,6 +4,10 @@
 
 ---
 
+#### 5.05.2017
+
+* Fixed visual end when merging lines containing tabs
+
 #### 4.05.2017
 
 * Added unit testing - logic\_test - general - initialization - screen_init

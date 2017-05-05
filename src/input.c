@@ -382,6 +382,9 @@ void merge_line_up(Screen s) {
     /* store number of moved chars */
     int moved_chars = 0;
 
+    /* number of tabs moved */
+    int tabs = 0;
+
     gap_buffer_move_cursor(PREV_LBUF, gap_buffer_distance_to_end(PREV_LBUF)-1);
     for (int i = CURR_LBUF->start ; i < CURR_LBUF->end ; ++i) {
         /* skip the gap */
@@ -393,6 +396,9 @@ void merge_line_up(Screen s) {
             /* put the char we're on in the new line */
             gap_buffer_put(PREV_LBUF, CURR_LBUF->buffer[i]);
             moved_chars++;
+
+            if (CURR_LBUF->buffer[i] == '\t')
+                tabs++;
         }
     }
 
@@ -400,7 +406,7 @@ void merge_line_up(Screen s) {
     screen_destroy_line(s);
 
     /* adjust merged line's visual end */
-    CURR_LINE->visual_end += moved_chars;
+    CURR_LINE->visual_end += moved_chars + tabs*3;
 
     /* move the visual & actual cursor to the merge point on the previous line */
     gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));

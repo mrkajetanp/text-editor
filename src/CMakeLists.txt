@@ -6,6 +6,8 @@ include_directories("/usr/local/lib/glib-2.0/include")
 
 add_library(screen screen.c)
 
+target_link_libraries(screen gap_buffer)
+
 add_executable(text-editor main.c input.c render.c)
 add_subdirectory(lib)
 add_subdirectory(include)
