@@ -22,7 +22,6 @@
 
 ## Bux Fixes
 
-* Fix splitting the line when visual cursor is at the start of the gap
 * Handle number of lines longer than the height of the window
 
 ## Improvements

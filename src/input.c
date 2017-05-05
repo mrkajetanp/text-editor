@@ -253,14 +253,15 @@ void handle_move_down(Screen s) {
 
 /* handle the enter key */
 void handle_enter(Screen s) {
-    /* if cursor is at the beginning of the line, just insert a line above */
     if (s->col == 0) {
+        /* if at the beginning of the line, just insert a line above */
         screen_new_line_above(s);
-    /* if in the middle of the line, split it */
-    } else if (s->col != CURR_LBUF->end - GAP_SIZE) {
-        split_line(s);
-    } else {
+    } else if (s->col == CURR_LINE->visual_end) {
+        /* if at the end of the line, insert a line below */
         screen_new_line_under(s);
+    } else {
+        /* if in the middle of the line, split it */
+        split_line(s);
     }
 
     /* move the visual cursor to the beginning of the new line */

@@ -153,7 +153,6 @@ void render_contents(Screen s) {
             mvwprintw(s->debug_info, 6, 2, "Line cursor on: (%c)",
                       CURR_LBUF->buffer[CURSOR_CHAR]);
             break;
-
         }
 
         mvwprintw(s->debug_info, 7, 2, "File name: %s", s->args->file_name);

@@ -6,6 +6,7 @@
 
 #### 5.05.2017
 
+* Fixed splitting the line when visual cursor was at the start of the gap
 * Fixed visual end when merging lines containing tabs
 
 #### 4.05.2017
