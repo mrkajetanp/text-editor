@@ -4,6 +4,11 @@
 
 ---
 
+#### 6.05.2017
+
+* Added tests for initialization - test\_line\_init
+* Added tests for line management - test\_new\_line\_under & test\_new\_line\_above
+
 #### 5.05.2017
 
 * Fixed splitting the line when visual cursor was at the start of the gap
