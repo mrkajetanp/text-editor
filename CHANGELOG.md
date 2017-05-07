@@ -4,6 +4,11 @@
 
 ---
 
+#### 7.05.2017
+
+* Moved entire editor's logic into editor library
+* Added tests for letter insertion
+
 #### 6.05.2017
 
 * Added tests for initialization - test\_line\_init
