@@ -4,6 +4,10 @@
 
 ---
 
+#### 8.05.2017
+
+* Added tests for moving left
+
 #### 7.05.2017
 
 * Moved entire editor's logic into editor library
