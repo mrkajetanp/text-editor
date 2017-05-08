@@ -6,6 +6,7 @@
 
 #### 8.05.2017
 
+* Added tests for moving right
 * Added tests for moving left
 
 #### 7.05.2017
