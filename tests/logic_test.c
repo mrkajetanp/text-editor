@@ -36,14 +36,9 @@ START_TEST (test_line_init) {
     /* buffer is allocated properly */
     ck_assert_ptr_nonnull(l->buff);
 
-    /* only char in the buffer is '\n' */
-    ck_assert_int_eq('\n', l->buff->buffer[0]);
-
-    /* line's cursor starts at 0 */
     ck_assert_int_eq(0, l->buff->cursor);
-
-    /* visual end of the line is 0 */
     ck_assert_int_eq(0, l->visual_end);
+    ck_assert_int_eq('\n', l->buff->buffer[0]);
 
     line_destroy(l);
 } END_TEST
@@ -65,16 +60,11 @@ START_TEST (test_screen_init) {
 
     /* test the first line ***************************************************/
 
-    /* visual end of the line is 0 */
-    ck_assert_int_eq(0, CURR_LINE->visual_end);
-
     /* first line's buffer is properly allocated */
     ck_assert_ptr_nonnull(CURR_LBUF);
 
-    /* first line's actual cursor starts at 0 */
+    ck_assert_int_eq(0, CURR_LINE->visual_end);
     ck_assert_int_eq(0, CURR_LBUF->cursor);
-
-    /* initially only char in the line is '\n' */
     ck_assert_int_eq('\n', CURR_LBUF->buffer[0]);
 
     /* test visual cursor ****************************************************/
@@ -174,15 +164,11 @@ START_TEST (letter_insertion) {
     ck_assert_int_eq('a', CURR_LBUF->buffer[0]);
 
     /* '\n' is the next char after the gap */
+
+    /* control variables are incremented */
     ck_assert_int_eq('\n', CURR_LBUF->buffer[9]);
-
-    /* buffer's cursor is incremented */
     ck_assert_int_eq(1, CURR_LBUF->cursor);
-
-    /* col is incremented */
     ck_assert_int_eq(1, s->col);
-
-    /* line's visual end is incremented */
     ck_assert_int_eq(1, CURR_LINE->visual_end);
 
     screen_destroy(s);
@@ -387,6 +373,88 @@ START_TEST (move_right) {
     screen_destroy(s);
 } END_TEST
 
+START_TEST (move_up) {
+    Screen s = screen_init(&test_arguments);
+
+    /* at the first line *****************************************************/
+
+    /* initial state */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('\n', CURR_LBUF->buffer[0]);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(0, CURR_LINE->visual_end);
+
+    handle_move_up(s);
+
+    /* nothing has changed */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('\n', CURR_LBUF->buffer[0]);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(0, CURR_LINE->visual_end);
+
+    /* cursor position bigger than length of the previous line ***************/
+
+    /* prepare for testing */
+    handle_insert_char(s, 'a');
+    handle_insert_char(s, 'b');
+    handle_enter(s);
+    handle_insert_char(s, 'c');
+    handle_insert_char(s, 'd');
+    handle_insert_char(s, 'e');
+    handle_insert_char(s, 'f');
+
+    /* state before move */
+    ck_assert_int_eq(2, s->n_lines);
+    ck_assert_int_eq(4, s->col);
+    ck_assert_int_eq(1, s->row);
+    ck_assert_int_eq('f', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(4, CURR_LBUF->cursor);
+    ck_assert_int_eq(4, CURR_LINE->visual_end);
+
+    handle_move_up(s);
+
+    /* state after move, at the end of the previous line */
+    ck_assert_int_eq(2, s->n_lines);
+    ck_assert_int_eq(2, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('b', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(2, CURR_LBUF->cursor);
+    ck_assert_int_eq(2, CURR_LINE->visual_end);
+
+    /* cursor position smaller than length of the previous line **************/
+
+    /* prepare for testing, line is longer than the next one */
+    handle_insert_char(s, '1');
+    handle_insert_char(s, '2');
+    handle_insert_char(s, '3');
+    handle_insert_char(s, '4');
+    handle_move_down(s);
+
+    /* state before move */
+    ck_assert_int_eq(2, s->n_lines);
+    ck_assert_int_eq(4, s->col);
+    ck_assert_int_eq(1, s->row);
+    ck_assert_int_eq('f', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(4, CURR_LBUF->cursor);
+    ck_assert_int_eq(4, CURR_LINE->visual_end);
+
+    handle_move_up(s);
+
+    /* state after move, at the same position on the upper line */
+    ck_assert_int_eq(2, s->n_lines);
+    ck_assert_int_eq(4, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('2', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(4, CURR_LBUF->cursor);
+    ck_assert_int_eq(6, CURR_LINE->visual_end);
+
+    screen_destroy(s);
+} END_TEST
+
 Suite* s_input() {
     Suite* s_input = suite_create("input");
 
@@ -394,6 +462,7 @@ Suite* s_input() {
     tcase_add_test(tc_movement, letter_insertion);
     tcase_add_test(tc_movement, move_left);
     tcase_add_test(tc_movement, move_right);
+    tcase_add_test(tc_movement, move_up);
     suite_add_tcase(s_input, tc_movement);
 
     return s_input;
