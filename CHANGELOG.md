@@ -4,6 +4,16 @@
 
 ---
 
+#### 11.05.2017
+
+* Added tests for the tab key
+
+#### 9.05.2017
+
+* Added tests for the enter key
+* Added tests for moving down
+* Added tests for moving up
+
 #### 8.05.2017
 
 * Added tests for moving right
