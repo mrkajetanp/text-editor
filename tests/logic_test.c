@@ -646,6 +646,35 @@ START_TEST (test_enter) {
     screen_destroy(s);
 } END_TEST
 
+START_TEST (test_tab) {
+    Screen s = screen_init(&test_arguments);
+
+    /* initial setup */
+    handle_insert_char(s, 'a');
+    handle_insert_char(s, 'b');
+    handle_move_left(s);
+
+    /* initial state */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(1, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('a', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(1, CURR_LBUF->cursor);
+    ck_assert_int_eq(2, CURR_LINE->visual_end);
+
+    handle_tab(s);
+
+    /* state after tab */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(5, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('\t', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(2, CURR_LBUF->cursor);
+    ck_assert_int_eq(6, CURR_LINE->visual_end);
+
+    screen_destroy(s);
+} END_TEST
+
 Suite* s_input() {
     Suite* s_input = suite_create("input");
 
@@ -656,6 +685,7 @@ Suite* s_input() {
     tcase_add_test(tc_movement, test_move_up);
     tcase_add_test(tc_movement, test_move_down);
     tcase_add_test(tc_movement, test_enter);
+    tcase_add_test(tc_movement, test_tab);
     suite_add_tcase(s_input, tc_movement);
 
     return s_input;
