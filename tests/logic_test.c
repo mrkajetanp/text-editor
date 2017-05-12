@@ -1,3 +1,23 @@
+/************************************************************************
+ * text-editor - a simple text editor                                   *
+ *                                                                      *
+ * Copyright (C) 2017 Kajetan Puchalski                                 *
+ *                                                                      *
+ * This program is free software: you can redistribute it and/or modify *
+ * it under the terms of the GNU General Public License as published by *
+ * the Free Software Foundation, either version 3 of the License, or    *
+ * (at your option) any later version.                                  *
+ *                                                                      *
+ * This program is distributed in the hope that it will be useful,      *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of       *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                 *
+ * See the GNU General Public License for more details.                 *
+ *                                                                      *
+ * You should have received a copy of the GNU General Public License    *
+ * along with this program. If not, see http://www.gnu.org/licenses/.   *
+ *                                                                      *
+ ************************************************************************/
+
 #include <stdlib.h>
 
 #include <check.h>
@@ -675,6 +695,108 @@ START_TEST (test_tab) {
     screen_destroy(s);
 } END_TEST
 
+START_TEST (test_backspace) {
+    Screen s = screen_init(&test_arguments);
+
+    /* at the beginning of the first line, do nothing ************************/
+
+    handle_insert_char(s, 'a');
+    handle_move_left(s);
+
+    /* initial state */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('a', CURR_LBUF->buffer[CURR_LBUF->cursor]);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(1, CURR_LINE->visual_end);
+
+    handle_backspace(s);
+
+    /* state has not changed */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('a', CURR_LBUF->buffer[CURR_LBUF->cursor]);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(1, CURR_LINE->visual_end);
+
+    /* middle of the line on normal char *************************************/
+
+    handle_move_right(s);
+
+    /* state before backspace */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(1, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('a', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(1, CURR_LBUF->cursor);
+    ck_assert_int_eq(1, CURR_LINE->visual_end);
+
+    handle_backspace(s);
+
+    /* state after backspace */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('\0', CURR_LBUF->buffer[CURR_LBUF->cursor]);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(0, CURR_LINE->visual_end);
+
+    /* middle of the line on tab *********************************************/
+
+    handle_insert_char(s, 'a');
+    handle_tab(s);
+    handle_insert_char(s, 'b');
+    handle_move_left(s);
+
+    /* state before backspace */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(5, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('\t', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(2, CURR_LBUF->cursor);
+    ck_assert_int_eq(6, CURR_LINE->visual_end);
+
+    handle_backspace(s);
+
+    /* state after backspace */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(1, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('a', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(1, CURR_LBUF->cursor);
+    ck_assert_int_eq(2, CURR_LINE->visual_end);
+
+    /* at the beginning of the line, merge with upper line *******************/
+
+    handle_move_right(s);
+    handle_enter(s);
+    handle_insert_char(s, 'c');
+    handle_move_left(s);
+
+    /* state before backspace */
+    ck_assert_int_eq(2, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(1, s->row);
+    ck_assert_int_eq('c', CURR_LBUF->buffer[CURR_LBUF->cursor]);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(1, CURR_LINE->visual_end);
+
+    handle_backspace(s);
+
+    /* state after backspace */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(2, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('a', CURR_LBUF->buffer[0]);
+    ck_assert_int_eq('c', CURR_LBUF->buffer[CURR_LBUF->cursor]);
+    ck_assert_int_eq(2, CURR_LBUF->cursor);
+    ck_assert_int_eq(3, CURR_LINE->visual_end);
+
+    screen_destroy(s);
+} END_TEST
+
 Suite* s_input() {
     Suite* s_input = suite_create("input");
 
@@ -686,6 +808,7 @@ Suite* s_input() {
     tcase_add_test(tc_movement, test_move_down);
     tcase_add_test(tc_movement, test_enter);
     tcase_add_test(tc_movement, test_tab);
+    tcase_add_test(tc_movement, test_backspace);
     suite_add_tcase(s_input, tc_movement);
 
     return s_input;
