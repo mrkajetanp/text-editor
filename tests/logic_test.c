@@ -797,6 +797,52 @@ START_TEST (test_backspace) {
     screen_destroy(s);
 } END_TEST
 
+START_TEST (test_split_line) {
+    Screen s = screen_init(&test_arguments);
+
+    for (int i = 0 ; i < 5 ; ++i)
+        handle_insert_char(s, 'a'+i);
+
+    for (int i = 0 ; i < 3 ; ++i)
+        handle_move_left(s);
+
+    /* initial state */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(2, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('b', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(2, CURR_LBUF->cursor);
+    ck_assert_int_eq(5, CURR_LINE->visual_end);
+
+    /* split line, mimic what enter in the middle of the line does */
+    split_line(s);
+    s->row++;
+    s->col = 0;
+
+    /* state after split on the newly created line */
+    ck_assert_int_eq(2, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(1, s->row);
+    ck_assert_int_eq('c', CURR_LBUF->buffer[CURR_LBUF->cursor]);
+    ck_assert_int_eq('d', CURR_LBUF->buffer[CURR_LBUF->cursor+1]);
+    ck_assert_int_eq('e', CURR_LBUF->buffer[CURR_LBUF->cursor+2]);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(3, CURR_LINE->visual_end);
+
+    handle_move_up(s);
+
+    /* state after split on the splitted line */
+    ck_assert_int_eq(2, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('a', CURR_LBUF->buffer[CURR_LBUF->cursor]);
+    ck_assert_int_eq('b', CURR_LBUF->buffer[CURR_LBUF->cursor+1]);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(2, CURR_LINE->visual_end);
+
+    screen_destroy(s);
+} END_TEST
+
 Suite* s_input() {
     Suite* s_input = suite_create("input");
 
@@ -810,6 +856,10 @@ Suite* s_input() {
     tcase_add_test(tc_movement, test_tab);
     tcase_add_test(tc_movement, test_backspace);
     suite_add_tcase(s_input, tc_movement);
+
+    TCase* tc_line_management = tcase_create("line management");
+    tcase_add_test(tc_line_management, test_split_line);
+    suite_add_tcase(s_input, tc_line_management);
 
     return s_input;
 }

@@ -4,6 +4,14 @@
 
 ---
 
+#### 13.05.2017
+
+* Added tests for splitting the line
+
+#### 12.05.2017
+
+* Added tests for the backspace key
+
 #### 11.05.2017
 
 * Added tests for the tab key
