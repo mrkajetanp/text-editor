@@ -4,6 +4,10 @@
 
 ---
 
+#### 14.05.2017
+
+* Added tests for merging the line
+
 #### 13.05.2017
 
 * Added tests for splitting the line

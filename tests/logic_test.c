@@ -843,6 +843,55 @@ START_TEST (test_split_line) {
     screen_destroy(s);
 } END_TEST
 
+START_TEST (test_merge_line_up) {
+    Screen s = screen_init(&test_arguments);
+
+    handle_insert_char(s, 'a');
+    handle_insert_char(s, 'b');
+    handle_enter(s);
+    handle_insert_char(s, 'c');
+    handle_insert_char(s, 'd');
+    handle_insert_char(s, 'e');
+    handle_move_left(s);
+    handle_move_left(s);
+    handle_move_left(s);
+
+    /* initial state, lower line */
+    ck_assert_int_eq(2, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(1, s->row);
+    ck_assert_int_eq('c', CURR_LBUF->buffer[CURR_LBUF->cursor]);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(3, CURR_LINE->visual_end);
+
+    handle_move_up(s);
+
+    /* initial state, upper line */
+    ck_assert_int_eq(2, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq('a', CURR_LBUF->buffer[CURR_LBUF->cursor]);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(2, CURR_LINE->visual_end);
+
+    handle_move_down(s);
+    merge_line_up(s);
+
+    /* state after split on the newly created line */
+    ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(2, s->col);
+    ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq(2, CURR_LBUF->cursor);
+    ck_assert_int_eq(5, CURR_LINE->visual_end);
+    ck_assert_int_eq('a', CURR_LBUF->buffer[CURR_LBUF->cursor-2]);
+    ck_assert_int_eq('b', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq('c', CURR_LBUF->buffer[CURR_LBUF->cursor]);
+    ck_assert_int_eq('d', CURR_LBUF->buffer[CURR_LBUF->cursor+1]);
+    ck_assert_int_eq('e', CURR_LBUF->buffer[CURR_LBUF->cursor+2]);
+
+    screen_destroy(s);
+} END_TEST
+
 Suite* s_input() {
     Suite* s_input = suite_create("input");
 
@@ -859,6 +908,7 @@ Suite* s_input() {
 
     TCase* tc_line_management = tcase_create("line management");
     tcase_add_test(tc_line_management, test_split_line);
+    tcase_add_test(tc_line_management, test_merge_line_up);
     suite_add_tcase(s_input, tc_line_management);
 
     return s_input;
