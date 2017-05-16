@@ -93,7 +93,7 @@ void render_contents(Screen s) {
     /*************************************************************************/
 
     /* render every line */
-    g_list_foreach(s->lines, render_line, s);
+    g_list_foreach(s->top_line, render_line, s);
 
     /*************************************************************************/
     /*                         Render debug mode info                        */
@@ -156,6 +156,9 @@ void render_contents(Screen s) {
         }
 
         mvwprintw(s->debug_info, 7, 2, "File name: %s", s->args->file_name);
+
+        mvwprintw(s->debug_info, 8, 2, "Top line num: %d", s->top_line_num);
+        mvwprintw(s->debug_info, 9, 2, "COLS: %d LINES: %d", COLS, LINES);
     }
 
     /*************************************************************************/
@@ -184,7 +187,7 @@ void render_line_numbers(Screen s) {
 
     /* render actual numbers */
     for (int i = 0 ; i < s->n_lines ; ++i)
-        mvwprintw(s->line_numbers, i, 0, "%3d", i+1);
+        mvwprintw(s->line_numbers, i, 0, "%3d", s->top_line_num+i+1);
 
     /* disable the color */
     wattroff(s->line_numbers, COLOR_PAIR(3));

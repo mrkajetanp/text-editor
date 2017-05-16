@@ -73,6 +73,12 @@ struct _screen {
 
     /* Fields related to rendering *******************************************/
 
+    /* line to start rendering at */
+    GList* top_line;
+
+    /* line number to start rendering at */
+    int top_line_num;
+
     /* visual cursor row */
     int row;
 

@@ -224,6 +224,11 @@ void handle_move_down(Screen s) {
     if (s->row+1 == s->n_lines)
         return;
 
+    if (s->row == LINES) {
+        s->top_line = s->top_line->next;
+        s->top_line_num++;
+    }
+
     /* move one line down */
     s->cur_line = s->cur_line->next;
 
@@ -256,6 +261,10 @@ void handle_enter(Screen s) {
     if (s->col == 0) {
         /* if at the beginning of the line, just insert a line above */
         screen_new_line_above(s);
+
+        if (s->row == 0)
+            s->top_line = s->lines;
+
     } else if (s->col == CURR_LINE->visual_end) {
         /* if at the end of the line, insert a line below */
         screen_new_line_under(s);
@@ -267,6 +276,12 @@ void handle_enter(Screen s) {
     /* move the visual cursor to the beginning of the new line */
     s->row++;
     s->col = 0;
+
+    if (s->row == LINES) {
+        s->top_line = s->top_line->next;
+        s->top_line_num++;
+        s->row--;
+    }
 }
 
 void handle_tab(Screen s) {

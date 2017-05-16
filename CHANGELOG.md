@@ -4,6 +4,12 @@
 
 ---
 
+#### 16.05.2017
+
+* Started implementing handling of number of lines exceeding the window
+	* Enter at the bottom properly adds a new line and moves down the render
+
+
 #### 14.05.2017
 
 * Added tests for merging the line

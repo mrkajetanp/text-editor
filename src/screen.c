@@ -68,6 +68,11 @@ Screen screen_init(struct Arguments* args) {
     s->col = 0;
     s->row = 0;
 
+    /* set first line to render */
+    s->top_line = s->lines;
+
+    s->top_line_num = 0;
+
     s->line_numbers = NULL;
     s->contents = NULL;
     s->debug_info = NULL;
