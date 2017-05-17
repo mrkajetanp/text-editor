@@ -23,6 +23,7 @@
 ## Bux Fixes
 
 * Handle number of lines longer than the height of the window
+    * Fix rendering end
 
 ## Improvements
 

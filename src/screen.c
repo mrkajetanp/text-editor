@@ -61,6 +61,9 @@ Screen screen_init(struct Arguments* args) {
     /* set the current line pointer */
     s->cur_line = s->lines;
 
+    /* set the current line number */
+    s->cur_l_num = 0;
+
     /* set the number of lines */
     s->n_lines = 1;
 

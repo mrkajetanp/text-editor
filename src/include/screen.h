@@ -71,6 +71,9 @@ struct _screen {
     /* pointer to the current line */
     GList* cur_line;
 
+    /* number of the current line */
+    int cur_l_num;
+
     /* Fields related to rendering *******************************************/
 
     /* line to start rendering at */
