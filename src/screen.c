@@ -109,7 +109,7 @@ void screen_new_line_under(Screen s) {
     Line new_line = line_create();
 
     /* insert the new line buffer into the list in its correct position */
-    s->lines = g_list_insert(s->lines, new_line, s->row+1);
+    s->lines = g_list_insert(s->lines, new_line, s->cur_l_num+1);
 
     /* set the current line to the new (next) one */
     s->cur_line = s->cur_line->next;
@@ -124,7 +124,7 @@ void screen_new_line_above(Screen s) {
     Line new_line = line_create();
 
     /* insert the new line buffer into the list in its correct position */
-    s->lines = g_list_insert(s->lines, new_line, s->row);
+    s->lines = g_list_insert(s->lines, new_line, s->cur_l_num);
 
     /* increase the number of lines */
     s->n_lines++;

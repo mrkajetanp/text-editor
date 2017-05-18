@@ -4,9 +4,18 @@
 
 ---
 
+#### 18.05.2017
+
+* Switched screen\_new\_line\_under and screen\_new\_line\_above to cur\l_\_num instead of s->row
+    * Regarding issue #1
+* Implemented moving up and down with more lines using right/left arrow
+    * Regarding issue #1
+* Implemented moving down with more lines (down arrow key)
+    * Regarding issue #1
+
 #### 17.05.2017
 
-* Implemented moving down with more lines
+* Implemented moving up with more lines
     * Regarding issue #1
 
 #### 16.05.2017

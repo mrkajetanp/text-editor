@@ -116,11 +116,26 @@ void handle_insert_char(Screen s, char c) {
 /* handle the left arrow key */
 void handle_move_left(Screen s) {
     /* if at the beginning of the first line, do nothing */
-    if (s->row == 0 && s->col == 0)
+    if (s->cur_l_num == 0 && s->col == 0)
         return;
 
     /* if at the beginning of the line */
-    if (s->col == 0) {
+    if (s->row == 0 && s->col == 0) {
+        s->top_line = s->top_line->prev;
+        s->top_line_num--;
+
+        render_line_numbers(s);
+
+        /* go to the upper line */
+        s->cur_line = s->cur_line->prev;
+
+        /* move visual & actual cursor to the end of the line */
+        s->col = CURR_LINE->visual_end;
+        gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
+
+        s->cur_l_num--;
+    }
+    else if (s->col == 0) {
         /* visual cursor to the upper row */
         s->row--;
 
@@ -158,11 +173,29 @@ void handle_move_left(Screen s) {
 /* handle the right arrow key */
 void handle_move_right(Screen s) {
     /* if at the end of the last line, do nothing */
-    if (s->row+1 == s->n_lines && s->col == CURR_LINE->visual_end)
+    if (s->cur_l_num+1 == s->n_lines && s->col == CURR_LINE->visual_end)
         return;
 
+    /* TODO: refactor? */
+
+    /* at the end of the bottom line */
+    if (s->row+1 == LINES && s->col == CURR_LINE->visual_end) {
+        s->top_line = s->top_line->next;
+        s->top_line_num++;
+
+        render_line_numbers(s);
+
+        /* move one line down */
+        s->cur_line = s->cur_line->next;
+
+        s->col = 0;
+        s->cur_l_num++;
+
+        /* move actual cursor to the beginning of the line */
+        gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
+    }
     /* if at the end of the line */
-    if (s->col == CURR_LINE->visual_end) {
+    else if (s->col == CURR_LINE->visual_end) {
         /* move one line down */
         s->cur_line = s->cur_line->next;
 
