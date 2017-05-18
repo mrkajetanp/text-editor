@@ -194,6 +194,7 @@ void handle_move_up(Screen s) {
     if (s->cur_l_num == 0)
         return;
 
+    /* TODO: refactor this */
     if (s->row == 0) {
         s->top_line = s->top_line->prev;
         s->top_line_num--;
@@ -233,12 +234,16 @@ void handle_move_up(Screen s) {
 /* handle the down arrow key */
 void handle_move_down(Screen s) {
     /* if at the last line, do nothing */
-    if (s->row+1 == s->n_lines)
+    if (s->cur_l_num+1 == s->n_lines)
         return;
 
-    if (s->row == LINES) {
+    /* TODO: refactor this */
+    if (s->row+1 == LINES) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
+        s->row--;
+
+        render_line_numbers(s);
     }
 
     /* move one line down */

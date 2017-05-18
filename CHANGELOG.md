@@ -4,6 +4,11 @@
 
 ---
 
+#### 17.05.2017
+
+* Implemented moving down with more lines
+    * Regarding issue #1
+
 #### 16.05.2017
 
 * Started implementing handling of number of lines exceeding the window

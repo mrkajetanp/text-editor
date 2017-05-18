@@ -92,8 +92,15 @@ void render_contents(Screen s) {
     /*                       Render current buffer contents                  */
     /*************************************************************************/
 
-    /* render every line */
-    g_list_foreach(s->top_line, render_line, s);
+    /* render every line, stop if window is filled */
+    int cnt = 0;
+    for (GList* curr = s->top_line ; curr != NULL ; curr = curr->next) {
+        render_line(curr->data, s);
+        cnt++;
+
+        if (cnt >= LINES)
+            break;
+    }
 
     /*************************************************************************/
     /*                         Render debug mode info                        */
