@@ -4,6 +4,12 @@
 
 ---
 
+#### 19.05.2017
+
+* Added a field in screen containing the number of visual rows
+    * Synced with ncurses's LINES but independent
+* added testing field cur\_l\_num to test\_split\_line
+
 #### 18.05.2017
 
 * Switched screen\_new\_line\_under and screen\_new\_line\_above to cur\l_\_num instead of s->row

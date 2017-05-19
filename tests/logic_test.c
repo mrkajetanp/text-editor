@@ -817,12 +817,14 @@ START_TEST (test_split_line) {
     /* split line, mimic what enter in the middle of the line does */
     split_line(s);
     s->row++;
+    s->cur_l_num++;
     s->col = 0;
 
     /* state after split on the newly created line */
     ck_assert_int_eq(2, s->n_lines);
     ck_assert_int_eq(0, s->col);
     ck_assert_int_eq(1, s->row);
+    ck_assert_int_eq(1, s->cur_l_num);
     ck_assert_int_eq('c', CURR_LBUF->buffer[CURR_LBUF->cursor]);
     ck_assert_int_eq('d', CURR_LBUF->buffer[CURR_LBUF->cursor+1]);
     ck_assert_int_eq('e', CURR_LBUF->buffer[CURR_LBUF->cursor+2]);
@@ -835,6 +837,7 @@ START_TEST (test_split_line) {
     ck_assert_int_eq(2, s->n_lines);
     ck_assert_int_eq(0, s->col);
     ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq(0, s->cur_l_num);
     ck_assert_int_eq('a', CURR_LBUF->buffer[CURR_LBUF->cursor]);
     ck_assert_int_eq('b', CURR_LBUF->buffer[CURR_LBUF->cursor+1]);
     ck_assert_int_eq(0, CURR_LBUF->cursor);

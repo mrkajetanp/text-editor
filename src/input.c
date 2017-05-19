@@ -84,6 +84,8 @@ void insert_mode(Screen s) {
         break;
 
     case KEY_RESIZE:
+        /* adjust number of rows */
+        s->rows = LINES;
         render_line_numbers(s);
         break;
 
@@ -179,7 +181,7 @@ void handle_move_right(Screen s) {
     /* TODO: refactor? */
 
     /* at the end of the bottom line */
-    if (s->row+1 == LINES && s->col == CURR_LINE->visual_end) {
+    if (s->row+1 == s->rows && s->col == CURR_LINE->visual_end) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
 
@@ -271,7 +273,7 @@ void handle_move_down(Screen s) {
         return;
 
     /* TODO: refactor this */
-    if (s->row+1 == LINES) {
+    if (s->row+1 == s->rows) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
         s->row--;
@@ -329,7 +331,7 @@ void handle_enter(Screen s) {
     s->cur_l_num++;
     s->col = 0;
 
-    if (s->row == LINES) {
+    if (s->row == s->rows) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
         s->row--;

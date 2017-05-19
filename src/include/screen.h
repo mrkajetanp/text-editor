@@ -85,6 +85,9 @@ struct _screen {
     /* visual cursor row */
     int row;
 
+    /* number of visual rows */
+    int rows;
+
     /* visual cursor column */
     int col;
 

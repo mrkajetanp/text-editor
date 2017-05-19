@@ -71,6 +71,9 @@ Screen screen_init(struct Arguments* args) {
     s->col = 0;
     s->row = 0;
 
+    /* default number of rows, useful for debugging */
+    s->rows = 10;
+
     /* set first line to render */
     s->top_line = s->lines;
 
@@ -94,6 +97,9 @@ void screen_init_ncurses(Screen s) {
     s->contents = newwin(LINES,
                          (s->args->debug_mode) ? COLS-26-4 : COLS-4,
                          0, 4);
+
+    /* set number of rows depending on the window */
+    s->rows = LINES;
 
     /* if in debug mode, create additional window for debug information */
     if (s->args->debug_mode) {

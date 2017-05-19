@@ -98,7 +98,7 @@ void render_contents(Screen s) {
         render_line(curr->data, s);
         cnt++;
 
-        if (cnt >= LINES)
+        if (cnt >= s->rows)
             break;
     }
 
@@ -165,7 +165,7 @@ void render_contents(Screen s) {
         mvwprintw(s->debug_info, 7, 2, "File name: %s", s->args->file_name);
 
         mvwprintw(s->debug_info, 8, 2, "Top line num: %d", s->top_line_num);
-        mvwprintw(s->debug_info, 9, 2, "COLS: %d LINES: %d", COLS, LINES);
+        mvwprintw(s->debug_info, 9, 2, "s->rows: %d", s->rows);
         mvwprintw(s->debug_info, 10, 2, "Curr l_num: %d", s->cur_l_num);
     }
 
