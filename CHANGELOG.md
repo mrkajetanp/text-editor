@@ -6,13 +6,15 @@
 
 #### 19.05.2017
 
+* Implemented moving lines up using backspace at top left corner
+* Widened line numbers bar to 5 characters (4 digits + space)
 * Added a field in screen containing the number of visual rows
     * Synced with ncurses's LINES but independent
 * added testing field cur\_l\_num to test\_split\_line
 
 #### 18.05.2017
 
-* Switched screen\_new\_line\_under and screen\_new\_line\_above to cur\l_\_num instead of s->row
+* Switched screen\_new\_line\_under and screen\_new\_line\_above to cur\_l\_num instead of s->row
     * Regarding issue #1
 * Implemented moving up and down with more lines using right/left arrow
     * Regarding issue #1

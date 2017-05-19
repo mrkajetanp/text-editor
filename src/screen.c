@@ -91,12 +91,12 @@ Screen screen_init(struct Arguments* args) {
 
 void screen_init_ncurses(Screen s) {
     /* create a window for line numbers */
-    s->line_numbers = newwin(LINES, 4, 0, 0);
+    s->line_numbers = newwin(LINES, 5, 0, 0);
 
     /* create a window for contents */
     s->contents = newwin(LINES,
-                         (s->args->debug_mode) ? COLS-26-4 : COLS-4,
-                         0, 4);
+                         (s->args->debug_mode) ? COLS-26-5 : COLS-5,
+                         0, 5);
 
     /* set number of rows depending on the window */
     s->rows = LINES;

@@ -194,14 +194,14 @@ void render_line_numbers(Screen s) {
     wattron(s->line_numbers, COLOR_PAIR(3));
 
     /* render actual numbers */
-    for (int i = 0 ; i < s->n_lines ; ++i)
-        mvwprintw(s->line_numbers, i, 0, "%3d", s->top_line_num+i+1);
+    for (int i = 0 ; i < s->n_lines-s->top_line_num ; ++i)
+        mvwprintw(s->line_numbers, i, 0, "%4d", s->top_line_num+i+1);
 
     /* disable the color */
     wattroff(s->line_numbers, COLOR_PAIR(3));
 
     /* render tildes on non-existing lines */
-    for (int i = s->n_lines ; i <= LINES ; ++i)
+    for (int i = s->n_lines-s->top_line_num ; i <= s->rows ; ++i)
         mvwprintw(s->line_numbers, i, 3, "~");
 
     wrefresh(s->line_numbers);

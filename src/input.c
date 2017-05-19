@@ -353,11 +353,20 @@ void handle_tab(Screen s) {
 /* handle the backspace key */
 void handle_backspace(Screen s) {
     /* if at the beginning of the first line, do nothing */
-    if (s->row == 0 && s->col == 0)
+    if (s->cur_l_num == 0 && s->col == 0)
         return;
 
-    /* if at the beginning of the line */
-    if (s->col == 0) {
+    if (s->row == 0 && s->col == 0) {
+        s->top_line = s->top_line->prev;
+        s->top_line_num--;
+        merge_line_up(s);
+        s->cur_l_num--;
+        s->row = 0;
+
+        render_line_numbers(s);
+
+        /* if at the beginning of the line */
+    } else if (s->col == 0) {
         /* merge the line with the upper one */
         merge_line_up(s);
         s->cur_l_num--;
