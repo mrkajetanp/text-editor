@@ -4,6 +4,10 @@
 
 ---
 
+#### 20.05.2017
+
+* When moving up/down onto a tab, cursor now ends up before it
+
 #### 19.05.2017
 
 * Implemented moving lines up using backspace at top left corner

@@ -259,6 +259,10 @@ void handle_move_up(Screen s) {
         /* keep moving right until current column reaches the old one */
         while (s->col < old_col)
             handle_move_right(s);
+
+        /* if cursor ends up further than s->col was i.e. (on a tab) move before it */
+        if (old_col < s->col)
+            handle_move_left(s);
     }
 
     s->cur_l_num--;
@@ -302,6 +306,10 @@ void handle_move_down(Screen s) {
         /* keep moving right until current column reaches the old one */
         while (s->col < old_col)
             handle_move_right(s);
+
+        /* if cursor ends up further than s->col was i.e. (on a tab) move before it */
+        if (old_col < s->col)
+            handle_move_left(s);
     }
 
     s->cur_l_num++;

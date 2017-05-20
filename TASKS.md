@@ -20,11 +20,6 @@
 * Vim mode
 * Undo using a stack of recent operations
 
-## Bux Fixes
-
-* Handle number of lines longer than the height of the window
-    * Fix rendering end
-
 ## Improvements
 
-* When moving up/down onto a tab, cursor should end up before it
+...
