@@ -20,6 +20,12 @@
 * Vim mode
 * Undo using a stack of recent operations
 
+## Bug Fixes
+
+* Fix pressing enter at the last visual column
+
 ## Improvements
+
+* In debug mode, do not render new line's $ if it line_length == visual cols
 
 ...

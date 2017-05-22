@@ -4,6 +4,13 @@
 
 ---
 
+#### 22.05.2017
+
+* Added wraps field to the line struct
+* Added cols field to the screen struct
+* Fixed visual cursor position when wrapping lines
+* Started handling line wraps
+
 #### 20.05.2017
 
 * When moving up/down onto a tab, cursor now ends up before it

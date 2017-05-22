@@ -84,8 +84,10 @@ void insert_mode(Screen s) {
         break;
 
     case KEY_RESIZE:
-        /* adjust number of rows */
+        /* adjust the number of rows and cols */
         s->rows = LINES;
+        s->cols = (s->args->debug_mode) ? COLS-32 : COLS;
+
         render_line_numbers(s);
         break;
 
@@ -104,6 +106,12 @@ void insert_mode(Screen s) {
 
 /* inserts a char into the current screen */
 void handle_insert_char(Screen s, char c) {
+    if (s->col == s->cols) {
+        CURR_LINE->wraps++;
+        s->col = -1;
+        s->row++;
+    }
+
     /* put a char in a line buffer */
     gap_buffer_put(CURR_LBUF, c);
 
@@ -361,8 +369,14 @@ void handle_tab(Screen s) {
 /* handle the backspace key */
 void handle_backspace(Screen s) {
     /* if at the beginning of the first line, do nothing */
-    if (s->cur_l_num == 0 && s->col == 0)
+    if (s->cur_l_num == 0 && s->col == 0 && CURR_LINE->wraps == 0)
         return;
+
+    if (s->col == 0 && CURR_LINE->wraps > 0) {
+        CURR_LINE->wraps--;
+        s->col = s->cols+1;
+        s->row--;
+    }
 
     if (s->row == 0 && s->col == 0) {
         s->top_line = s->top_line->prev;

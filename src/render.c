@@ -132,12 +132,15 @@ void render_contents(Screen s) {
         mvwprintw(s->debug_info, 3, 2, "Visual line end: %d",
                   CURR_LINE->visual_end);
 
+        mvwprintw(s->debug_info, 4, 2, "Line wraps: %d",
+                  CURR_LINE->wraps);
+
         /* end of the current line */
-        mvwprintw(s->debug_info, 4, 2,
+        mvwprintw(s->debug_info, 5, 2,
                   "Line end: %d", CURR_LBUF->end - GAP_SIZE);
 
         /* gap start & end */
-        mvwprintw(s->debug_info, 5, 2,
+        mvwprintw(s->debug_info, 6, 2,
                  "Line gap: %d - %d", CURR_LBUF->gap_start, CURR_LBUF->gap_end);
 
 
@@ -145,28 +148,29 @@ void render_contents(Screen s) {
         switch (CURR_LBUF->buffer[CURSOR_CHAR]) {
 
         case '\n':
-            mvwprintw(s->debug_info, 6, 2, "Line cursor on: (\\n)");
+            mvwprintw(s->debug_info, 7, 2, "Line cursor on: (\\n)");
             break;
 
         case '\0':
-            mvwprintw(s->debug_info, 6, 2, "Line cursor on: (\\0)");
+            mvwprintw(s->debug_info, 7, 2, "Line cursor on: (\\0)");
             break;
 
         case '\t':
-            mvwprintw(s->debug_info, 6, 2, "Line cursor on: (\\t)");
+            mvwprintw(s->debug_info, 7, 2, "Line cursor on: (\\t)");
             break;
 
         default:
-            mvwprintw(s->debug_info, 6, 2, "Line cursor on: (%c)",
+            mvwprintw(s->debug_info, 7, 2, "Line cursor on: (%c)",
                       CURR_LBUF->buffer[CURSOR_CHAR]);
             break;
         }
 
-        mvwprintw(s->debug_info, 7, 2, "File name: %s", s->args->file_name);
+        mvwprintw(s->debug_info, 8, 2, "File name: %s", s->args->file_name);
 
-        mvwprintw(s->debug_info, 8, 2, "Top line num: %d", s->top_line_num);
-        mvwprintw(s->debug_info, 9, 2, "s->rows: %d", s->rows);
+        mvwprintw(s->debug_info, 9, 2, "Top line num: %d", s->top_line_num);
         mvwprintw(s->debug_info, 10, 2, "Curr l_num: %d", s->cur_l_num);
+        mvwprintw(s->debug_info, 11, 2, "s->rows: %d", s->rows);
+        mvwprintw(s->debug_info, 12, 2, "s->cols: %d", s->cols);
     }
 
     /*************************************************************************/

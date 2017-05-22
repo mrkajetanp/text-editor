@@ -45,6 +45,9 @@ struct _line {
 
     /* visual end of the line */
     int visual_end;
+
+    /* number of times the line is wrapped */
+    int wraps;
 };
 
 /* creates a new line */
@@ -90,6 +93,9 @@ struct _screen {
 
     /* visual cursor column */
     int col;
+
+    /* number of visual cols */
+    int cols;
 
     /* window with buffer contents */
     WINDOW* contents;

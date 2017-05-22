@@ -36,6 +36,7 @@ Line line_create() {
 
     l->buff = new_line;
     l->visual_end = 0;
+    l->wraps = 0;
 
     return l;
 }
@@ -71,8 +72,9 @@ Screen screen_init(struct Arguments* args) {
     s->col = 0;
     s->row = 0;
 
-    /* default number of rows, useful for debugging */
+    /* default number of rows and cols, useful for debugging */
     s->rows = 10;
+    s->cols = 30;
 
     /* set first line to render */
     s->top_line = s->lines;
@@ -98,8 +100,9 @@ void screen_init_ncurses(Screen s) {
                          (s->args->debug_mode) ? COLS-26-5 : COLS-5,
                          0, 5);
 
-    /* set number of rows depending on the window */
+    /* set number of rows and cols depending on the window */
     s->rows = LINES;
+    s->cols = (s->args->debug_mode) ? COLS-32 : COLS;
 
     /* if in debug mode, create additional window for debug information */
     if (s->args->debug_mode) {
