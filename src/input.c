@@ -180,16 +180,21 @@ void handle_move_left(Screen s) {
 #define TEMP_CURSOR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ? \
     CURR_LBUF->cursor+1 : CURR_LBUF->cursor+GAP_SIZE
 
+#define CURR_VIS_END ((CURR_LINE->wraps != 0) ?                         \
+                      CURR_LINE->visual_end - s->cols*CURR_LINE->wraps - CURR_LINE->wraps : \
+                      CURR_LINE->visual_end - s->cols*CURR_LINE->wraps)
+
 /* handle the right arrow key */
 void handle_move_right(Screen s) {
     /* if at the end of the last line, do nothing */
-    if (s->cur_l_num+1 == s->n_lines && s->col == CURR_LINE->visual_end)
+    if (s->cur_l_num+1 == s->n_lines && s->col == CURR_VIS_END)
         return;
 
-    /* TODO: refactor? */
+    /* TODO: refactor */
+    /* lengthy if condition could be a macro */
 
     /* at the end of the bottom line */
-    if (s->row+1 == s->rows && s->col == CURR_LINE->visual_end) {
+    if (s->row+1 == s->rows && s->col == CURR_LINE->visual_end - s->cols*CURR_LINE->wraps) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
 
@@ -205,7 +210,7 @@ void handle_move_right(Screen s) {
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     }
     /* if at the end of the line */
-    else if (s->col == CURR_LINE->visual_end) {
+    else if (s->col == CURR_LINE->visual_end - s->cols*CURR_LINE->wraps) {
         /* move one line down */
         s->cur_line = s->cur_line->next;
 

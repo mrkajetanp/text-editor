@@ -4,6 +4,10 @@
 
 ---
 
+#### 23.05.2017
+
+* Changed move right handling to consider wrapping lines
+
 #### 22.05.2017
 
 * Added wraps field to the line struct
