@@ -108,6 +108,7 @@ void insert_mode(Screen s) {
 void handle_insert_char(Screen s, char c) {
     if (s->col == s->cols) {
         CURR_LINE->wraps++;
+        CURR_LINE->wrap++;
         s->col = -1;
         s->row++;
     }
@@ -126,13 +127,14 @@ void handle_insert_char(Screen s, char c) {
 /* handle the left arrow key */
 void handle_move_left(Screen s) {
     /* if at the beginning of the first line, do nothing */
-    if (s->cur_l_num == 0 && s->col == 0 && CURR_LINE->wraps == 0)
+    if (s->cur_l_num == 0 && s->col == 0 && CURR_LINE->wrap == 0)
         return;
 
     /* if at the beginning of the line */
     if (s->col == 0 && CURR_LINE->wraps != 0) {
         s->col = s->cols;
         s->row--;
+        CURR_LINE->wrap--;
 
         gap_buffer_move_cursor(CURR_LBUF, -1);
     }
@@ -186,21 +188,25 @@ void handle_move_left(Screen s) {
 #define TEMP_CURSOR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ? \
     CURR_LBUF->cursor+1 : CURR_LBUF->cursor+GAP_SIZE
 
-#define CURR_VIS_END ((CURR_LINE->wraps != 0) ?                         \
-                      CURR_LINE->visual_end - s->cols*CURR_LINE->wraps - CURR_LINE->wraps : \
-                      CURR_LINE->visual_end - s->cols*CURR_LINE->wraps)
+#define                                                                 \
+    VIS_END ((CURR_LINE->wrap != 0) ?                             \
+             CURR_LINE->visual_end-s->cols*CURR_LINE->wraps-CURR_LINE->wraps : \
+              CURR_LINE->visual_end)
 
 /* handle the right arrow key */
 void handle_move_right(Screen s) {
     /* if at the end of the last line, do nothing */
-    if (s->cur_l_num+1 == s->n_lines && s->col == CURR_VIS_END)
+    if (s->cur_l_num+1 == s->n_lines && CURR_LINE->wraps == CURR_LINE->wrap
+        && s->col == VIS_END)
+        return;
+
+    if (s->cur_l_num+1 == s->n_lines && s->col == s->cols)
         return;
 
     /* TODO: refactor */
-    /* lengthy if condition could be a macro */
 
     /* at the end of the bottom line */
-    if (s->row+1 == s->rows && s->col == CURR_LINE->visual_end - s->cols*CURR_LINE->wraps) {
+    if (s->row+1 == s->rows && s->col == CURR_LINE->visual_end) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
 
@@ -216,9 +222,10 @@ void handle_move_right(Screen s) {
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     }
     /* wrap end of the wrapped line */
-    else if (s->col == s->cols && s->col != CURR_VIS_END && CURR_LINE->wraps != 0) {
+    else if (s->col == s->cols && s->col != VIS_END && CURR_LINE->wraps != 0) {
         s->col = 0;
         s->row++;
+        CURR_LINE->wrap++;
         gap_buffer_move_cursor(CURR_LBUF, 1);
     }
     /*  end of the line */
@@ -390,7 +397,10 @@ void handle_backspace(Screen s) {
         return;
 
     if (s->col == 0 && CURR_LINE->wraps > 0) {
+
         CURR_LINE->wraps--;
+        CURR_LINE->wrap--;
+
         s->col = s->cols+1;
         s->row--;
     }

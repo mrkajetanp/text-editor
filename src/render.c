@@ -83,6 +83,11 @@ void render_line(gpointer data, gpointer screen) {
 #define CURSOR_CHAR (CURR_LBUF->gap_start > CURR_LBUF->cursor) ?  \
     CURR_LBUF->cursor-1 : CURR_LBUF->cursor
 
+#define                                                                 \
+    VIS_END ((CURR_LINE->wraps != 0) ?                                  \
+             CURR_LINE->visual_end-s->cols*CURR_LINE->wraps-CURR_LINE->wraps : \
+             CURR_LINE->visual_end - s->cols*CURR_LINE->wraps)
+
 /* renders the screen */
 void render_contents(Screen s) {
     /* erase previous contents */
@@ -171,6 +176,8 @@ void render_contents(Screen s) {
         mvwprintw(s->debug_info, 10, 2, "Curr l_num: %d", s->cur_l_num);
         mvwprintw(s->debug_info, 11, 2, "s->rows: %d", s->rows);
         mvwprintw(s->debug_info, 12, 2, "s->cols: %d", s->cols);
+        mvwprintw(s->debug_info, 13, 2, "line wrap: %d", CURR_LINE->wrap);
+        mvwprintw(s->debug_info, 14, 2, "VIS_END: %d", VIS_END);
     }
 
     /*************************************************************************/

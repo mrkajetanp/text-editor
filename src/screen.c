@@ -36,6 +36,8 @@ Line line_create() {
 
     l->buff = new_line;
     l->visual_end = 0;
+
+    l->wrap = 0;
     l->wraps = 0;
 
     return l;

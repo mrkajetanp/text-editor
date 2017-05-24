@@ -4,6 +4,11 @@
 
 ---
 
+#### 25.05.2017
+
+* Added wrap field to the line struct
+* Attempts to fix movement with wrapped lines
+
 #### 24.05.2017
 
 * Implemented moving right at the end (down) through the wraps of the wrapped line

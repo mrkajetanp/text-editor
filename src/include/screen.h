@@ -46,6 +46,9 @@ struct _line {
     /* visual end of the line */
     int visual_end;
 
+    /* wrap we're currently on */
+    int wrap;
+
     /* number of times the line is wrapped */
     int wraps;
 };
