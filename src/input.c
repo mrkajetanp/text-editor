@@ -126,11 +126,17 @@ void handle_insert_char(Screen s, char c) {
 /* handle the left arrow key */
 void handle_move_left(Screen s) {
     /* if at the beginning of the first line, do nothing */
-    if (s->cur_l_num == 0 && s->col == 0)
+    if (s->cur_l_num == 0 && s->col == 0 && CURR_LINE->wraps == 0)
         return;
 
     /* if at the beginning of the line */
-    if (s->row == 0 && s->col == 0) {
+    if (s->col == 0 && CURR_LINE->wraps != 0) {
+        s->col = s->cols;
+        s->row--;
+
+        gap_buffer_move_cursor(CURR_LBUF, -1);
+    }
+    else if (s->row == 0 && s->col == 0) {
         s->top_line = s->top_line->prev;
         s->top_line_num--;
 
@@ -209,7 +215,13 @@ void handle_move_right(Screen s) {
         /* move actual cursor to the beginning of the line */
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     }
-    /* if at the end of the line */
+    /* wrap end of the wrapped line */
+    else if (s->col == s->cols && s->col != CURR_VIS_END && CURR_LINE->wraps != 0) {
+        s->col = 0;
+        s->row++;
+        gap_buffer_move_cursor(CURR_LBUF, 1);
+    }
+    /*  end of the line */
     else if (s->col == CURR_LINE->visual_end - s->cols*CURR_LINE->wraps) {
         /* move one line down */
         s->cur_line = s->cur_line->next;

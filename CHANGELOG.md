@@ -4,6 +4,11 @@
 
 ---
 
+#### 24.05.2017
+
+* Implemented moving right at the end (down) through the wraps of the wrapped line
+* Implemented moving left at the beginning (up) through the wraps of the wrapped line
+
 #### 23.05.2017
 
 * Changed move right handling to consider wrapping lines
