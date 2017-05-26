@@ -130,14 +130,15 @@ void handle_move_left(Screen s) {
     if (s->cur_l_num == 0 && s->col == 0 && CURR_LINE->wrap == 0)
         return;
 
-    /* if at the beginning of the line */
-    if (s->col == 0 && CURR_LINE->wraps != 0) {
+    /* at the beginning of a wrap */
+    if (s->col == 0 && CURR_LINE->wrap != 0 && CURR_LINE->wraps != 0) {
         s->col = s->cols;
         s->row--;
         CURR_LINE->wrap--;
 
         gap_buffer_move_cursor(CURR_LBUF, -1);
     }
+    /* at the beginning of a top line */
     else if (s->row == 0 && s->col == 0) {
         s->top_line = s->top_line->prev;
         s->top_line_num--;
@@ -153,6 +154,7 @@ void handle_move_left(Screen s) {
 
         s->cur_l_num--;
     }
+    /* at the beginning of a line */
     else if (s->col == 0) {
         /* visual cursor to the upper row */
         s->row--;
@@ -161,7 +163,7 @@ void handle_move_left(Screen s) {
         s->cur_line = s->cur_line->prev;
 
         /* move visual & actual cursor to the end of the line */
-        s->col = CURR_LINE->visual_end;
+        s->col = VISUAL_END;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
 
         s->cur_l_num--;
@@ -188,10 +190,6 @@ void handle_move_left(Screen s) {
 #define TEMP_CURSOR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ? \
     CURR_LBUF->cursor+1 : CURR_LBUF->cursor+GAP_SIZE
 
-#define VISUAL_END ((CURR_LINE->wraps == 0) ? CURR_LINE->visual_end :      \
-                 ((CURR_LINE->wrap != CURR_LINE->wraps) ? s->cols :     \
-                  CURR_LINE->visual_end-s->cols*CURR_LINE->wraps-CURR_LINE->wraps))
-
 /* handle the right arrow key */
 void handle_move_right(Screen s) {
     /* if at the end of the last line, do nothing */
@@ -215,7 +213,7 @@ void handle_move_right(Screen s) {
         /* move actual cursor to the beginning of the line */
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     }
-    /* wrap end of the wrapped line */
+    /* wrap end of a wrap */
     else if (s->col == s->cols && CURR_LINE->wrap != CURR_LINE->wraps) {
         s->col = 0;
         s->row++;

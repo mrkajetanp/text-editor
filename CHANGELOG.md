@@ -7,6 +7,7 @@
 #### 26.05.2017
 
 * Fixed right movement to properly handle wrapped lines
+* Fixed left movement to properly handle wrapped lines
 
 #### 25.05.2017
 

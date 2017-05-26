@@ -45,6 +45,12 @@
 /* calculating the current gap size */
 #define GAP_SIZE (CURR_LBUF->gap_end - CURR_LBUF->gap_start+1)
 
+/* calculates visual end of the current line */
+#define VISUAL_END ((CURR_LINE->wraps == 0) ? CURR_LINE->visual_end :   \
+                    ((CURR_LINE->wrap != CURR_LINE->wraps) ? s->cols :  \
+                     CURR_LINE->visual_end-s->cols*CURR_LINE->wraps-CURR_LINE->wraps))
+
+
 /*****************************************************************************/
 /*                                 Functions                                 */
 /*****************************************************************************/
