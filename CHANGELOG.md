@@ -4,6 +4,10 @@
 
 ---
 
+#### 26.05.2017
+
+* Fixed right movement to properly handle wrapped lines
+
 #### 25.05.2017
 
 * Added wrap field to the line struct
