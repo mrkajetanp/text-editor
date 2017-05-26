@@ -204,14 +204,31 @@ void render_line_numbers(Screen s) {
     wattron(s->line_numbers, COLOR_PAIR(3));
 
     /* render actual numbers */
-    for (int i = 0 ; i < s->n_lines-s->top_line_num ; ++i)
-        mvwprintw(s->line_numbers, i, 0, "%4d", s->top_line_num+i+1);
+    GList* curr = s->top_line;
+    int j;
+    int line_number = s->top_line_num+1;
+    int last_line_number = s->n_lines-s->top_line_num;
+    for (int i = 0 ; i < last_line_number ; ++i) {
+        mvwprintw(s->line_numbers, i, 0, "%4d", line_number);
+
+        if (((Line)curr->data)->wraps != 0) {
+            for (j = 1 ; j < ((Line)curr->data)->wraps ; ++j) {
+                mvwprintw(s->line_numbers, i+j-1, 0, "");
+            }
+
+            i += j;
+            last_line_number += j;
+        }
+
+        curr = curr->next;
+        line_number++;
+    }
 
     /* disable the color */
     wattroff(s->line_numbers, COLOR_PAIR(3));
 
     /* render tildes on non-existing lines */
-    for (int i = s->n_lines-s->top_line_num ; i <= s->rows ; ++i)
+    for (int i = last_line_number ; i <= s->rows ; ++i)
         mvwprintw(s->line_numbers, i, 3, "~");
 
     wrefresh(s->line_numbers);

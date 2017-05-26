@@ -111,6 +111,8 @@ void handle_insert_char(Screen s, char c) {
         CURR_LINE->wrap++;
         s->col = -1;
         s->row++;
+
+        render_line_numbers(s);
     }
 
     /* put a char in a line buffer */

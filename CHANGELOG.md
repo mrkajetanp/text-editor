@@ -6,6 +6,7 @@
 
 #### 26.05.2017
 
+* Implemented properly rendering line numbers with wraps
 * Fixed right movement to properly handle wrapped lines
 * Fixed left movement to properly handle wrapped lines
 
