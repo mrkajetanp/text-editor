@@ -22,6 +22,7 @@
 #include <stdbool.h>
 #include <ncurses.h>
 #include <string.h>
+#include <assert.h>
 
 #include "screen.h"
 #include "input.h"
@@ -252,48 +253,83 @@ void handle_move_right(Screen s) {
 /* handle the up arrow key */
 void handle_move_up(Screen s) {
     /* if at the top, do nothing */
-    if (s->cur_l_num == 0)
+    if (s->cur_l_num == 0 && CURR_LINE->wrap == 0)
         return;
 
-    /* TODO: refactor this */
+    /* top line, move rendered lines up */
     if (s->row == 0) {
         s->top_line = s->top_line->prev;
         s->top_line_num--;
-        s->row++;
+        s->row++; /* it balances out to 0 */
 
         render_line_numbers(s);
     }
 
-    /* move one line up */
-    s->cur_line = s->cur_line->prev;
+    /* TODO: possible performance improvements? */
 
-    /* if cursor position is bigger than the current line length */
-    if (s->col > CURR_LINE->visual_end) {
+    if (CURR_LINE->wraps != 0 && CURR_LINE->wrap != 0) {
+        int new_row = s->row-1;
+        int new_col = s->col;
+
+        /* keep moving left until the cursor reaches the previous row */
+        while (s->row > new_row)
+            handle_move_left(s);
+
+        /* keep moving left until the cursor hits previous column or the beginning */
+        while (s->col > new_col && s->col != 0)
+            handle_move_left(s);
+    }
+    /* moving onto a wrapped line */
+    else if (PREV_LINE->wraps != 0) {
+        s->cur_line = s->cur_line->prev;
+        gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
+
+        int new_row = s->row-1;
+        int new_col = s->col;
+
+        /* go to the beginning of the line */
+        s->row--;
+        s->row -= CURR_LINE->wraps;
+        s->col = 0;
+        CURR_LINE->wrap = 0;
+
+        while (s->row < new_row) {
+            handle_move_right(s);
+        }
+
+        while (s->col < new_col && s->col != VISUAL_END)
+            handle_move_right(s);
+
+        s->cur_l_num--;
+    }
+    /* cursor position is bigger than the previous line length */
+    else if (s->col > PREV_LINE->visual_end) {
+        s->cur_line = s->cur_line->prev;
+
         /* move visual & actual cursor to the end of the line */
         s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
+
+        s->cur_l_num--;
+        s->row--;
     } else {
-        /* move the actual cursor to the beginning of the line */
+        s->cur_line = s->cur_line->prev;
+
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
-
-        /* store the last column */
         int old_col = s->col;
-
-        /* set visual column to the beginning of the line */
         s->col = 0;
 
         /* keep moving right until current column reaches the old one */
         while (s->col < old_col)
             handle_move_right(s);
 
-        /* if cursor ends up further than s->col was i.e. (on a tab) move before it */
+        /* if cursor ends up further than s->col was, i.e. on a tab, move before it */
         if (old_col < s->col)
             handle_move_left(s);
-    }
 
-    s->cur_l_num--;
-    /* move visual cursor one line up */
-    s->row--;
+        s->cur_l_num--;
+        s->row--;
+    }
 }
 
 /* handle the down arrow key */
@@ -306,11 +342,10 @@ void handle_move_down(Screen s) {
     if (s->row+1 == s->rows) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
-        s->row--;
+        s->row--; /* it balances out to 0 */
 
         render_line_numbers(s);
     }
-
 
     /* wrap other than the last one */
     if (CURR_LINE->wraps != 0 && CURR_LINE->wrap != CURR_LINE->wraps) {

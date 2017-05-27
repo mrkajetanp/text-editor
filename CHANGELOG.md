@@ -6,6 +6,7 @@
 
 #### 27.05.2017
 
+* Implemented proper wrap handling for movement up
 * Implemented proper wrap handling for movement down
 
 #### 26.05.2017

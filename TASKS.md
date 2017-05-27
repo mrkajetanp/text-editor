@@ -26,6 +26,6 @@
 
 ## Improvements
 
-* In debug mode, do not render new line's $ if it line_length == visual cols
+* add uint typedef for most variables
 
 ...
