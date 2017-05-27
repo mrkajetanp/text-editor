@@ -33,6 +33,9 @@
 /* accessing the previous line */
 #define PREV_LINE ((Line)s->cur_line->prev->data)
 
+/* accessing the next line */
+#define NEXT_LINE ((Line)s->cur_line->next->data)
+
 /* accessing the current line buffer */
 #define CURR_LBUF (((Line)s->cur_line->data)->buff)
 
@@ -49,6 +52,11 @@
 #define VISUAL_END ((CURR_LINE->wraps == 0) ? CURR_LINE->visual_end :   \
                     ((CURR_LINE->wrap != CURR_LINE->wraps) ? s->cols :  \
                      CURR_LINE->visual_end-s->cols*CURR_LINE->wraps-CURR_LINE->wraps))
+
+#define NETX_VISUAL_END ((CURR_LINE->wraps == 0) ? CURR_LINE->visual_end : \
+                         ((CURR_LINE->wrap != CURR_LINE->wraps) ? s->cols : \
+                          CURR_LINE->visual_end-s->cols*CURR_LINE->wraps-CURR_LINE->wraps))
+
 
 
 /*****************************************************************************/

@@ -298,11 +298,11 @@ void handle_move_up(Screen s) {
 
 /* handle the down arrow key */
 void handle_move_down(Screen s) {
-    /* if at the last line, do nothing */
+    /* the last line, do nothing */
     if (s->cur_l_num+1 == s->n_lines)
         return;
 
-    /* TODO: refactor this */
+    /* the bottom line, move rendered lines down */
     if (s->row+1 == s->rows) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
@@ -311,22 +311,35 @@ void handle_move_down(Screen s) {
         render_line_numbers(s);
     }
 
-    /* move one line down */
-    s->cur_line = s->cur_line->next;
 
+    /* wrap other than the last one */
+    if (CURR_LINE->wraps != 0 && CURR_LINE->wrap != CURR_LINE->wraps) {
+        int new_row = s->row+1;
+        int new_col = s->col;
+
+        /* keep moving right until the cursor reaches the next row */
+        while (s->row < new_row)
+            handle_move_right(s);
+
+        /* keep moving right until the cursor hits previous column or the end */
+        while (s->col < new_col && s->col != VISUAL_END)
+            handle_move_right(s);
+    }
     /* if cursor position is bigger than the current line length */
-    if (s->col > CURR_LINE->visual_end) {
-        /* move visual & actual cursor to the end of the line */
+    else if (s->col > NEXT_LINE->visual_end) {
+        s->cur_line = s->cur_line->next;
+
         s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
+
+        s->cur_l_num++;
+        s->row++;
     } else {
-        /* move the actual cursor to the beginning of the line */
+        s->cur_line = s->cur_line->next;
+
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
 
-        /* store the last column */
         int old_col = s->col;
-
-        /* set visual column to the beginning of the line */
         s->col = 0;
 
         /* keep moving right until current column reaches the old one */
@@ -336,11 +349,10 @@ void handle_move_down(Screen s) {
         /* if cursor ends up further than s->col was i.e. (on a tab) move before it */
         if (old_col < s->col)
             handle_move_left(s);
-    }
 
-    s->cur_l_num++;
-    /* move visual cursor one line down */
-    s->row++;
+        s->cur_l_num++;
+        s->row++;
+    }
 }
 
 /* handle the enter key */

@@ -4,6 +4,10 @@
 
 ---
 
+#### 27.05.2017
+
+* Implemented proper wrap handling for movement down
+
 #### 26.05.2017
 
 * Implemented properly rendering line numbers with wraps
