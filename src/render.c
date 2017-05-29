@@ -99,7 +99,7 @@ void render_contents(Screen s) {
     /*************************************************************************/
 
     /* render every line, stop if window is filled */
-    int cnt = 0;
+    uint cnt = 0;
     for (GList* curr = s->top_line ; curr != NULL ; curr = curr->next) {
         render_line(curr->data, s);
         cnt++;
@@ -210,10 +210,10 @@ void render_line_numbers(Screen s) {
 
     /* render actual numbers */
     GList* curr = s->top_line;
-    int j;
-    int line_number = s->top_line_num+1;
-    int last_line_number = s->n_lines-s->top_line_num;
-    for (int i = 0 ; i < last_line_number ; ++i) {
+    uint j;
+    uint line_number = s->top_line_num+1;
+    uint last_line_number = s->n_lines-s->top_line_num;
+    for (uint i = 0 ; i < last_line_number ; ++i) {
         mvwprintw(s->line_numbers, i, 0, "%4d", line_number);
 
         if (((Line)curr->data)->wraps != 0) {
@@ -233,7 +233,7 @@ void render_line_numbers(Screen s) {
     wattroff(s->line_numbers, COLOR_PAIR(3));
 
     /* render tildes on non-existing lines */
-    for (int i = last_line_number ; i <= s->rows ; ++i)
+    for (uint i = last_line_number ; i <= s->rows ; ++i)
         mvwprintw(s->line_numbers, i, 3, "~");
 
     wrefresh(s->line_numbers);

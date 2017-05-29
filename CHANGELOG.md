@@ -6,6 +6,7 @@
 
 #### 29.05.2017
 
+* Changed most counter variables to uint
 * Added uint typedef to all header files
 * Changed comment style on screen's struct fields to be more concise
 * Fixed pressing enter at the last visual column in debug mode

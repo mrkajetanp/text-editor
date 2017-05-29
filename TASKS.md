@@ -26,6 +26,4 @@
 
 ## Improvements
 
-* add uint typedef for most variables
-
 ...

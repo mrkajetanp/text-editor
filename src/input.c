@@ -268,14 +268,15 @@ void handle_move_up(Screen s) {
     /* TODO: possible performance improvements? */
 
     if (CURR_LINE->wraps != 0 && CURR_LINE->wrap != 0) {
-        int new_row = s->row-1;
-        int new_col = s->col;
+        uint new_row = s->row-1;
+        uint new_col = s->col;
 
         /* keep moving left until the cursor reaches the previous row */
         while (s->row > new_row)
             handle_move_left(s);
 
-        /* keep moving left until the cursor hits previous column or the beginning */
+        /* keep moving left until the cursor hits the previous column
+           or the beginning */
         while (s->col > new_col && s->col != 0)
             handle_move_left(s);
     }
@@ -284,8 +285,8 @@ void handle_move_up(Screen s) {
         s->cur_line = s->cur_line->prev;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
 
-        int new_row = s->row-1;
-        int new_col = s->col;
+        uint new_row = s->row-1;
+        uint new_col = s->col;
 
         /* go to the beginning of the line */
         s->row--;
@@ -316,7 +317,7 @@ void handle_move_up(Screen s) {
         s->cur_line = s->cur_line->prev;
 
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
-        int old_col = s->col;
+        uint old_col = s->col;
         s->col = 0;
 
         /* keep moving right until current column reaches the old one */
@@ -349,8 +350,8 @@ void handle_move_down(Screen s) {
 
     /* wrap other than the last one */
     if (CURR_LINE->wraps != 0 && CURR_LINE->wrap != CURR_LINE->wraps) {
-        int new_row = s->row+1;
-        int new_col = s->col;
+        uint new_row = s->row+1;
+        uint new_col = s->col;
 
         /* keep moving right until the cursor reaches the next row */
         while (s->row < new_row)
@@ -374,7 +375,7 @@ void handle_move_down(Screen s) {
 
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
 
-        int old_col = s->col;
+        uint old_col = s->col;
         s->col = 0;
 
         /* keep moving right until current column reaches the old one */
@@ -550,13 +551,13 @@ void split_line(Screen s) {
 /* merge the current line with the upper one */
 void merge_line_up(Screen s) {
     /* store the merge point position on the upper line */
-    int old_col = PREV_LINE->visual_end;
+    uint old_col = PREV_LINE->visual_end;
 
     /* store number of moved chars */
-    int moved_chars = 0;
+    uint moved_chars = 0;
 
     /* number of tabs moved */
-    int tabs = 0;
+    uint tabs = 0;
 
     gap_buffer_move_cursor(PREV_LBUF, gap_buffer_distance_to_end(PREV_LBUF)-1);
     for (int i = CURR_LBUF->start ; i < CURR_LBUF->end ; ++i) {

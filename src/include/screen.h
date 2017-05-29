@@ -51,9 +51,9 @@ struct Arguments {
 typedef struct _line* Line;
 struct _line {
     gap_T buff; /* line's gap buffer */
-    int visual_end; /* visual end of the line */
-    int wrap; /* current wrap number */
-    int wraps; /* number of times the line is wrapped */
+    uint visual_end; /* visual end of the line */
+    uint wrap; /* current wrap number */
+    uint wraps; /* number of times the line is wrapped */
 };
 
 /* creates a new line */
@@ -72,18 +72,18 @@ struct _screen {
     /* Fields related to logic ***********************************************/
 
     GList* lines; /* pointer to the first line (list pointer) */
-    int n_lines; /* number of currently existing lines */
+    uint n_lines; /* number of currently existing lines */
     GList* cur_line; /* pointer to the current line */
-    int cur_l_num; /* current line number */
+    uint cur_l_num; /* current line number */
 
     /* Fields related to rendering *******************************************/
 
     GList* top_line; /* first rendered line */
-    int top_line_num; /* first rendered line number */
-    int row; /* visual cursor's row */
-    int col; /* visual cursor column */
-    int rows; /* number of visual rows */
-    int cols; /* number of visual columns */
+    uint top_line_num; /* first rendered line number */
+    uint row; /* visual cursor's row */
+    uint col; /* visual cursor column */
+    uint rows; /* number of visual rows */
+    uint cols; /* number of visual columns */
 
     WINDOW* contents; /* window with buffer contents */
     WINDOW* line_numbers; /* window with buffer's line numbers */
