@@ -4,6 +4,12 @@
 
 ---
 
+#### 29.05.2017
+
+* Added uint typedef to all header files
+* Changed comment style on screen's struct fields to be more concise
+* Fixed pressing enter at the last visual column in debug mode
+
 #### 27.05.2017
 
 * Implemented proper wrap handling for movement up

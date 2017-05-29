@@ -381,7 +381,8 @@ void handle_move_down(Screen s) {
         while (s->col < old_col)
             handle_move_right(s);
 
-        /* if cursor ends up further than s->col was i.e. (on a tab) move before it */
+        /* if cursor ends up further than s->col was e.g. on a tab,
+           move before it */
         if (old_col < s->col)
             handle_move_left(s);
 
@@ -393,17 +394,18 @@ void handle_move_down(Screen s) {
 /* handle the enter key */
 void handle_enter(Screen s) {
     if (s->col == 0) {
-        /* if at the beginning of the line, just insert a line above */
+        /* beginning of the line, just insert a line above */
         screen_new_line_above(s);
 
+        /* top row, move rendered lines up */
         if (s->row == 0)
             s->top_line = s->lines;
 
     } else if (s->col == CURR_LINE->visual_end) {
-        /* if at the end of the line, insert a line below */
+        /* end of the line, insert a new line below */
         screen_new_line_under(s);
     } else {
-        /* if in the middle of the line, split it */
+        /* middle of the line, split it */
         split_line(s);
     }
 
@@ -412,6 +414,7 @@ void handle_enter(Screen s) {
     s->cur_l_num++;
     s->col = 0;
 
+    /* if bottom line, move rendered lines down */
     if (s->row == s->rows) {
         s->top_line = s->top_line->next;
         s->top_line_num++;

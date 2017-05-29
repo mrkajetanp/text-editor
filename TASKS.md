@@ -22,7 +22,7 @@
 
 ## Bug Fixes
 
-* Fix pressing enter at the last visual column
+...
 
 ## Improvements
 

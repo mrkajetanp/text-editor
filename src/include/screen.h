@@ -28,9 +28,19 @@
 
 #include "lib/gap_buffer.h"
 
+/*****************************************************************************/
+/*                                  typedefs                                 */
+/*****************************************************************************/
+
+typedef unsigned int uint;
+
+/*****************************************************************************/
+/*                               Other Structs                               */
+/*****************************************************************************/
+
 struct Arguments {
-    bool debug_mode;
-    char* file_name;
+    bool debug_mode; /* if debug mode is enabled */
+    char* file_name; /* current file name */
 };
 
 /*****************************************************************************/
@@ -40,17 +50,10 @@ struct Arguments {
 /* struct representing one line */
 typedef struct _line* Line;
 struct _line {
-    /* line gap buffer */
-    gap_T buff;
-
-    /* visual end of the line */
-    int visual_end;
-
-    /* wrap we're currently on */
-    int wrap;
-
-    /* number of times the line is wrapped */
-    int wraps;
+    gap_T buff; /* line's gap buffer */
+    int visual_end; /* visual end of the line */
+    int wrap; /* current wrap number */
+    int wraps; /* number of times the line is wrapped */
 };
 
 /* creates a new line */
@@ -68,50 +71,27 @@ typedef struct _screen* Screen;
 struct _screen {
     /* Fields related to logic ***********************************************/
 
-    /* pointer to the first line (list pointer) */
-    GList* lines;
-
-    /* number of currently existing lines */
-    int n_lines;
-
-    /* pointer to the current line */
-    GList* cur_line;
-
-    /* number of the current line */
-    int cur_l_num;
+    GList* lines; /* pointer to the first line (list pointer) */
+    int n_lines; /* number of currently existing lines */
+    GList* cur_line; /* pointer to the current line */
+    int cur_l_num; /* current line number */
 
     /* Fields related to rendering *******************************************/
 
-    /* line to start rendering at */
-    GList* top_line;
+    GList* top_line; /* first rendered line */
+    int top_line_num; /* first rendered line number */
+    int row; /* visual cursor's row */
+    int col; /* visual cursor column */
+    int rows; /* number of visual rows */
+    int cols; /* number of visual columns */
 
-    /* line number to start rendering at */
-    int top_line_num;
-
-    /* visual cursor row */
-    int row;
-
-    /* number of visual rows */
-    int rows;
-
-    /* visual cursor column */
-    int col;
-
-    /* number of visual cols */
-    int cols;
-
-    /* window with buffer contents */
-    WINDOW* contents;
-
-    /* window with buffer's line numbers */
-    WINDOW* line_numbers;
-
-    /* window with debug information */
-    WINDOW* debug_info;
+    WINDOW* contents; /* window with buffer contents */
+    WINDOW* line_numbers; /* window with buffer's line numbers */
+    WINDOW* debug_info; /* window with debug information */
 
     /* Fields related to the program *****************************************/
 
-    struct Arguments* args;
+    struct Arguments* args; /* struct with program arguments */
 };
 
 /* initializes the screen & its buffer */

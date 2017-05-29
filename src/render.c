@@ -45,7 +45,9 @@ void render_line(gpointer data, gpointer screen) {
                 if (s->args->debug_mode) {
                     switch (buff->buffer[i]) {
                     case '\n':
-                        waddch(s->contents, '$' | COLOR_PAIR(1));
+                        if (getcurx(s->contents) != getmaxx(s->contents)-1)
+                            waddch(s->contents, '$' | COLOR_PAIR(1));
+
                         waddch(s->contents, '\n');
                         break;
 
@@ -177,6 +179,9 @@ void render_contents(Screen s) {
         mvwprintw(s->debug_info, 12, 2, "s->cols: %d", s->cols);
         mvwprintw(s->debug_info, 13, 2, "line wrap: %d", CURR_LINE->wrap);
         mvwprintw(s->debug_info, 14, 2, "VISUAL_END: %d", VISUAL_END);
+
+        mvwprintw(s->debug_info, 15, 2, "currx: %d", getcurx(s->contents));
+        mvwprintw(s->debug_info, 16, 2, "maxx: %d", getmaxx(s->contents));
     }
 
     /*************************************************************************/
