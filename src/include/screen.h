@@ -87,6 +87,7 @@ struct _screen {
 
     WINDOW* contents; /* window with buffer contents */
     WINDOW* line_numbers; /* window with buffer's line numbers */
+    WINDOW* info_bar_top; /* top bar with useful information */
     WINDOW* debug_info; /* window with debug information */
 
     /* Fields related to the program *****************************************/

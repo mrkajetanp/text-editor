@@ -37,7 +37,7 @@ void input_loop(Screen s) {
     render_line_numbers(s);
 
     while (true) {
-        /* render the buffer contents */
+        render_info_bar_top(s);
         render_contents(s);
 
         /* start insert mode */

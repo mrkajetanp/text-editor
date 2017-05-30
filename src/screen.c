@@ -85,6 +85,7 @@ Screen screen_init(struct Arguments* args) {
 
     s->line_numbers = NULL;
     s->contents = NULL;
+    s->info_bar_top = NULL;
     s->debug_info = NULL;
 
     /* set argument structure */
@@ -94,21 +95,24 @@ Screen screen_init(struct Arguments* args) {
 }
 
 void screen_init_ncurses(Screen s) {
+    /* create a window for top info bar */
+    s->info_bar_top = newwin(1, COLS, 0, 0);
+
     /* create a window for line numbers */
-    s->line_numbers = newwin(LINES, 5, 0, 0);
+    s->line_numbers = newwin(LINES-1, 5, 1, 0);
 
     /* create a window for contents */
-    s->contents = newwin(LINES,
+    s->contents = newwin(LINES-1,
                          (s->args->debug_mode) ? COLS-26-5 : COLS-5,
-                         0, 5);
+                         1, 5);
 
     /* set number of rows and cols depending on the window */
-    s->rows = LINES;
+    s->rows = LINES-1;
     s->cols = (s->args->debug_mode) ? COLS-32 : COLS;
 
     /* if in debug mode, create additional window for debug information */
     if (s->args->debug_mode) {
-        s->debug_info = newwin(LINES, 26, 0, COLS-25);
+        s->debug_info = newwin(LINES-1, 26, 1, COLS-25);
     } else {
         s->debug_info = NULL;
     }

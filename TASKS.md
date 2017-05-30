@@ -4,7 +4,6 @@
 
 ### Top priority
 
-* Wrap lines longer than the width of the window
 * Release rendering - useful information
 * File handling
 

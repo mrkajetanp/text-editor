@@ -4,6 +4,10 @@
 
 ---
 
+#### 30.05.2017
+
+* Added top bar with basic nano-like information
+
 #### 29.05.2017
 
 * Changed most counter variables to uint

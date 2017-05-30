@@ -53,4 +53,7 @@ void render_contents(Screen);
 /* renders line numbers */
 void render_line_numbers(Screen);
 
+/* render top info bar */
+void render_info_bar_top(Screen);
+
 #endif

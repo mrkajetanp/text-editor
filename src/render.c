@@ -19,6 +19,7 @@
  ************************************************************************/
 
 #include <stdbool.h>
+#include <string.h>
 
 #include <ncurses.h>
 
@@ -237,4 +238,29 @@ void render_line_numbers(Screen s) {
         mvwprintw(s->line_numbers, i, 3, "~");
 
     wrefresh(s->line_numbers);
+}
+
+void render_info_bar_top(Screen s) {
+    werase(s->info_bar_top);
+
+    /* render bacground ******************************************************/
+
+    wattron(s->info_bar_top, A_REVERSE);
+
+    for (int i = 0 ; i < COLS ; ++i)
+        mvwprintw(s->info_bar_top, 0, i, " ");
+
+    mvwprintw(s->info_bar_top, 0, 2, "text-editor 0.1");
+
+    if (strlen(s->args->file_name) > 0) {
+        mvwprintw(s->info_bar_top, 0, COLS/2-strlen(s->args->file_name)/2-3,
+                  "File: %s", s->args->file_name);
+    } else {
+        mvwprintw(s->info_bar_top, 0, COLS/2-5, "New Buffer");
+    }
+
+    wattroff(s->info_bar_top, A_REVERSE);
+
+
+    wrefresh(s->info_bar_top);
 }
