@@ -6,6 +6,7 @@
 
 #### 30.05.2017
 
+* Added bottom bar with useful editing information
 * Added top bar with basic nano-like information
 
 #### 29.05.2017

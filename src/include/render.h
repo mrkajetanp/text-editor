@@ -56,4 +56,7 @@ void render_line_numbers(Screen);
 /* render top info bar */
 void render_info_bar_top(Screen);
 
+/* render bottom info bar */
+void render_info_bar_bottom(Screen);
+
 #endif

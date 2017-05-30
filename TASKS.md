@@ -25,4 +25,6 @@
 
 ## Improvements
 
+* Added visual line cursor to show at the bottom bar
+
 ...

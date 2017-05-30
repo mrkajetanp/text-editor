@@ -242,16 +242,16 @@ void render_line_numbers(Screen s) {
 
 void render_info_bar_top(Screen s) {
     werase(s->info_bar_top);
+    wattron(s->info_bar_top, A_REVERSE);
 
     /* render bacground ******************************************************/
-
-    wattron(s->info_bar_top, A_REVERSE);
 
     for (int i = 0 ; i < COLS ; ++i)
         mvwprintw(s->info_bar_top, 0, i, " ");
 
     mvwprintw(s->info_bar_top, 0, 2, "text-editor 0.1");
 
+    /* render current file name or "New Buffer" */
     if (strlen(s->args->file_name) > 0) {
         mvwprintw(s->info_bar_top, 0, COLS/2-strlen(s->args->file_name)/2-3,
                   "File: %s", s->args->file_name);
@@ -260,7 +260,23 @@ void render_info_bar_top(Screen s) {
     }
 
     wattroff(s->info_bar_top, A_REVERSE);
-
-
     wrefresh(s->info_bar_top);
+}
+
+
+void render_info_bar_bottom(Screen s) {
+    werase(s->info_bar_bottom);
+    wattron(s->info_bar_bottom, A_REVERSE);
+
+    /* render bacground ******************************************************/
+
+    for (int i = 0 ; i < COLS ; ++i)
+        mvwprintw(s->info_bar_bottom, 0, i, " ");
+
+    /* render current line and column number */
+    mvwprintw(s->info_bar_bottom, 0, COLS-11, "%4d:%-4d",
+              s->cur_l_num, s->col);
+
+    wattroff(s->info_bar_bottom, A_REVERSE);
+    wrefresh(s->info_bar_bottom);
 }

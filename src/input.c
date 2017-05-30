@@ -38,6 +38,7 @@ void input_loop(Screen s) {
 
     while (true) {
         render_info_bar_top(s);
+        render_info_bar_bottom(s);
         render_contents(s);
 
         /* start insert mode */
@@ -86,7 +87,7 @@ void insert_mode(Screen s) {
 
     case KEY_RESIZE:
         /* adjust the number of rows and cols */
-        s->rows = LINES;
+        s->rows = LINES-2; /* -2 for top and bottom bar */
         s->cols = (s->args->debug_mode) ? COLS-32 : COLS;
 
         render_line_numbers(s);
