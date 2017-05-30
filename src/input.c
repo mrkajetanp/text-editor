@@ -33,12 +33,10 @@ void input_loop(Screen s) {
     /* initially refresh stdscr */
     refresh();
 
-    /* initially render line numbers */
-    render_line_numbers(s);
-
     while (true) {
         render_info_bar_top(s);
         render_info_bar_bottom(s);
+        render_line_numbers(s);
         render_contents(s);
 
         /* start insert mode */
@@ -55,9 +53,6 @@ void insert_mode(Screen s) {
 
     case '\n':
         handle_enter(s);
-
-        /* number of lines changed, so re-render them */
-        render_line_numbers(s);
         break;
 
     case '\t':
@@ -89,8 +84,6 @@ void insert_mode(Screen s) {
         /* adjust the number of rows and cols */
         s->rows = LINES-2; /* -2 for top and bottom bar */
         s->cols = (s->args->debug_mode) ? COLS-32 : COLS;
-
-        render_line_numbers(s);
         break;
 
         /* ascii CAN (cancel) control character */
@@ -113,8 +106,6 @@ void handle_insert_char(Screen s, char c) {
         CURR_LINE->wrap++;
         s->col = -1;
         s->row++;
-
-        render_line_numbers(s);
     }
 
     /* put a char in a line buffer */
@@ -145,17 +136,14 @@ void handle_move_left(Screen s) {
     /* at the beginning of a top line */
     else if (s->row == 0 && s->col == 0) {
         s->top_line = s->top_line->prev;
-        s->top_line_num--;
-
-        render_line_numbers(s);
-
-        /* go to the upper line */
         s->cur_line = s->cur_line->prev;
+
 
         /* move visual & actual cursor to the end of the line */
         s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
 
+        s->top_line_num--;
         s->cur_l_num--;
     }
     /* at the beginning of a line */
@@ -205,8 +193,6 @@ void handle_move_right(Screen s) {
     if (s->row+1 == s->rows && s->col == VISUAL_END) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
-
-        render_line_numbers(s);
 
         /* move one line down */
         s->cur_line = s->cur_line->next;
@@ -262,8 +248,6 @@ void handle_move_up(Screen s) {
         s->top_line = s->top_line->prev;
         s->top_line_num--;
         s->row++; /* it balances out to 0 */
-
-        render_line_numbers(s);
     }
 
     /* TODO: possible performance improvements? */
@@ -345,8 +329,6 @@ void handle_move_down(Screen s) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
         s->row--; /* it balances out to 0 */
-
-        render_line_numbers(s);
     }
 
     /* wrap other than the last one */
@@ -438,10 +420,11 @@ void handle_tab(Screen s) {
 
 /* handle the backspace key */
 void handle_backspace(Screen s) {
-    /* if at the beginning of the first line, do nothing */
+    /* beginning of the first line, do nothing */
     if (s->cur_l_num == 0 && s->col == 0 && CURR_LINE->wraps == 0)
         return;
 
+    /* beginning of the wrap */
     if (s->col == 0 && CURR_LINE->wraps > 0) {
 
         CURR_LINE->wraps--;
@@ -450,7 +433,7 @@ void handle_backspace(Screen s) {
         s->col = s->cols+1;
         s->row--;
     }
-
+    /* beginning of the top line */
     if (s->row == 0 && s->col == 0) {
         s->top_line = s->top_line->prev;
         s->top_line_num--;
@@ -458,10 +441,9 @@ void handle_backspace(Screen s) {
         s->cur_l_num--;
         s->row = 0;
 
-        render_line_numbers(s);
-
-        /* if at the beginning of the line */
-    } else if (s->col == 0) {
+    }
+    /* beginning of the other line line */
+    else if (s->col == 0) {
         /* merge the line with the upper one */
         merge_line_up(s);
         s->cur_l_num--;
@@ -593,7 +575,4 @@ void merge_line_up(Screen s) {
     /* keep moving right until current column reaches the old one */
     while (s->col < old_col)
         handle_move_right(s);
-
-    /* re-render line numbers */
-    render_line_numbers(s);
 }
