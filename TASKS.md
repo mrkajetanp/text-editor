@@ -4,7 +4,6 @@
 
 ### Top priority
 
-* Release rendering - useful information
 * File handling
 
 ### Future ideas
@@ -25,6 +24,6 @@
 
 ## Improvements
 
-* Added visual line cursor to show at the bottom bar
+* Add visual line cursor to show at the bottom bar
 
 ...

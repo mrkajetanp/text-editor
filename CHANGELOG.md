@@ -4,6 +4,10 @@
 
 ---
 
+#### 31.05.2017
+
+* Fixed line wrapping in release mode (Issue #4)
+
 #### 30.05.2017
 
 * Added bottom bar with useful editing information

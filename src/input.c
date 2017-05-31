@@ -83,7 +83,7 @@ void insert_mode(Screen s) {
     case KEY_RESIZE:
         /* adjust the number of rows and cols */
         s->rows = LINES-2; /* -2 for top and bottom bar */
-        s->cols = (s->args->debug_mode) ? COLS-32 : COLS;
+        s->cols = (s->args->debug_mode) ? COLS-32 : COLS-6; /* -6 for line nums */
         break;
 
         /* ascii CAN (cancel) control character */

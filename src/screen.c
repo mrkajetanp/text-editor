@@ -112,7 +112,7 @@ void screen_init_ncurses(Screen s) {
 
     /* set number of rows and cols depending on the window */
     s->rows = LINES-2; /* -2 for top and bottom bar */
-    s->cols = (s->args->debug_mode) ? COLS-32 : COLS;
+    s->cols = (s->args->debug_mode) ? COLS-32 : COLS-6; /* -6 for line nums */
 
     /* if in debug mode, create additional window for debug information */
     if (s->args->debug_mode) {
