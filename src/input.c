@@ -291,6 +291,7 @@ void handle_move_up(Screen s) {
         s->row -= CURR_LINE->wraps;
         s->col = 0;
         CURR_LINE->wrap = 0;
+        CURR_LINE->visual_cursor = 0;
 
         while (s->row < new_row) {
             handle_move_right(s);
@@ -309,6 +310,7 @@ void handle_move_up(Screen s) {
         s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
 
+        CURR_LINE->visual_cursor = CURR_LINE->visual_end;
         s->cur_l_num--;
         s->row--;
     } else {
@@ -326,6 +328,7 @@ void handle_move_up(Screen s) {
         if (old_col < s->col)
             handle_move_left(s);
 
+        CURR_LINE->visual_cursor = NEXT_LINE->visual_cursor;
         s->cur_l_num--;
         s->row--;
     }
@@ -357,13 +360,14 @@ void handle_move_down(Screen s) {
         while (s->col < new_col && s->col != VISUAL_END)
             handle_move_right(s);
     }
-    /* if cursor position is bigger than the current line length */
+    /* if cursor position is bigger than the next line's length */
     else if (s->col > NEXT_LINE->visual_end) {
         s->cur_line = s->cur_line->next;
 
         s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
 
+        CURR_LINE->visual_cursor = CURR_LINE->visual_end;
         s->cur_l_num++;
         s->row++;
     } else {
@@ -373,6 +377,7 @@ void handle_move_down(Screen s) {
 
         uint old_col = s->col;
         s->col = 0;
+        CURR_LINE->visual_cursor = 0;
 
         /* keep moving right until current column reaches the old one */
         while (s->col < old_col)
@@ -465,9 +470,11 @@ void handle_backspace(Screen s) {
         if (CURR_LBUF->buffer[CURSOR_CHAR] == '\t') {
             s->col-=4;
             CURR_LINE->visual_end-=4;
+            CURR_LINE->visual_cursor-=4;
         } else {
             s->col--;
             CURR_LINE->visual_end--;
+            CURR_LINE->visual_cursor--;
         }
 
         /* remove the current character */
