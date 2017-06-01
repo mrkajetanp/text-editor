@@ -63,6 +63,13 @@ typedef unsigned int uint;
                          ((CURR_LINE->wrap != CURR_LINE->wraps) ? s->cols : \
                           CURR_LINE->visual_end-s->cols*CURR_LINE->wraps-CURR_LINE->wraps))
 
+/* accessing the current top line */
+#define TOP_LINE ((Line)s->top_line->data)
+
+/* accessing the previous top line */
+#define PREV_TOP_LINE ((Line)s->top_line->prev->data)
+
+
 /*****************************************************************************/
 /*                                 Functions                                 */
 /*****************************************************************************/

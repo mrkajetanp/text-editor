@@ -4,6 +4,11 @@
 
 ---
 
+#### 1.06.2017
+
+* Started adding visual_cursor to the Line struct
+* Fixed cursor after moving lines down when the top line is wrapped 
+
 #### 31.05.2017
 
 * Fixed line wrapping in release mode (Issue #4)

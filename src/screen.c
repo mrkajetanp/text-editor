@@ -35,6 +35,7 @@ Line line_create() {
     Line l = malloc(sizeof *l);
 
     l->buff = new_line;
+    l->visual_cursor = 0;
     l->visual_end = 0;
 
     l->wrap = 0;

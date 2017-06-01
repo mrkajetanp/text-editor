@@ -51,6 +51,7 @@ struct Arguments {
 typedef struct _line* Line;
 struct _line {
     gap_T buff; /* line's gap buffer */
+    uint visual_cursor; /* line's visual cursor */
     uint visual_end; /* visual end of the line */
     uint wrap; /* current wrap number */
     uint wraps; /* number of times the line is wrapped */
