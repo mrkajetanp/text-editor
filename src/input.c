@@ -341,7 +341,7 @@ void handle_move_up(Screen s) {
 /* handle the down arrow key */
 void handle_move_down(Screen s) {
     /* the last line, do nothing */
-    if (s->cur_l_num+1 == s->n_lines)
+    if (s->cur_l_num+1 == s->n_lines && CURR_LINE->wrap == CURR_LINE->wraps)
         return;
 
     /* the bottom line, move rendered lines down */
