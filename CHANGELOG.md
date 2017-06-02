@@ -4,6 +4,10 @@
 
 ---
 
+#### 2.06.2017
+
+* Fixed wrapping lines by inserting chars in the middle (Issue #5)
+
 #### 1.06.2017
 
 * Fixed blinking cursor sometimes showing up in windows other than contents

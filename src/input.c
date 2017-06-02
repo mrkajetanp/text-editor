@@ -101,10 +101,14 @@ void insert_mode(Screen s) {
 
 /* inserts a char into the current screen */
 void handle_insert_char(Screen s, char c) {
-    if (s->col == s->cols) {
+    /* if current line ends at the edge of the screen, it wraps */
+    if (CURR_LINE->visual_end == (CURR_LINE->wraps+1)*s->cols + CURR_LINE->wraps)
         CURR_LINE->wraps++;
+
+    /* if at the edge of the screen, move down to the next wrap */
+    if (s->col == s->cols) {
         CURR_LINE->wrap++;
-        s->col = -1;
+        s->col = -1; /* after later incrementation it'll be 0 */
         s->row++;
     }
 
