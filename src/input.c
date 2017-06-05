@@ -310,6 +310,8 @@ void handle_move_up(Screen s) {
     else if (s->col > PREV_LINE->visual_end) {
         s->cur_line = s->cur_line->prev;
 
+        s->stored_col = s->col; /* store the column */
+
         /* move visual & actual cursor to the end of the line */
         s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
@@ -321,7 +323,9 @@ void handle_move_up(Screen s) {
         s->cur_line = s->cur_line->prev;
 
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
-        uint old_col = s->col;
+        uint old_col = (s->stored_col > CURR_LINE->visual_end) ? s->col :
+            s->stored_col;
+
         s->col = 0;
 
         /* keep moving right until current column reaches the old one */
@@ -368,6 +372,8 @@ void handle_move_down(Screen s) {
     else if (s->col > NEXT_LINE->visual_end) {
         s->cur_line = s->cur_line->next;
 
+        s->stored_col = s->col; /* store the column */
+
         s->col = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
 
@@ -379,7 +385,14 @@ void handle_move_down(Screen s) {
 
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
 
-        uint old_col = s->col;
+        uint old_col = 0;
+        if (s->col < PREV_LINE->visual_end) {
+            s->stored_col = s->col;
+            old_col = s->col;
+        } else if (s->col == PREV_LINE->visual_end) {
+            old_col = s->stored_col;
+        }
+
         s->col = 0;
         CURR_LINE->visual_cursor = 0;
 

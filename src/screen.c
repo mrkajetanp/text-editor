@@ -52,37 +52,26 @@ void line_destroy(Line l) {
 /* initializes the screen & its buffer */
 Screen screen_init(struct Arguments* args) {
     Screen s = malloc(sizeof *s);
-
-    /* create a new (first) line */
     Line new_line = line_create();
 
-    /* initialize the list to a NULL (empty list) */
-    s->lines = NULL;
+    s->lines = NULL; /* start with an empty list */
+    s->lines = g_list_append(s->lines, new_line); /* add the first line */
+    s->cur_line = s->lines; /* set the current line pointer */
 
-    /* add the first line to the list */
-    s->lines = g_list_append(s->lines, new_line);
+    s->cur_l_num = 0; /* first line number (index) is 0 */
+    s->n_lines = 1; /* initial number of lines is 1 */
 
-    /* set the current line pointer */
-    s->cur_line = s->lines;
-
-    /* set the current line number */
-    s->cur_l_num = 0;
-
-    /* set the number of lines */
-    s->n_lines = 1;
-
-    /* set the visual cursor position to the first character of the first line */
-    s->col = 0;
-    s->row = 0;
+    s->col = 0; /* visual cursor - first column */
+    s->row = 0; /* visual cursor - first row */
 
     /* default number of rows and cols, useful for debugging */
     s->rows = 10;
     s->cols = 30;
 
-    /* set first line to render */
-    s->top_line = s->lines;
+    s->top_line = s->lines; /* start rendering at the first line */
 
-    s->top_line_num = 0;
+    s->top_line_num = 0; /* first top line's number is 0 */
+    s->stored_col = 0; /* initial stored column to 0 */
 
     s->line_numbers = NULL;
     s->contents = NULL;

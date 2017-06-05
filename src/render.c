@@ -180,9 +180,7 @@ void render_contents(Screen s) {
         mvwprintw(s->debug_info, 12, 2, "s->cols: %d", s->cols);
         mvwprintw(s->debug_info, 13, 2, "line wrap: %d", CURR_LINE->wrap);
         mvwprintw(s->debug_info, 14, 2, "VISUAL_END: %d", VISUAL_END);
-
-        mvwprintw(s->debug_info, 15, 2, "currx: %d", getcurx(s->contents));
-        mvwprintw(s->debug_info, 16, 2, "maxx: %d", getmaxx(s->contents));
+        mvwprintw(s->debug_info, 15, 2, "Stored col: %d", s->stored_col);
     }
 
     /*************************************************************************/

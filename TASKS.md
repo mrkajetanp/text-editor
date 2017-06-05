@@ -9,7 +9,6 @@
 ### Future ideas
 
 * Properly handle keys with modifiers
-* Remember the last column position when moving up/down in the way emacs does
 * Allow variable tab length
 * Allow multiple buffers
 * Allow splitting the screen (use ncurses window functionality)
@@ -24,6 +23,6 @@
 
 ## Improvements
 
-* Add visual line cursor to show at the bottom bar
+* Remember the last column position when moving up/down in the way emacs does
 
 ...

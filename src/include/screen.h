@@ -76,6 +76,7 @@ struct _screen {
     uint n_lines; /* number of currently existing lines */
     GList* cur_line; /* pointer to the current line */
     uint cur_l_num; /* current line number */
+    uint stored_col; /* last stored column to (possibly) move to */
 
     /* Fields related to rendering *******************************************/
 
