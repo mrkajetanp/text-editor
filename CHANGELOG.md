@@ -6,6 +6,8 @@
 
 #### 5.06.2017
 
+* Implemented storing and moving to a bigger column when moving up
+* Fixed stored column on moving down
 * Implemented storing and moving to a bigger column when moving down
 
 #### 2.06.2017

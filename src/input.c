@@ -323,16 +323,31 @@ void handle_move_up(Screen s) {
         s->cur_line = s->cur_line->prev;
 
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
-        uint old_col = (s->stored_col > CURR_LINE->visual_end) ? s->col :
-            s->stored_col;
+
+        uint old_col = 0;
+        if (s->col < NEXT_LINE->visual_end) {
+            s->stored_col = s->col;
+            old_col = s->col;
+        } else if (s->col == NEXT_LINE->visual_end) {
+            old_col = s->stored_col;
+        }
+
+        if (old_col < s->col)
+            old_col = s->col;
 
         s->col = 0;
+        CURR_LINE->visual_cursor = 0;
 
         /* keep moving right until current column reaches the old one */
-        while (s->col < old_col)
+        while (s->col < old_col) {
             handle_move_right(s);
 
-        /* if cursor ends up further than s->col was, i.e. on a tab, move before it */
+            if (CURR_LINE->visual_cursor == CURR_LINE->visual_end)
+                break;
+        }
+
+        /* if cursor ends up further than s->col was, e.g. on a tab,
+           move before it */
         if (old_col < s->col)
             handle_move_left(s);
 
@@ -393,12 +408,19 @@ void handle_move_down(Screen s) {
             old_col = s->stored_col;
         }
 
+        if (old_col < s->col)
+            old_col = s->col;
+
         s->col = 0;
         CURR_LINE->visual_cursor = 0;
 
         /* keep moving right until current column reaches the old one */
-        while (s->col < old_col)
+        while (s->col < old_col) {
             handle_move_right(s);
+
+            if (CURR_LINE->visual_cursor == CURR_LINE->visual_end)
+                break;
+        }
 
         /* if cursor ends up further than s->col was e.g. on a tab,
            move before it */
