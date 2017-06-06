@@ -6,6 +6,8 @@
 
 #### 6.06.2017
 
+* Fixed adjusting current wrap number after moving up/down
+* Moving to the first line after reading a file
 * Started implementing file handling
 * Opening and closing files
 * Getting file contents while opening it

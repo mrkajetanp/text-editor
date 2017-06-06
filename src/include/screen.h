@@ -29,6 +29,16 @@
 #include "lib/gap_buffer.h"
 
 /*****************************************************************************/
+/*                                   Macros                                  */
+/*****************************************************************************/
+
+/* accessing the current line */
+#define CURR_LINE ((Line)s->cur_line->data)
+
+/* accessing the current line buffer */
+#define CURR_LBUF (((Line)s->cur_line->data)->buff)
+
+/*****************************************************************************/
 /*                                  typedefs                                 */
 /*****************************************************************************/
 
@@ -101,7 +111,7 @@ struct _screen {
 };
 
 /* initializes the screen & its buffer */
-Screen screen_init(struct Arguments* args);
+Screen screen_init(struct Arguments*);
 
 /* initializes the screen's ncurses windows */
 void screen_init_ncurses(Screen s);
@@ -111,6 +121,9 @@ void screen_new_line_under(Screen);
 
 /* creates a new line above the current one */
 void screen_new_line_above(Screen);
+
+/* goes to the first line in the current screen */
+void screen_go_to_first_line(Screen s);
 
 /* removes a line and frees its memory */
 void screen_destroy_line(Screen);

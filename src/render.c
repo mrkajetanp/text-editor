@@ -87,18 +87,14 @@ void render_line(gpointer data, gpointer screen) {
 #define CURSOR_CHAR (CURR_LBUF->gap_start > CURR_LBUF->cursor) ?  \
     CURR_LBUF->cursor-1 : CURR_LBUF->cursor
 
-#define VISUAL_END ((CURR_LINE->wraps == 0) ? CURR_LINE->visual_end : \
-                 ((CURR_LINE->wrap != CURR_LINE->wraps) ? s->cols :    \
-                  CURR_LINE->visual_end-s->cols*CURR_LINE->wraps-CURR_LINE->wraps))
+#define VISUAL_END ((CURR_LINE->wraps == 0) ? CURR_LINE->visual_end :  \
+                    ((CURR_LINE->wrap != CURR_LINE->wraps) ? s->cols :  \
+                     CURR_LINE->visual_end-s->cols*CURR_LINE->wraps-CURR_LINE->wraps))
 
 /* renders the screen */
 void render_contents(Screen s) {
     /* erase previous contents */
     werase(s->contents);
-
-    /*************************************************************************/
-    /*                       Render current buffer contents                  */
-    /*************************************************************************/
 
     /* render every line, stop if window is filled */
     uint cnt = 0;
@@ -187,11 +183,7 @@ void render_contents(Screen s) {
     /*************************************************************************/
     /*                        Adjust window attributes                       */
     /*************************************************************************/
-
-    /* move visual cursor to its proper position */
     wmove(s->contents, s->row, s->col);
-
-    /* refresh windows *******************************************************/
 
     if (s->args->debug_mode)
         wrefresh(s->debug_info);

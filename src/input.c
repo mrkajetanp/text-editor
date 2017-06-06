@@ -206,6 +206,7 @@ void handle_move_right(Screen s) {
 
         /* move one line down */
         s->cur_line = s->cur_line->next;
+        CURR_LINE->wrap = 0;
 
         s->col = 0;
         CURR_LINE->visual_cursor = 0;
@@ -226,6 +227,7 @@ void handle_move_right(Screen s) {
     else if (s->col == VISUAL_END) {
         /* move one line down */
         s->cur_line = s->cur_line->next;
+        CURR_LINE->wrap = 0;
 
         /* move visual cursor to the beginning of the next line */
         s->row++;
@@ -385,6 +387,7 @@ void handle_move_down(Screen s) {
     /* if cursor position is bigger than the next line's length */
     else if (s->col > NEXT_LINE->visual_end) {
         s->cur_line = s->cur_line->next;
+        CURR_LINE->wrap = 0;
 
         s->stored_col = s->col; /* store the column */
 
@@ -396,6 +399,7 @@ void handle_move_down(Screen s) {
         s->row++;
     } else {
         s->cur_line = s->cur_line->next;
+        CURR_LINE->wrap = 0;
 
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
 

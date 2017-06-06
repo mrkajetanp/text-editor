@@ -19,6 +19,7 @@
  ************************************************************************/
 
 #include <stdlib.h>
+#include <assert.h>
 
 #include "screen.h"
 #include "lib/gap_buffer.h"
@@ -138,6 +139,21 @@ void screen_new_line_above(Screen s) {
 
     /* increase the number of lines */
     s->n_lines++;
+}
+
+/* goes to the first line in the current screen */
+void screen_go_to_first_line(Screen s) {
+    s->col = 0;
+    s->row = 0;
+
+    s->cur_line = s->lines;
+    s->top_line = s->lines;
+
+    s->cur_l_num = 0;
+    s->top_line_num = 0;
+
+    CURR_LINE->visual_cursor = 0;
+    gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
 }
 
 /* removes a line and frees its memory */

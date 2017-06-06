@@ -22,6 +22,7 @@
 
 #include "files.h"
 #include "input.h"
+#include "screen.h"
 
 bool file_open(Screen s, char* name) {
     s->file = fopen(name, "r+");
@@ -38,6 +39,8 @@ bool file_open(Screen s, char* name) {
         else
             handle_insert_char(s, c);
     }
+
+    screen_go_to_first_line(s);
 
     return true;
 }
