@@ -27,11 +27,11 @@
 #include "screen.h"
 #include "input.h"
 #include "render.h"
+#include "files.h"
 
 /* executes the input loop */
 void input_loop(Screen s) {
-    /* initially refresh stdscr */
-    refresh();
+    refresh(); /* initially refresh stdscr */
 
     while (true) {
         render_info_bar_top(s);
@@ -46,8 +46,7 @@ void input_loop(Screen s) {
 
 /* handles characters in insert mode */
 void insert_mode(Screen s) {
-    /* get a character */
-    int c = getch();
+    int c = getch(); /* get a character */
 
     switch (c) {
 
@@ -527,6 +526,8 @@ void handle_backspace(Screen s) {
 void handle_quit(Screen s) {
     /* end curses mode */
     endwin();
+
+    file_close(s);
 
     /* destroy the current screen */
     screen_destroy(s);

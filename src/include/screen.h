@@ -93,6 +93,8 @@ struct _screen {
     WINDOW* info_bar_bottom; /* bottom bar with useful information */
     WINDOW* debug_info; /* window with debug information */
 
+    FILE* file; /* currently opened file */
+
     /* Fields related to the program *****************************************/
 
     struct Arguments* args; /* struct with program arguments */

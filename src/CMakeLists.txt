@@ -4,7 +4,7 @@ include_directories("/usr/lib/glib-2.0/include")
 include_directories("/usr/local/include/glib-2.0")
 include_directories("/usr/local/lib/glib-2.0/include")
 
-add_library(editor screen.c input.c render.c)
+add_library(editor screen.c input.c render.c files.c)
 
 target_link_libraries(editor gap_buffer)
 

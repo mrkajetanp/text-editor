@@ -4,6 +4,12 @@
 
 ---
 
+#### 6.06.2017
+
+* Started implementing file handling
+* Opening and closing files
+* Getting file contents while opening it
+
 #### 5.06.2017
 
 * Implemented storing and moving to a bigger column when moving up

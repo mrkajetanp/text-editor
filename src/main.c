@@ -25,6 +25,7 @@
 
 #include "screen.h"
 #include "input.h"
+#include "files.h"
 
 /*****************************************************************************/
 /*                      Handling command line arguments                      */
@@ -100,6 +101,8 @@ int main(int argc, char** argv) {
     /* create new "screen" */
     Screen s = screen_init(&arguments);
     screen_init_ncurses(s);
+
+    file_open(s, s->args->file_name);
 
     /* start input loop */
     input_loop(s);

@@ -78,6 +78,7 @@ Screen screen_init(struct Arguments* args) {
     s->info_bar_top = NULL;
     s->info_bar_bottom = NULL;
     s->debug_info = NULL;
+    s->file = NULL;
 
     /* set argument structure */
     s->args = args;
