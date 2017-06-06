@@ -292,15 +292,13 @@ void handle_move_up(Screen s) {
         uint new_col = s->col;
 
         /* go to the beginning of the line */
-        s->row--;
-        s->row -= CURR_LINE->wraps;
+        s->row -= (s->row == 1) ? 1 : CURR_LINE->wraps+1;
         s->col = 0;
         CURR_LINE->wrap = 0;
         CURR_LINE->visual_cursor = 0;
 
-        while (s->row < new_row) {
+        while (s->row < new_row)
             handle_move_right(s);
-        }
 
         while (s->col < new_col && s->col != VISUAL_END)
             handle_move_right(s);

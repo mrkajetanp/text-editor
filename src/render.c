@@ -100,7 +100,7 @@ void render_contents(Screen s) {
     uint cnt = 0;
     for (GList* curr = s->top_line ; curr != NULL ; curr = curr->next) {
         render_line(curr->data, s);
-        cnt++;
+        cnt += 1 + ((Line)curr->data)->wraps;
 
         if (cnt >= s->rows)
             break;
