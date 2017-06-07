@@ -4,6 +4,10 @@
 
 ---
 
+#### 7.06.2017
+
+* Fixed jumping over a line when moving down with top line wrapped (Issue #8)
+
 #### 6.06.2017
 
 * Fixed s->row becoming negative when moving the render up with top line wrapped

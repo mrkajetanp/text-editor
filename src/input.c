@@ -212,6 +212,8 @@ void handle_move_right(Screen s) {
         CURR_LINE->visual_cursor = 0;
         s->cur_l_num++;
 
+        s->row -= ((Line)s->top_line->prev->data)->wraps;
+
         /* move actual cursor to the beginning of the line */
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     }
@@ -366,7 +368,7 @@ void handle_move_down(Screen s) {
     if (s->row+1 == s->rows) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
-        s->row--; /* it balances out to 0 */
+        s->row -= 1 + ((Line)s->top_line->prev->data)->wraps;
     }
 
     /* wrap other than the last one */
