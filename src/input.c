@@ -199,8 +199,10 @@ void handle_move_right(Screen s) {
         s->col == VISUAL_END)
         return;
 
-    /* at the end of the bottom line */
-    if (s->row+1 == s->rows && s->col == VISUAL_END) {
+    /* end of the bottom unwrapped line */
+    if (s->row+1 == s->rows && s->col == VISUAL_END &&
+        CURR_LINE->wrap == CURR_LINE->wraps) {
+
         s->top_line = s->top_line->next;
         s->top_line_num++;
 
@@ -216,6 +218,19 @@ void handle_move_right(Screen s) {
 
         /* move actual cursor to the beginning of the line */
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
+    }
+    /* wrap end of the bottom wrapped line */
+    else if (s->col == s->cols && s->row+1 == s->rows
+             && CURR_LINE->wrap != CURR_LINE->wraps) {
+
+        s->col = 0;
+        s->top_line = s->top_line->next;
+        s->top_line_num++;
+
+        CURR_LINE->wrap++;
+        CURR_LINE->visual_cursor++;
+
+        gap_buffer_move_cursor(CURR_LBUF, 1);
     }
     /* wrap end of a wrap */
     else if (s->col == s->cols && CURR_LINE->wrap != CURR_LINE->wraps) {

@@ -4,6 +4,10 @@
 
 ---
 
+#### 8.06.2017
+
+* Fixed moving right at the edge when bottom line is a wrap (Issue #9)
+
 #### 7.06.2017
 
 * Fixed jumping over a line when moving down with top line wrapped (Issue #8)

@@ -23,6 +23,6 @@
 
 ## Improvements
 
-* Remember the last column position when moving up/down in the way emacs does
+* make moving render up/down a separate function
 
 ...
