@@ -36,7 +36,7 @@ bool file_open(Screen s, char* name) {
             handle_enter(s);
         else if (c == '\t')
             handle_tab(s);
-        else
+        else if (c >= 32 && c <= 127)
             handle_insert_char(s, c);
     }
 

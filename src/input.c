@@ -230,6 +230,8 @@ void handle_move_right(Screen s) {
         CURR_LINE->wrap++;
         CURR_LINE->visual_cursor++;
 
+        s->row -= ((Line)s->top_line->prev->data)->wraps;
+
         gap_buffer_move_cursor(CURR_LBUF, 1);
     }
     /* wrap end of a wrap */
