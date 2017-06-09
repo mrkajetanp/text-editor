@@ -548,6 +548,8 @@ void handle_quit(Screen s) {
     /* end curses mode */
     endwin();
 
+    file_save(s);
+
     file_close(s);
 
     /* destroy the current screen */

@@ -24,4 +24,6 @@
 
 bool file_open(Screen, char*);
 
+bool file_save(Screen);
+
 bool file_close(Screen);

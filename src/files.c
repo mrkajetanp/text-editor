@@ -45,6 +45,19 @@ bool file_open(Screen s, char* name) {
     return true;
 }
 
+void put_line(Screen s, Line data) {
+}
+
+bool file_save(Screen s) {
+    freopen(s->args->file_name, "w", s->file);
+
+    for (GList* curr = s->top_line ; curr != NULL ; curr = curr->next) {
+        put_line(s, (Line)curr->data);
+    }
+
+    return true;
+}
+
 bool file_close(Screen s) {
     return fclose(s->file) == 0;
 }
