@@ -37,49 +37,46 @@ void render_line(gpointer data, gpointer screen) {
 
     for (int i = 0 ; i <= buff->end ; ++i) {
 
-        /* skip the gap */
-        if (i < buff->gap_start || i > buff->gap_end) {
-            /* omit the null characters */
-            if (buff->buffer[i]) {
-                /*************************************************************/
-                /*     Print special characters if debug mode is enabled     */
-                /*************************************************************/
-                if (s->args->debug_mode) {
-                    switch (buff->buffer[i]) {
-                    case '\n':
-                        if (getcurx(s->contents) != getmaxx(s->contents)-1)
-                            waddch(s->contents, '$' | COLOR_PAIR(1));
+        /* skip the gap and omit nulls */
+        if ((i >= buff->gap_start && i <= buff->gap_end) || !buff->buffer[i])
+            continue;
 
-                        waddch(s->contents, '\n');
-                        break;
+        /*************************************************************/
+        /*     Print special characters if debug mode is enabled     */
+        /*************************************************************/
+        if (s->args->debug_mode) {
+            switch (buff->buffer[i]) {
+            case '\n':
+                if (getcurx(s->contents) != getmaxx(s->contents)-1)
+                    waddch(s->contents, '$' | COLOR_PAIR(1));
 
-                    case '\0':
-                        wprintw(s->contents, "%");
-                        break;
+                waddch(s->contents, '\n');
+                break;
 
-                    case '\t':
-                        wattron(s->contents, COLOR_PAIR(2));
-                        wprintw(s->contents, " -> ");
-                        wattroff(s->contents, COLOR_PAIR(2));
-                        break;
+            case '\0':
+                wprintw(s->contents, "%");
+                break;
 
-                    default:
-                        wprintw(s->contents, "%c", buff->buffer[i]);
-                        break;
-                    }
-                }
-                /*********************************************************/
-                /*        Print normally if debug mode is not enabled    */
-                /*********************************************************/
-                else {
-                    if (buff->buffer[i] == '\t')
-                        wprintw(s->contents, "    ");
-                    else
-                        wprintw(s->contents, "%c", buff->buffer[i]);
-                }
+            case '\t':
+                wattron(s->contents, COLOR_PAIR(2));
+                wprintw(s->contents, " -> ");
+                wattroff(s->contents, COLOR_PAIR(2));
+                break;
+
+            default:
+                wprintw(s->contents, "%c", buff->buffer[i]);
+                break;
             }
         }
-
+        /*********************************************************/
+        /*        Print normally if debug mode is not enabled    */
+        /*********************************************************/
+        else {
+            if (buff->buffer[i] == '\t')
+                wprintw(s->contents, "    ");
+            else
+                wprintw(s->contents, "%c", buff->buffer[i]);
+        }
     }
 }
 
@@ -87,7 +84,7 @@ void render_line(gpointer data, gpointer screen) {
 #define CURSOR_CHAR (CURR_LBUF->gap_start > CURR_LBUF->cursor) ?  \
     CURR_LBUF->cursor-1 : CURR_LBUF->cursor
 
-#define VISUAL_END ((CURR_LINE->wraps == 0) ? CURR_LINE->visual_end :  \
+#define VISUAL_END ((CURR_LINE->wraps == 0) ? CURR_LINE->visual_end :   \
                     ((CURR_LINE->wrap != CURR_LINE->wraps) ? s->cols :  \
                      CURR_LINE->visual_end-s->cols*CURR_LINE->wraps-CURR_LINE->wraps))
 
@@ -145,7 +142,7 @@ void render_contents(Screen s) {
 
         /* gap start & end */
         mvwprintw(s->debug_info, 6, 2,
-                 "Line gap: %d - %d", CURR_LBUF->gap_start, CURR_LBUF->gap_end);
+                  "Line gap: %d - %d", CURR_LBUF->gap_start, CURR_LBUF->gap_end);
 
 
         /* character currently under the cursor */

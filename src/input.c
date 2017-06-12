@@ -487,9 +487,10 @@ void handle_tab(Screen s) {
     /* put a tab into the current line buffer */
     gap_buffer_put(CURR_LBUF, '\t');
 
-    /* move visual cursor four columns to the right */
-    s->col+=4;
-    CURR_LINE->visual_end+=4;
+    /* move visual cursors four columns to the right */
+    s->col += 4;
+    CURR_LINE->visual_end += 4;
+    CURR_LINE->visual_cursor += 4;
 }
 
 #define CURSOR_CHAR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ?  \

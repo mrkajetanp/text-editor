@@ -6,6 +6,9 @@
 
 #### 12.06.2017
 
+* Fixed line's visual cursor not incrementing on tabs
+* Refactored file\_save function
+* Refactored render\_line function
 * Implemented proper file saving
 
 #### 8.06.2017
