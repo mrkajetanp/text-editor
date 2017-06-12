@@ -4,6 +4,10 @@
 
 ---
 
+#### 12.06.2017
+
+* Implemented proper file saving
+
 #### 8.06.2017
 
 * Fixed moving right at the edge when bottom line is a wrap (Issue #9)

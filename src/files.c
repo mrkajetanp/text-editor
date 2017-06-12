@@ -45,18 +45,25 @@ bool file_open(Screen s, char* name) {
     return true;
 }
 
-void put_line(Screen s, Line data) {
-}
-
+#define BUFF (((Line)curr->data)->buff)
 bool file_save(Screen s) {
     freopen(s->args->file_name, "w", s->file);
 
-    for (GList* curr = s->top_line ; curr != NULL ; curr = curr->next) {
-        put_line(s, (Line)curr->data);
+    for (GList* curr = s->lines ; curr != NULL ; curr = curr->next) {
+        for (int i = 0 ; i <= BUFF->end ; ++i) {
+
+            if (i < BUFF->gap_start || i > BUFF->gap_end) {
+                if (BUFF->buffer[i])
+                    fputc(BUFF->buffer[i], s->file);
+            }
+
+        }
+
     }
 
     return true;
 }
+#undef BUFF
 
 bool file_close(Screen s) {
     return fclose(s->file) == 0;

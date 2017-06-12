@@ -23,3 +23,5 @@ bin/
 # Debug files
 *.dSYM/
 *.su
+
+TESTLOG.md
