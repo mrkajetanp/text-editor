@@ -40,6 +40,7 @@ bool file_open(Screen s, char* name) {
             handle_insert_char(s, c);
     }
 
+    screen_destroy_line(s); /* remove unnecessarily added line */
     screen_go_to_first_line(s);
 
     return true;
@@ -47,7 +48,7 @@ bool file_open(Screen s, char* name) {
 
 #define BUFF (((Line)curr->data)->buff)
 bool file_save(Screen s) {
-    freopen(s->args->file_name, "w", s->file);
+    s->file = freopen(s->args->file_name, "w", s->file);
 
     for (GList* curr = s->lines ; curr != NULL ; curr = curr->next) {
         for (int i = 0 ; i <= BUFF->end ; ++i) {

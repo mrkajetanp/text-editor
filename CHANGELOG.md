@@ -4,6 +4,10 @@
 
 ---
 
+#### 13.06.2017
+
+* Removed an unnecessary line being added to every opened file
+
 #### 12.06.2017
 
 * Fixed line's visual cursor not incrementing on tabs
