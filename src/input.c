@@ -558,31 +558,19 @@ void handle_backspace(Screen s) {
 
 /* handle the quit command */
 void handle_quit(Screen s) {
-    /* end curses mode */
-    endwin();
-
-    file_close(s);
-
-    /* destroy the current screen */
-    screen_destroy(s);
-
-    /* exit program */
+    endwin(); /* end curses mode */
+    file_close(s); /* close the file */
+    screen_destroy(s); /* destroy the current screen */
     exit(0);
 }
 
 /* split the current line on cursor's position */
 void split_line(Screen s) {
-    /* create a new line under the current one */
     screen_new_line_under(s);
+    s->cur_line = s->cur_line->prev; /* return to the line being split */
 
-    /* return to the line we're splitting */
-    s->cur_line = s->cur_line->prev;
-
-    /* number of chars to move to the new line (right of split point) */
     int chars_to_move = 0;
-
-    /* number of tabs moved */
-    int tabs = 0;
+    int moved_tabs = 0;
 
     /* choose starting cursor position on the split point */
     int i = (CURR_LBUF->gap_end < CURR_LBUF->cursor) ?
@@ -591,37 +579,33 @@ void split_line(Screen s) {
     /* loop through the line to the end */
     while (i < CURR_LBUF->end) {
         /* skip the gap */
-        if (i < CURR_LBUF->gap_start || i > CURR_LBUF->gap_end) {
-            /* skip \n and \0s */
-            if (CURR_LBUF->buffer[i] == '\n' || CURR_LBUF->buffer[i] == '\0')
-                continue;
-
-            /* put the char we're on in the new line */
-            gap_buffer_put(NEXT_LBUF, CURR_LBUF->buffer[i]);
-            chars_to_move++;
-
-            if (CURR_LBUF->buffer[i] == '\t')
-                tabs++;
+        if (i >= CURR_LBUF->gap_start && i <= CURR_LBUF->gap_end) {
+            ++i;
+            continue;
         }
+
+        if (CURR_LBUF->buffer[i] == '\n' || CURR_LBUF->buffer[i] == '\0')
+            continue;
+
+        gap_buffer_put(NEXT_LBUF, CURR_LBUF->buffer[i]); /* put the current char into the new line */
+        chars_to_move++;
+
+        if (CURR_LBUF->buffer[i] == '\t')
+            moved_tabs++;
+
         ++i;
     }
 
-    /* move cursor to the end of the current line (excluding \n) */
-    gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
+    gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1); /* exclude '\n' at the end */
+
     /* delete as many characters as we moved to the new line */
     for (i = 0 ; i < chars_to_move ; ++i)
         gap_buffer_delete(CURR_LBUF);
 
-    /* adjust old line's visual end */
-    CURR_LINE->visual_end -= chars_to_move + tabs*3;
+    CURR_LINE->visual_end -= chars_to_move + moved_tabs*3; /* adjust the old line's visual end */
+    s->cur_line = s->cur_line->next; /* move to the newly created line */
+    CURR_LINE->visual_end += chars_to_move + moved_tabs*3; /* adjust the new line's visual end */
 
-    /* move to the newly created line */
-    s->cur_line = s->cur_line->next;
-
-    /* adjust new line's visual end */
-    CURR_LINE->visual_end += chars_to_move + tabs*3;
-
-    /* move buffer cursor to the beginning of the line */
     gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
 }
 
