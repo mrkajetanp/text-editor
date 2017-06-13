@@ -175,6 +175,7 @@ void render_contents(Screen s) {
         mvwprintw(s->debug_info, 13, 2, "line wrap: %d", CURR_LINE->wrap);
         mvwprintw(s->debug_info, 14, 2, "VISUAL_END: %d", VISUAL_END);
         mvwprintw(s->debug_info, 15, 2, "Stored col: %d", s->stored_col);
+        mvwprintw(s->debug_info, 16, 2, "Modified: %d", s->modified);
     }
 
     /*************************************************************************/
@@ -250,6 +251,9 @@ void render_info_bar_top(Screen s) {
     } else {
         mvwprintw(s->info_bar_top, 0, COLS/2-5, "New Buffer");
     }
+
+    if (s->modified == true)
+        mvwprintw(s->info_bar_top, 0, COLS-10, "Modified");
 
     wattroff(s->info_bar_top, A_REVERSE);
     wrefresh(s->info_bar_top);

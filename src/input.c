@@ -85,6 +85,10 @@ void insert_mode(Screen s) {
         s->cols = (s->args->debug_mode) ? COLS-32 : COLS-6; /* -6 for line nums */
         break;
 
+    case 19:
+        file_save(s);
+        break;
+
         /* ascii CAN (cancel) control character */
         /* In terminals similar to xterm it's Ctrl-X */
     case 24:
@@ -118,6 +122,8 @@ void handle_insert_char(Screen s, char c) {
     s->col++;
     CURR_LINE->visual_cursor++;
     CURR_LINE->visual_end++;
+
+    s->modified = true;
 }
 
 #define CURSOR_CHAR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ?  \
@@ -481,6 +487,8 @@ void handle_enter(Screen s) {
         s->top_line_num++;
         s->row -= 1 + PREV_TOP_LINE->wraps;
     }
+
+    s->modified = true;
 }
 
 void handle_tab(Screen s) {
@@ -491,6 +499,8 @@ void handle_tab(Screen s) {
     s->col += 4;
     CURR_LINE->visual_end += 4;
     CURR_LINE->visual_cursor += 4;
+
+    s->modified = true;
 }
 
 #define CURSOR_CHAR (CURR_LBUF->gap_start < CURR_LBUF->cursor) ?  \
@@ -540,6 +550,8 @@ void handle_backspace(Screen s) {
         /* remove the current character */
         gap_buffer_delete(CURR_LBUF);
     }
+
+    s->modified = true;
 }
 
 #undef CURSOR_CHAR
@@ -548,8 +560,6 @@ void handle_backspace(Screen s) {
 void handle_quit(Screen s) {
     /* end curses mode */
     endwin();
-
-    file_save(s);
 
     file_close(s);
 

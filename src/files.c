@@ -43,6 +43,8 @@ bool file_open(Screen s, char* name) {
     screen_destroy_line(s); /* remove unnecessarily added line */
     screen_go_to_first_line(s);
 
+    s->modified = false;
+
     return true;
 }
 
@@ -56,6 +58,8 @@ bool file_save(Screen s) {
                 fputc(BUFF->buffer[i], s->file);
         }
     }
+
+    s->modified = false;
 
     return true;
 }

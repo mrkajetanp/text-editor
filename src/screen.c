@@ -81,6 +81,8 @@ Screen screen_init(struct Arguments* args) {
     s->debug_info = NULL;
     s->file = NULL;
 
+    s->modified = false;
+
     /* set argument structure */
     s->args = args;
 

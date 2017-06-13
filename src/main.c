@@ -20,6 +20,7 @@
 
 #include <stdbool.h>
 
+#include <string.h>
 #include <ncurses.h>
 #include <argp.h>
 
@@ -102,7 +103,8 @@ int main(int argc, char** argv) {
     Screen s = screen_init(&arguments);
     screen_init_ncurses(s);
 
-    file_open(s, s->args->file_name);
+    if (strlen(s->args->file_name) > 0)
+        file_open(s, s->args->file_name);
 
     /* start input loop */
     input_loop(s);

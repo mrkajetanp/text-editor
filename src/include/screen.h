@@ -107,6 +107,7 @@ struct _screen {
 
     /* Fields related to the program *****************************************/
 
+    bool modified; /* if buffer is modified (but not saved) */
     struct Arguments* args; /* struct with program arguments */
 };
 
