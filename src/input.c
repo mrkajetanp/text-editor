@@ -39,14 +39,13 @@ void input_loop(Screen s) {
         render_line_numbers(s);
         render_contents(s);
 
-        /* start insert mode */
         insert_mode(s);
     }
 }
 
 /* handles characters in insert mode */
 void insert_mode(Screen s) {
-    int c = getch(); /* get a character */
+    int c = getch();
 
     switch (c) {
 
@@ -104,7 +103,7 @@ void insert_mode(Screen s) {
 
 /* inserts a char into the current screen */
 void handle_insert_char(Screen s, char c) {
-    /* if current line ends at the edge of the screen, it wraps */
+    /* if current line ends at the edge of the screen, insertion causes a wrap */
     if (CURR_LINE->visual_end == (CURR_LINE->wraps+1)*s->cols + CURR_LINE->wraps)
         CURR_LINE->wraps++;
 
@@ -115,10 +114,8 @@ void handle_insert_char(Screen s, char c) {
         s->row++;
     }
 
-    /* put a char in a line buffer */
     gap_buffer_put(CURR_LBUF, c);
 
-    /* move visual cursor one column to the right */
     s->col++;
     CURR_LINE->visual_cursor++;
     CURR_LINE->visual_end++;
@@ -131,7 +128,7 @@ void handle_insert_char(Screen s, char c) {
 
 /* handle the left arrow key */
 void handle_move_left(Screen s) {
-    /* if at the beginning of the first line, do nothing */
+    /* at the beginning of the first line, do nothing */
     if (s->cur_l_num == 0 && s->col == 0 && CURR_LINE->wrap == 0)
         return;
 
@@ -160,13 +157,9 @@ void handle_move_left(Screen s) {
     }
     /* at the beginning of a line */
     else if (s->col == 0) {
-        /* visual cursor to the upper row */
         s->row--;
-
-        /* go to the upper line */
         s->cur_line = s->cur_line->prev;
 
-        /* move visual & actual cursor to the end of the line */
         s->col = VISUAL_END;
         CURR_LINE->visual_cursor = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
@@ -183,7 +176,6 @@ void handle_move_left(Screen s) {
             CURR_LINE->visual_cursor--;
         }
 
-        /* move visual & actual cursor one column to the left */
         gap_buffer_move_cursor(CURR_LBUF, -1);
     }
 }
@@ -212,7 +204,6 @@ void handle_move_right(Screen s) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
 
-        /* move one line down */
         s->cur_line = s->cur_line->next;
         CURR_LINE->wrap = 0;
 
@@ -250,17 +241,14 @@ void handle_move_right(Screen s) {
     }
     /*  end of the line */
     else if (s->col == VISUAL_END) {
-        /* move one line down */
         s->cur_line = s->cur_line->next;
         CURR_LINE->wrap = 0;
 
-        /* move visual cursor to the beginning of the next line */
         s->row++;
         s->col = 0;
         s->cur_l_num++;
         CURR_LINE->visual_cursor = 0;
 
-        /* move actual cursor to the beginning of the line */
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     } else {
         /* move further on tab */
@@ -272,7 +260,6 @@ void handle_move_right(Screen s) {
             CURR_LINE->visual_cursor++;
         }
 
-        /* move visual & actual cursor one column to the right */
         gap_buffer_move_cursor(CURR_LBUF, 1);
     }
 }
@@ -290,10 +277,8 @@ void handle_move_up(Screen s) {
     if (s->row == 0) {
         s->top_line = s->top_line->prev;
         s->top_line_num--;
-        s->row++; /* it balances out to 0 */
+        s->row++; /* balances out to 0 */
     }
-
-    /* TODO: possible performance improvements? */
 
     if (CURR_LINE->wraps != 0 && CURR_LINE->wrap != 0) {
         uint new_row = s->row-1;
@@ -407,7 +392,7 @@ void handle_move_down(Screen s) {
         while (s->col < new_col && s->col != VISUAL_END)
             handle_move_right(s);
     }
-    /* if cursor position is bigger than the next line's length */
+    /* cursor position bigger than the next line's length */
     else if (s->col > NEXT_LINE->visual_end) {
         s->cur_line = s->cur_line->next;
         CURR_LINE->wrap = 0;
@@ -448,7 +433,7 @@ void handle_move_down(Screen s) {
                 break;
         }
 
-        /* if cursor ends up further than s->col was e.g. on a tab,
+        /* cursor ends up further than s->col was e.g. on a tab,
            move before it */
         if (old_col < s->col)
             handle_move_left(s);
@@ -481,7 +466,7 @@ void handle_enter(Screen s) {
     s->cur_l_num++;
     s->col = 0;
 
-    /* if bottom line, move rendered lines down */
+    /* if at the bottom line, move rendered lines down */
     if (s->row == s->rows) {
         s->top_line = s->top_line->next;
         s->top_line_num++;
@@ -492,7 +477,6 @@ void handle_enter(Screen s) {
 }
 
 void handle_tab(Screen s) {
-    /* put a tab into the current line buffer */
     gap_buffer_put(CURR_LBUF, '\t');
 
     /* move visual cursors four columns to the right */
@@ -611,44 +595,32 @@ void split_line(Screen s) {
 
 /* merge the current line with the upper one */
 void merge_line_up(Screen s) {
-    /* store the merge point position on the upper line */
-    uint old_col = PREV_LINE->visual_end;
-
-    /* store number of moved chars */
+    uint old_col = PREV_LINE->visual_end; /* store the merge point position (on the upper line) */
     uint moved_chars = 0;
+    uint moved_tabs = 0;
 
-    /* number of tabs moved */
-    uint tabs = 0;
-
-    gap_buffer_move_cursor(PREV_LBUF, gap_buffer_distance_to_end(PREV_LBUF)-1);
+    gap_buffer_move_cursor(PREV_LBUF, gap_buffer_distance_to_end(PREV_LBUF)-1); /* exclude '\n' at the end */
     for (int i = CURR_LBUF->start ; i < CURR_LBUF->end ; ++i) {
-        /* skip the gap */
-        if (i < CURR_LBUF->gap_start || i > CURR_LBUF->gap_end) {
-            /* skip \n and \0s */
-            if (CURR_LBUF->buffer[i] == '\n' || CURR_LBUF->buffer[i] == '\0')
-                continue;
+        /* skip the gap, \n and \0s */
+        if ((i >= CURR_LBUF->gap_start && i <= CURR_LBUF->gap_end) ||
+            CURR_LBUF->buffer[i] == '\n' || CURR_LBUF->buffer[i] == '\0')
+            continue;
 
-            /* put the char we're on in the new line */
-            gap_buffer_put(PREV_LBUF, CURR_LBUF->buffer[i]);
-            moved_chars++;
+        gap_buffer_put(PREV_LBUF, CURR_LBUF->buffer[i]); /* put the current char in the new line */
+        moved_chars++;
 
-            if (CURR_LBUF->buffer[i] == '\t')
-                tabs++;
-        }
+        if (CURR_LBUF->buffer[i] == '\t')
+            moved_tabs++;
     }
 
-    /* remove the current line, free its memory */
     screen_destroy_line(s);
 
-    /* adjust merged line's visual end */
-    CURR_LINE->visual_end += moved_chars + tabs*3;
+    CURR_LINE->visual_end += moved_chars + moved_tabs*3; /* adjust merged line's visual end */
 
     /* move the visual & actual cursor to the merge point on the previous line */
     gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
     s->row--;
-
-    /* set visual column to the beginning of the line */
-    s->col = 0;
+    s->col = 0; /* set visual column to the beginning of the line */
 
     /* keep moving right until current column reaches the old one */
     while (s->col < old_col)
