@@ -22,6 +22,7 @@
 #include <assert.h>
 
 #include "screen.h"
+#include "render.h"
 #include "lib/gap_buffer.h"
 
 Line line_create() {
@@ -81,6 +82,8 @@ Screen screen_init(struct Arguments* args) {
     s->debug_info = NULL;
     s->file = NULL;
 
+    s->render_info_bar_bottom = true;
+
     s->modified = false;
 
     /* set argument structure */
@@ -94,7 +97,7 @@ void screen_init_ncurses(Screen s) {
     s->info_bar_top = newwin(1, COLS, 0, 0);
 
     /* create a window for bottom info bar */
-    s->info_bar_bottom = newwin(1, COLS, LINES-1, 0);
+    screen_create_info_bar_bottom(s);
 
     /* create a window for line numbers */
     s->line_numbers = newwin(LINES-2, 5, 1, 0);
@@ -109,11 +112,27 @@ void screen_init_ncurses(Screen s) {
     s->cols = (s->args->debug_mode) ? COLS-32 : COLS-6; /* -6 for line nums */
 
     /* if in debug mode, create additional window for debug information */
-    if (s->args->debug_mode) {
+    if (s->args->debug_mode)
         s->debug_info = newwin(LINES-2, 26, 1, COLS-25);
-    } else {
+    else
         s->debug_info = NULL;
-    }
+}
+
+/* create and enable the bottom info bar */
+void screen_create_info_bar_bottom(Screen s) {
+    s->render_info_bar_bottom = true;
+    s->info_bar_bottom = newwin(1, COLS, LINES-1, 0);
+}
+
+/* delete and disable the bottom info bar */
+void screen_delete_info_bar_bottom(Screen s) {
+    s->render_info_bar_bottom = false;
+
+    for (int i = 0 ; i < COLS ; ++i)
+        mvwprintw(s->info_bar_bottom, 0, i, " ");
+
+    wrefresh(s->info_bar_bottom);
+    delwin(s->info_bar_bottom);
 }
 
 /* creates a new line under the current one */
@@ -156,6 +175,25 @@ void screen_go_to_first_line(Screen s) {
 
     CURR_LINE->visual_cursor = 0;
     gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
+}
+
+/* creates a save confirmation window */
+void screen_save_confirmation_window(Screen s) {
+    screen_delete_info_bar_bottom(s);
+
+    for (int i = 0 ; i < COLS ; ++i) {
+        attron(A_REVERSE);
+        mvprintw(LINES-3, i, " ");
+        attroff(A_REVERSE);
+
+        mvprintw(LINES-2, i, " ");
+    }
+
+    curs_set(0);
+
+    getch();
+
+    screen_create_info_bar_bottom(s);
 }
 
 /* removes a line and frees its memory */

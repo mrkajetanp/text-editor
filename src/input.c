@@ -35,7 +35,8 @@ void input_loop(Screen s) {
 
     while (true) {
         render_info_bar_top(s);
-        render_info_bar_bottom(s);
+        if (s->render_info_bar_bottom)
+            render_info_bar_bottom(s);
         render_line_numbers(s);
         render_contents(s);
 
@@ -85,6 +86,10 @@ void insert_mode(Screen s) {
         break;
 
     case 19:
+        if (s->modified) {
+            screen_save_confirmation_window(s);
+        }
+
         file_save(s);
         break;
 

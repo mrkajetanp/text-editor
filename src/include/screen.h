@@ -103,6 +103,8 @@ struct _screen {
     WINDOW* info_bar_bottom; /* bottom bar with useful information */
     WINDOW* debug_info; /* window with debug information */
 
+    bool render_info_bar_bottom; /* if the bottom bar should be rendered */
+
     FILE* file; /* currently opened file */
 
     /* Fields related to the program *****************************************/
@@ -115,7 +117,13 @@ struct _screen {
 Screen screen_init(struct Arguments*);
 
 /* initializes the screen's ncurses windows */
-void screen_init_ncurses(Screen s);
+void screen_init_ncurses(Screen);
+
+/* create and enable the bottom info bar */
+void screen_create_info_bar_bottom(Screen);
+
+/* delete and disable the bottom info bar */
+void screen_delete_info_bar_bottom(Screen);
 
 /* creates a new line under the current one */
 void screen_new_line_under(Screen);
@@ -124,7 +132,10 @@ void screen_new_line_under(Screen);
 void screen_new_line_above(Screen);
 
 /* goes to the first line in the current screen */
-void screen_go_to_first_line(Screen s);
+void screen_go_to_first_line(Screen);
+
+/* creates a save confirmation window */
+void screen_save_confirmation_window(Screen);
 
 /* removes a line and frees its memory */
 void screen_destroy_line(Screen);

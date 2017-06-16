@@ -176,6 +176,7 @@ void render_contents(Screen s) {
         mvwprintw(s->debug_info, 14, 2, "VISUAL_END: %d", VISUAL_END);
         mvwprintw(s->debug_info, 15, 2, "Stored col: %d", s->stored_col);
         mvwprintw(s->debug_info, 16, 2, "Modified: %d", s->modified);
+        mvwprintw(s->debug_info, 17, 2, "Bottom info bar: %d", s->render_info_bar_bottom);
     }
 
     /*************************************************************************/

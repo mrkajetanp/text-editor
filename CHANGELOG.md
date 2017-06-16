@@ -4,6 +4,12 @@
 
 ---
 
+#### 16.06.2017
+
+* Started implementing save confirmation window
+    * disable bottom info bar
+    * make space for confirmation window
+
 #### 13.06.2017
 
 * Removed an unnecessary line being added to every opened file
