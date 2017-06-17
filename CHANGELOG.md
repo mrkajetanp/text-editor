@@ -4,6 +4,10 @@
 
 ---
 
+#### 17.06.2017
+
+* Save confirmation window showing up properly on quit
+
 #### 16.06.2017
 
 * Started implementing save confirmation window

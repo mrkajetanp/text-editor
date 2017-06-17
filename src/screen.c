@@ -181,18 +181,28 @@ void screen_go_to_first_line(Screen s) {
 void screen_save_confirmation_window(Screen s) {
     screen_delete_info_bar_bottom(s);
 
-    for (int i = 0 ; i < COLS ; ++i) {
-        attron(A_REVERSE);
-        mvprintw(LINES-3, i, " ");
-        attroff(A_REVERSE);
+    WINDOW* confirmation = newwin(3, COLS, LINES-3, 0);
 
-        mvprintw(LINES-2, i, " ");
-    }
+    wattron(confirmation, A_REVERSE);
+    for (int i = 0 ; i < COLS ; ++i)
+        mvwprintw(confirmation, 0, i, " ");
 
+    mvwprintw(confirmation, 0, 0, "Save modified buffer?");
+    mvwprintw(confirmation, 1, 0, " Y");
+    mvwprintw(confirmation, 2, 0, " N");
+    mvwprintw(confirmation, 2, 16, "^C");
+
+    wattroff(confirmation, A_REVERSE);
+
+    mvwprintw(confirmation, 1, 3, "Yes");
+    mvwprintw(confirmation, 2, 3, "No");
+    mvwprintw(confirmation, 2, 19, "Cancel");
+
+    wrefresh(confirmation);
     curs_set(0);
-
     getch();
 
+    delwin(confirmation);
     screen_create_info_bar_bottom(s);
 }
 

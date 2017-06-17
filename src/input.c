@@ -86,16 +86,15 @@ void insert_mode(Screen s) {
         break;
 
     case 19:
-        if (s->modified) {
-            screen_save_confirmation_window(s);
-        }
-
         file_save(s);
         break;
 
         /* ascii CAN (cancel) control character */
         /* In terminals similar to xterm it's Ctrl-X */
     case 24:
+        if (s->modified)
+            screen_save_confirmation_window(s);
+
         handle_quit(s);
         break;
 
