@@ -23,6 +23,7 @@
 
 #include "screen.h"
 #include "render.h"
+#include "files.h"
 #include "lib/gap_buffer.h"
 
 Line line_create() {
@@ -200,7 +201,17 @@ void screen_save_confirmation_window(Screen s) {
 
     wrefresh(confirmation);
     curs_set(0);
-    getch();
+
+    while (true) {
+        int c = getch();
+
+        if (c == 'Y' || c == 'y') {
+            file_save(s);
+            break;
+        } else if (c == 'N' || c == 'n') {
+            break;
+        }
+    }
 
     delwin(confirmation);
     screen_create_info_bar_bottom(s);

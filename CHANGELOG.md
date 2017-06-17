@@ -6,6 +6,7 @@
 
 #### 17.06.2017
 
+* Save confirmation window functionality
 * Save confirmation window showing up properly on quit
 
 #### 16.06.2017
