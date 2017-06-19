@@ -94,13 +94,21 @@ void insert_mode(Screen s) {
     case 24:
         if (s->modified)
             screen_save_confirmation_window(s);
+        else
+            handle_quit(s);
 
-        handle_quit(s);
         break;
 
     default:
         if (c >= 32 && c <= 127)
             handle_insert_char(s, c);
+        else {
+            if (s->args->debug_mode) {
+                attron(A_REVERSE);
+                mvprintw(0, 0, "%d ", c);
+                attroff(A_REVERSE);
+            }
+        }
         break;
     }
 }

@@ -4,6 +4,10 @@
 
 ---
 
+#### 19.06.2017
+
+* Save confirmation window - aborting exit with ^C
+
 #### 17.06.2017
 
 * Save confirmation window functionality
