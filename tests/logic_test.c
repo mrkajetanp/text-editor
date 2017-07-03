@@ -57,8 +57,12 @@ START_TEST (test_line_init) {
     ck_assert_ptr_nonnull(l->buff);
 
     ck_assert_int_eq(0, l->buff->cursor);
-    ck_assert_int_eq(0, l->visual_end);
     ck_assert_int_eq('\n', l->buff->buffer[0]);
+    ck_assert_int_eq(0, l->visual_end);
+    ck_assert_int_eq(0, l->visual_cursor);
+
+    ck_assert_int_eq(0, l->wrap);
+    ck_assert_int_eq(0, l->wraps);
 
     line_destroy(l);
 } END_TEST
@@ -91,15 +95,33 @@ START_TEST (test_screen_init) {
 
     /* visual cursor and number of lines */
     ck_assert_int_eq(1, s->n_lines);
+    ck_assert_int_eq(0, s->cur_l_num);
     ck_assert_int_eq(0, s->col);
     ck_assert_int_eq(0, s->row);
 
     /* test others ***********************************************************/
 
+    ck_assert_ptr_eq(s->top_line, s->lines);
+
+    ck_assert_int_eq(10, s->rows);
+    ck_assert_int_eq(30, s->cols);
+
+    ck_assert_int_eq(0, s->top_line_num);
+    ck_assert_int_eq(0, s->stored_col);
+
     /* ncurses windows are all NULL */
     ck_assert_ptr_eq(NULL, s->line_numbers);
     ck_assert_ptr_eq(NULL, s->contents);
+    ck_assert_ptr_eq(NULL, s->info_bar_top);
+    ck_assert_ptr_eq(NULL, s->info_bar_bottom);
     ck_assert_ptr_eq(NULL, s->debug_info);
+
+    ck_assert_ptr_eq(NULL, s->file);
+
+    ck_assert(s->render_info_bar_bottom);
+    ck_assert(!s->modified);
+
+    ck_assert_ptr_nonnull(s->args);
 
     screen_destroy(s);
 } END_TEST

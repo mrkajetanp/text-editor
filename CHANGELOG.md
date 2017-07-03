@@ -4,6 +4,10 @@
 
 ---
 
+#### 3.07.2017
+
+* Testing - Updated line & screen init tests
+
 #### 19.06.2017
 
 * Save confirmation window - aborting exit with ^C
