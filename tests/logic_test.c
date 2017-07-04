@@ -172,6 +172,28 @@ START_TEST (test_new_line_above) {
     screen_destroy(s);
 } END_TEST
 
+START_TEST (test_go_to_first_line) {
+    Screen s = screen_init(&test_arguments);
+    handle_enter(s);
+    handle_move_right(s);
+
+    /* actual testing ********************************************************/
+
+    screen_go_to_first_line(s);
+
+    ck_assert_int_eq(s->col, 0);
+    ck_assert_int_eq(s->row, 0);
+    ck_assert_int_eq(s->cur_l_num, 0);
+    ck_assert_int_eq(s->top_line_num, 0);
+    ck_assert_int_eq(CURR_LINE->visual_cursor, 0);
+    ck_assert_int_eq(CURR_LBUF->cursor, 0);
+
+    ck_assert_ptr_eq(s->cur_line, s->lines);
+    ck_assert_ptr_eq(s->top_line, s->lines);
+
+    screen_destroy(s);
+} END_TEST
+
 Suite* s_screen() {
     Suite* s_screen = suite_create("screen");
 
@@ -183,6 +205,7 @@ Suite* s_screen() {
     TCase* tc_lines = tcase_create("line management");
     tcase_add_test(tc_lines, test_new_line_under);
     tcase_add_test(tc_lines, test_new_line_above);
+    tcase_add_test(tc_lines, test_go_to_first_line);
     suite_add_tcase(s_screen, tc_lines);
 
     return s_screen;

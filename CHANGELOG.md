@@ -4,6 +4,10 @@
 
 ---
 
+#### 4.07.2017
+
+* Testing - Added test for screen's go\_to\_first\_line function
+
 #### 3.07.2017
 
 * Testing - Updated line & screen init tests
