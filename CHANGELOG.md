@@ -7,6 +7,7 @@
 #### 4.07.2017
 
 * Testing - Updated the test for letter insertion
+* Testing - Updated the test for moving left
 
 #### 4.07.2017
 
