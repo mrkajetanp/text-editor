@@ -220,6 +220,9 @@ START_TEST (test_letter_insertion) {
     ck_assert_int_eq(0, CURR_LBUF->cursor);
     ck_assert_int_eq(0, s->col);
     ck_assert_int_eq(0, CURR_LINE->visual_end);
+    ck_assert_int_eq(0, CURR_LINE->visual_cursor);
+    ck_assert_int_eq(CURR_LINE->wraps, 0);
+    ck_assert_int_eq(CURR_LINE->wrap, 0);
 
     /* actual insertion ******************************************************/
 
@@ -235,6 +238,26 @@ START_TEST (test_letter_insertion) {
     ck_assert_int_eq(1, CURR_LBUF->cursor);
     ck_assert_int_eq(1, s->col);
     ck_assert_int_eq(1, CURR_LINE->visual_end);
+    ck_assert_int_eq(1, CURR_LINE->visual_cursor);
+
+    /* wrapping at screen's edge *********************************************/
+
+    /* move to the edge */
+    while (s->col != s->cols)
+        handle_insert_char(s, 'a');
+    handle_insert_char(s, 'a');
+
+    ck_assert_int_eq(CURR_LINE->wraps, 1);
+    ck_assert_int_eq(CURR_LINE->wrap, 1);
+
+    /* move to the previous wrap */
+    handle_move_left(s);
+    ck_assert_int_eq(CURR_LINE->wrap, 0);
+
+    handle_insert_char(s, 'a');
+    ck_assert_int_eq(CURR_LINE->wrap, 1);
+
+    ck_assert(s->modified);
 
     screen_destroy(s);
 } END_TEST
