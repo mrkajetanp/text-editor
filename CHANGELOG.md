@@ -6,6 +6,7 @@
 
 #### 7.07.2017
 
+* Changed cur\_l\_num to cur\_line\_num
 * Testing - Updated the test for moving right
 
 #### 4.07.2017

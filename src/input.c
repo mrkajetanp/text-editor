@@ -141,7 +141,7 @@ void handle_insert_char(Screen s, char c) {
 /* handle the left arrow key */
 void handle_move_left(Screen s) {
     /* at the beginning of the first line, do nothing */
-    if (s->cur_l_num == 0 && s->col == 0 && CURR_LINE->wrap == 0)
+    if (s->cur_line_num == 0 && s->col == 0 && CURR_LINE->wrap == 0)
         return;
 
     /* at the beginning of a wrap */
@@ -165,7 +165,7 @@ void handle_move_left(Screen s) {
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
 
         s->top_line_num--;
-        s->cur_l_num--;
+        s->cur_line_num--;
     }
     /* at the beginning of a line */
     else if (s->col == 0) {
@@ -176,7 +176,7 @@ void handle_move_left(Screen s) {
         CURR_LINE->visual_cursor = CURR_LINE->visual_end;
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
 
-        s->cur_l_num--;
+        s->cur_line_num--;
     } else {
 
         /* move further on tab */
@@ -205,7 +205,7 @@ void handle_move_left(Screen s) {
 /* handle the right arrow key */
 void handle_move_right(Screen s) {
     /* if at the end of the last line, do nothing */
-    if (s->cur_l_num+1 == s->n_lines && CURR_LINE->wraps == CURR_LINE->wrap &&
+    if (s->cur_line_num+1 == s->n_lines && CURR_LINE->wraps == CURR_LINE->wrap &&
         s->col == VISUAL_END)
         return;
 
@@ -221,7 +221,7 @@ void handle_move_right(Screen s) {
 
         s->col = 0;
         CURR_LINE->visual_cursor = 0;
-        s->cur_l_num++;
+        s->cur_line_num++;
 
         s->row -= ((Line)s->top_line->prev->data)->wraps;
 
@@ -258,7 +258,7 @@ void handle_move_right(Screen s) {
 
         s->row++;
         s->col = 0;
-        s->cur_l_num++;
+        s->cur_line_num++;
         CURR_LINE->visual_cursor = 0;
 
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_start(CURR_LBUF));
@@ -282,7 +282,7 @@ void handle_move_right(Screen s) {
 /* handle the up arrow key */
 void handle_move_up(Screen s) {
     /* if at the top, do nothing */
-    if (s->cur_l_num == 0 && CURR_LINE->wrap == 0)
+    if (s->cur_line_num == 0 && CURR_LINE->wrap == 0)
         return;
 
     /* top line, move rendered lines up */
@@ -325,7 +325,7 @@ void handle_move_up(Screen s) {
         while (s->col < new_col && s->col != VISUAL_END)
             handle_move_right(s);
 
-        s->cur_l_num--;
+        s->cur_line_num--;
     }
     /* cursor position is bigger than the previous line length */
     else if (s->col > PREV_LINE->visual_end) {
@@ -338,7 +338,7 @@ void handle_move_up(Screen s) {
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
 
         CURR_LINE->visual_cursor = CURR_LINE->visual_end;
-        s->cur_l_num--;
+        s->cur_line_num--;
         s->row--;
     } else {
         s->cur_line = s->cur_line->prev;
@@ -373,7 +373,7 @@ void handle_move_up(Screen s) {
             handle_move_left(s);
 
         CURR_LINE->visual_cursor = NEXT_LINE->visual_cursor;
-        s->cur_l_num--;
+        s->cur_line_num--;
         s->row--;
     }
 }
@@ -381,7 +381,7 @@ void handle_move_up(Screen s) {
 /* handle the down arrow key */
 void handle_move_down(Screen s) {
     /* the last line, do nothing */
-    if (s->cur_l_num+1 == s->n_lines && CURR_LINE->wrap == CURR_LINE->wraps)
+    if (s->cur_line_num+1 == s->n_lines && CURR_LINE->wrap == CURR_LINE->wraps)
         return;
 
     /* the bottom line, move rendered lines down */
@@ -415,7 +415,7 @@ void handle_move_down(Screen s) {
         gap_buffer_move_cursor(CURR_LBUF, gap_buffer_distance_to_end(CURR_LBUF)-1);
 
         CURR_LINE->visual_cursor = CURR_LINE->visual_end;
-        s->cur_l_num++;
+        s->cur_line_num++;
         s->row++;
     } else {
         s->cur_line = s->cur_line->next;
@@ -450,7 +450,7 @@ void handle_move_down(Screen s) {
         if (old_col < s->col)
             handle_move_left(s);
 
-        s->cur_l_num++;
+        s->cur_line_num++;
         s->row++;
     }
 }
@@ -475,7 +475,7 @@ void handle_enter(Screen s) {
 
     /* move the visual cursor to the beginning of the new line */
     s->row++;
-    s->cur_l_num++;
+    s->cur_line_num++;
     s->col = 0;
 
     /* if at the bottom line, move rendered lines down */
@@ -505,7 +505,7 @@ void handle_tab(Screen s) {
 /* handle the backspace key */
 void handle_backspace(Screen s) {
     /* beginning of the first line, do nothing */
-    if (s->cur_l_num == 0 && s->col == 0 && CURR_LINE->wraps == 0)
+    if (s->cur_line_num == 0 && s->col == 0 && CURR_LINE->wraps == 0)
         return;
 
     /* beginning of the wrap */
@@ -522,7 +522,7 @@ void handle_backspace(Screen s) {
         s->top_line = s->top_line->prev;
         s->top_line_num--;
         merge_line_up(s);
-        s->cur_l_num--;
+        s->cur_line_num--;
         s->row = 0;
 
     }
@@ -530,7 +530,7 @@ void handle_backspace(Screen s) {
     else if (s->col == 0) {
         /* merge the line with the upper one */
         merge_line_up(s);
-        s->cur_l_num--;
+        s->cur_line_num--;
     } else {
         /* move the visual cursor to the left */
         if (CURR_LBUF->buffer[CURSOR_CHAR] == '\t') {

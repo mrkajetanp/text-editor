@@ -62,7 +62,7 @@ Screen screen_init(struct Arguments* args) {
     s->lines = g_list_append(s->lines, new_line); /* add the first line */
     s->cur_line = s->lines; /* set the current line pointer */
 
-    s->cur_l_num = 0; /* first line number (index) is 0 */
+    s->cur_line_num = 0; /* first line number (index) is 0 */
     s->n_lines = 1; /* initial number of lines is 1 */
 
     s->col = 0; /* visual cursor - first column */
@@ -143,7 +143,7 @@ void screen_new_line_under(Screen s) {
     Line new_line = line_create();
 
     /* insert the new line buffer into the list in its correct position */
-    s->lines = g_list_insert(s->lines, new_line, s->cur_l_num+1);
+    s->lines = g_list_insert(s->lines, new_line, s->cur_line_num+1);
 
     /* set the current line to the new (next) one */
     s->cur_line = s->cur_line->next;
@@ -158,7 +158,7 @@ void screen_new_line_above(Screen s) {
     Line new_line = line_create();
 
     /* insert the new line buffer into the list in its correct position */
-    s->lines = g_list_insert(s->lines, new_line, s->cur_l_num);
+    s->lines = g_list_insert(s->lines, new_line, s->cur_line_num);
 
     /* increase the number of lines */
     s->n_lines++;
@@ -172,7 +172,7 @@ void screen_go_to_first_line(Screen s) {
     s->cur_line = s->lines;
     s->top_line = s->lines;
 
-    s->cur_l_num = 0;
+    s->cur_line_num = 0;
     s->top_line_num = 0;
 
     CURR_LINE->visual_cursor = 0;

@@ -169,7 +169,7 @@ void render_contents(Screen s) {
         mvwprintw(s->debug_info, 8, 2, "File name: %s", s->args->file_name);
 
         mvwprintw(s->debug_info, 9, 2, "Top line num: %d", s->top_line_num);
-        mvwprintw(s->debug_info, 10, 2, "Curr l_num: %d", s->cur_l_num);
+        mvwprintw(s->debug_info, 10, 2, "Curr l_num: %d", s->cur_line_num);
         mvwprintw(s->debug_info, 11, 2, "s->rows: %d", s->rows);
         mvwprintw(s->debug_info, 12, 2, "s->cols: %d", s->cols);
         mvwprintw(s->debug_info, 13, 2, "line wrap: %d", CURR_LINE->wrap);
@@ -274,7 +274,7 @@ void render_info_bar_bottom(Screen s) {
 
     /* render current line and column number */
     mvwprintw(s->info_bar_bottom, 0, COLS-11, "%4d:%-4d",
-              s->cur_l_num+1, CURR_LINE->visual_cursor);
+              s->cur_line_num+1, CURR_LINE->visual_cursor);
 
     wattroff(s->info_bar_bottom, A_REVERSE);
     wrefresh(s->info_bar_bottom);
