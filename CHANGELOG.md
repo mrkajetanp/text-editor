@@ -4,6 +4,10 @@
 
 ---
 
+#### 7.07.2017
+
+* Testing - Updated the test for moving right
+
 #### 4.07.2017
 
 * Testing - Updated the test for letter insertion

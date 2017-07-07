@@ -440,9 +440,14 @@ START_TEST (test_move_right) {
     ck_assert_int_eq(1, s->n_lines);
     ck_assert_int_eq(0, s->col);
     ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq(0, s->cur_l_num);
+    ck_assert_int_eq(0, s->top_line_num);
     ck_assert_int_eq('\n', CURR_LBUF->buffer[0]);
     ck_assert_int_eq(0, CURR_LBUF->cursor);
     ck_assert_int_eq(0, CURR_LINE->visual_end);
+    ck_assert_int_eq(0, CURR_LINE->visual_cursor);
+    ck_assert_int_eq(0, CURR_LINE->wraps);
+    ck_assert_int_eq(0, CURR_LINE->wrap);
 
     handle_move_right(s);
 
@@ -450,9 +455,15 @@ START_TEST (test_move_right) {
     ck_assert_int_eq(1, s->n_lines);
     ck_assert_int_eq(0, s->col);
     ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq(0, s->cur_l_num);
+    ck_assert_int_eq(0, s->top_line_num);
     ck_assert_int_eq('\n', CURR_LBUF->buffer[0]);
     ck_assert_int_eq(0, CURR_LBUF->cursor);
     ck_assert_int_eq(0, CURR_LINE->visual_end);
+    ck_assert_int_eq(0, CURR_LINE->visual_cursor);
+    ck_assert_int_eq(0, CURR_LINE->wraps);
+    ck_assert_int_eq(0, CURR_LINE->wrap);
+
 
     /* middle of the line ****************************************************/
 
@@ -465,9 +476,14 @@ START_TEST (test_move_right) {
     ck_assert_int_eq(1, s->n_lines);
     ck_assert_int_eq(2, s->col);
     ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq(0, s->cur_l_num);
+    ck_assert_int_eq(0, s->top_line_num);
     ck_assert_int_eq(3, CURR_LINE->visual_end);
+    ck_assert_int_eq(2, CURR_LINE->visual_cursor);
     ck_assert_int_eq(2, CURR_LBUF->cursor);
     ck_assert_int_eq('b', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(0, CURR_LINE->wraps);
+    ck_assert_int_eq(0, CURR_LINE->wrap);
 
     handle_move_right(s);
 
@@ -475,9 +491,14 @@ START_TEST (test_move_right) {
     ck_assert_int_eq(1, s->n_lines);
     ck_assert_int_eq(3, s->col);
     ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq(0, s->cur_l_num);
+    ck_assert_int_eq(0, s->top_line_num);
     ck_assert_int_eq(3, CURR_LINE->visual_end);
+    ck_assert_int_eq(3, CURR_LINE->visual_cursor);
     ck_assert_int_eq(3, CURR_LBUF->cursor);
     ck_assert_int_eq('c', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(0, CURR_LINE->wraps);
+    ck_assert_int_eq(0, CURR_LINE->wrap);
 
     /* middle of the line on tab *********************************************/
 
@@ -489,9 +510,14 @@ START_TEST (test_move_right) {
     ck_assert_int_eq(1, s->n_lines);
     ck_assert_int_eq(3, s->col);
     ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq(0, s->cur_l_num);
+    ck_assert_int_eq(0, s->top_line_num);
     ck_assert_int_eq(7, CURR_LINE->visual_end);
+    ck_assert_int_eq(3, CURR_LINE->visual_cursor);
     ck_assert_int_eq(3, CURR_LBUF->cursor);
     ck_assert_int_eq('c', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(0, CURR_LINE->wraps);
+    ck_assert_int_eq(0, CURR_LINE->wrap);
 
     handle_move_right(s);
 
@@ -499,9 +525,14 @@ START_TEST (test_move_right) {
     ck_assert_int_eq(1, s->n_lines);
     ck_assert_int_eq(7, s->col);
     ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq(0, s->cur_l_num);
+    ck_assert_int_eq(0, s->top_line_num);
     ck_assert_int_eq(7, CURR_LINE->visual_end);
+    ck_assert_int_eq(7, CURR_LINE->visual_cursor);
     ck_assert_int_eq(4, CURR_LBUF->cursor);
     ck_assert_int_eq('\t', CURR_LBUF->buffer[CURR_LBUF->cursor-1]);
+    ck_assert_int_eq(0, CURR_LINE->wraps);
+    ck_assert_int_eq(0, CURR_LINE->wrap);
 
     /* end of the other line *************************************************/
 
@@ -515,9 +546,14 @@ START_TEST (test_move_right) {
     ck_assert_int_eq(2, s->n_lines);
     ck_assert_int_eq(7, s->col);
     ck_assert_int_eq(0, s->row);
+    ck_assert_int_eq(0, s->cur_l_num);
+    ck_assert_int_eq(0, s->top_line_num);
     ck_assert_int_eq(7, CURR_LINE->visual_end);
+    ck_assert_int_eq(7, CURR_LINE->visual_cursor);
     ck_assert_int_eq(4, CURR_LBUF->cursor);
     ck_assert_int_eq('\n', CURR_LBUF->buffer[9]);
+    ck_assert_int_eq(0, CURR_LINE->wraps);
+    ck_assert_int_eq(0, CURR_LINE->wrap);
 
     handle_move_right(s);
 
@@ -525,9 +561,49 @@ START_TEST (test_move_right) {
     ck_assert_int_eq(2, s->n_lines);
     ck_assert_int_eq(0, s->col);
     ck_assert_int_eq(1, s->row);
+    ck_assert_int_eq(1, s->cur_l_num);
+    ck_assert_int_eq(0, s->top_line_num);
     ck_assert_int_eq(0, CURR_LINE->visual_end);
+    ck_assert_int_eq(0, CURR_LINE->visual_cursor);
     ck_assert_int_eq(0, CURR_LBUF->cursor);
     ck_assert_int_eq('\n', CURR_LBUF->buffer[0]);
+    ck_assert_int_eq(0, CURR_LINE->wraps);
+    ck_assert_int_eq(0, CURR_LINE->wrap);
+
+    /* end of the bottom unwrapped line **************************************/
+
+    for (int i = 0 ; i < 11 ; ++i)
+        handle_enter(s);
+    handle_move_up(s);
+    s->row++;
+
+    ck_assert_int_eq(13, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(9, s->row);
+    ck_assert_int_eq(11, s->cur_l_num);
+    ck_assert_int_eq(3, s->top_line_num);
+    ck_assert_int_eq(0, CURR_LINE->visual_end);
+    ck_assert_int_eq(0, CURR_LINE->visual_cursor);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(0, CURR_LINE->wraps);
+    ck_assert_int_eq(0, CURR_LINE->wrap);
+    void* old_top = s->top_line;
+    void* old_cur = s->cur_line;
+
+    handle_move_right(s);
+
+    ck_assert_int_eq(13, s->n_lines);
+    ck_assert_int_eq(0, s->col);
+    ck_assert_int_eq(9, s->row);
+    ck_assert_int_eq(12, s->cur_l_num);
+    ck_assert_int_eq(4, s->top_line_num);
+    ck_assert_int_eq(0, CURR_LINE->visual_end);
+    ck_assert_int_eq(0, CURR_LINE->visual_cursor);
+    ck_assert_int_eq(0, CURR_LBUF->cursor);
+    ck_assert_int_eq(0, CURR_LINE->wraps);
+    ck_assert_int_eq(0, CURR_LINE->wrap);
+    ck_assert_ptr_eq(s->top_line->prev, old_top);
+    ck_assert_ptr_eq(s->cur_line->prev, old_cur);
 
     screen_destroy(s);
 } END_TEST
