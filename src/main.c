@@ -33,10 +33,10 @@
 /*****************************************************************************/
 
 const char* editor_version = "text-editor 0.1";
-const char* program_bug_address = "<github.com/CajetanP>";
+const char* program_bug_address = "<github.com/mrkajetanp>";
 
 /* general information about the editor */
-static char doc[] = "text-editor -- make text editing great again!";
+static char doc[] = "text-editor -- a simple, proof of concept text editor";
 
 /* usage */
 static char args_doc[] = "[FILE]";

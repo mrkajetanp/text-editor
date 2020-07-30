@@ -1,3 +1,3 @@
 # Authors
 
-* Cajetan Puchalski
+* Kajetan Puchalski
